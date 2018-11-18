@@ -2,7 +2,7 @@
 #include "x.h"
 #include "vec3.h"
 
-#define NATOMS  110
+#define NATOMS  102
 
 extern int       screen;
 extern Display * dis;
@@ -13,32 +13,35 @@ extern Drawable  canv;
 
 extern int W,H;
 
-const double ra[NCOLORS]={
-  [   0] = 1.0   ,
-  [   1] = 0.455 , /* H  */
-  [   2] = 1.0   ,
-  [   3] = 1.885 , /* Li */
-  [   4] = 1.0   ,
-  [   5] = 1.105 , /* B  */
-  [   6] = 0.910 , /* C  */
-  [   7] = 0.845 , /* N  */
-  [   8] = 0.780 , /* O  */
-  [   9] = 0.65  , /* F  */
-  [  10] = 1.0   ,
-  [  11] = 2.340 , /* Na */
-  [  12] = 1.0   ,
-  [  13] = 1.625 , /* Al */
-  [  14] = 1.43  , /* Si */
-  [  15] = 1.0   ,
-  [  16] = 1.3   , /* S  */
-  [  17] = 1.3   , /* Cl */
-  [  18] = 1.9     /* Ar */
+static const double ra[NATOMS+1] = {
+  1.0,
+  0.455, 0.260, 1.885, 1.365, 1.105,
+  0.910, 0.845, 0.780, 0.650, 0.520,
+  2.340, 1.950, 1.625, 1.430, 1.300,
+  1.300, 1.300, 1.170, 2.860, 2.340,
+  2.080, 1.820, 1.755, 1.820, 1.820,
+  1.820, 1.755, 1.755, 1.755, 1.755,
+  1.690, 1.625, 1.495, 1.495, 1.495,
+  1.300, 3.055, 2.600, 2.340, 2.015,
+  1.885, 1.885, 1.755, 1.690, 1.755,
+  1.820, 2.080, 2.015, 2.015, 1.885,
+  1.885, 1.820, 1.820, 1.690, 3.055,
+  2.574, 2.197, 2.145, 2.145, 2.132,
+  2.145, 2.158, 2.405, 2.093, 2.067,
+  2.067, 2.054, 2.041, 2.028, 2.210,
+  2.028, 1.872, 1.742, 1.690, 1.664,
+  1.638, 1.638, 1.677, 1.742, 1.872,
+  2.015, 2.002, 1.976, 1.989, 1.989,
+  1.950, 3.510, 2.899, 2.431, 2.314,
+  2.093, 1.820, 1.820, 1.820, 1.820,
+  1.820, 1.820, 1.820, 1.820, 1.820,
+  1.820, 1.820
 };
 
 static int arebound(double * ss, double * s0, atcoord * ac, int i, int j, double rl){
   *ss = r3d2( ac->r+i*3, ac->r+j*3);
-  *s0 = ( ra[ ac->q[i] < NCOLORS ? ac->q[i] : 0 ] +
-          ra[ ac->q[j] < NCOLORS ? ac->q[j] : 0 ] );
+  *s0 = ( ra[ (ac->q[i]<NATOMS || ac->q[i]<0) ? ac->q[i] : 0 ] +
+          ra[ (ac->q[j]<NATOMS || ac->q[j]<0) ? ac->q[j] : 0 ] );
   if(*ss < rl**s0**s0){
     return 1;
   }
@@ -67,7 +70,7 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
     q = ac->q[i];
     kz[i].k = i;
     kz[i].q = q;
-    r = re * scale * (ra[q < NCOLORS ? q : 0]) ;
+    r = re * scale * (ra[ (q<NATOMS || q<0) ? q : 0]) ;
     r = MAX(r, 2);
     kz[i].r0 = r;
     kz[i].x  = W/2 + d*(xy0[0] + ac->r[i*3  ]);
@@ -81,7 +84,7 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
     y = kz[i].y;
     q = kz[i].q;
     r = kz[i].r0 * resol;
-    XFillArc (dis, canv, gcc[q < NCOLORS? q : 0], x-r/2, y-r/2, r, r, 0, 360*64);
+    XFillArc (dis, canv, gcc[ (q<NCOLORS || q<0) ? q : 0], x-r/2, y-r/2, r, r, 0, 360*64);
     if(r>2){
       XDrawArc(dis, canv, gc_black, x-r/2, y-r/2, r, r, 0, 360*64);
     }

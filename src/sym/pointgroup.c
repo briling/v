@@ -31,7 +31,7 @@ static inline int isc4(mol * m, double u[3], double eps2){
 }
 
 static inline int isc3(mol * m, double u[3], double eps2){
-  const double s = 0.86602540378443864676;
+  const double s = sqrt(3.0)*0.5;
   double R[9] = {-0.5    + u[0]*u[0]*1.5,   -u[2]*s + u[0]*u[1]*1.5,    u[1]*s + u[0]*u[2]*1.5,
                   u[2]*s + u[0]*u[1]*1.5,   -0.5    + u[1]*u[1]*1.5,   -u[0]*s + u[1]*u[2]*1.5,
                  -u[1]*s + u[0]*u[2]*1.5,    u[0]*s + u[1]*u[2]*1.5,   -0.5    + u[2]*u[2]*1.5 };
@@ -341,9 +341,9 @@ molsym * pointgroup(mol * m,  double eps){
   molsym * ms = malloc(sizeof(molsym)+MSSIZE*(sizeof(elsym)+sizeof(int)+3*sizeof(double)));
   ms->a = m->n;
   ms->n = 0;
-  ms->e = (elsym  *)(ms+1);
-  ms->o = (int    *)(ms->e + MSSIZE);
-  ms->r = (double *)(ms->o + MSSIZE);
+  ms->r = (double *)(ms+1);
+  ms->o = (int    *)(ms->r + MSSIZE*3);
+  ms->e = (elsym  *)(ms->o + MSSIZE);
 
   double d[3];
   position(m, d);

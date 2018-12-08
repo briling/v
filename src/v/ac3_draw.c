@@ -61,7 +61,7 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
   int n = ac->n;
   int r, x, y, q;
 
-  kzstr * kz = (kzstr *)malloc(sizeof(kzstr)*n);
+  kzstr * kz = malloc(sizeof(kzstr)*n);
 
   double d     = MIN(H,W)*scale;
   double resol = MIN(H,W) / 768.0;

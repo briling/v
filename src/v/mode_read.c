@@ -57,12 +57,9 @@ static int readb(FILE * f, int i, int Nmax, int N, int na, modestr * m){
 
 modestr * mode_read (FILE * f, int na){
 
-  char s[256];
+  const int N = 6;
   int  n = 0;
-  int  N = 6;
-  int  size;
-  int  nb, nb1;
-  modestr * m;
+  char s[256];
 
   while (1){
     if (!fgets(s, sizeof(s), f)) {
@@ -84,22 +81,22 @@ modestr * mode_read (FILE * f, int na){
       n++;
     }
   }
-  size = sizeof(modestr) + n*sizeof(double) + n*na*3*sizeof(double);
-  m = (modestr *)malloc(size);
+
+  size_t size = sizeof(modestr) + n*sizeof(double) + n*na*3*sizeof(double);
+  modestr * m = malloc(size);
   m->n = n;
   m->f = (double *)(m+1);
   m->d = m->f+n;
 
-  int i;
-  for (i=0; i<3; i++){
+  for (int i=0; i<3; i++){
     if (!fgets(s, sizeof(s), f)) {
       goto hell;
     }
   }
 
-  nb1 = n%N;
-  nb  = n/N;
-
+  int nb1 = n%N;
+  int nb  = n/N;
+  int i;
   for (i=0; i<nb; i++){
     if (readb(f, i, N, N, na, m)){
       goto hell;
@@ -116,6 +113,5 @@ modestr * mode_read (FILE * f, int na){
 hell:
   free(m);
   return NULL;
-
 }
 

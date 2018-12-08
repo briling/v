@@ -19,6 +19,7 @@ typedef struct {
 
 /*==========================================================================================*/
 
+mol * mol_alloc(mol * mold, int n, int c);
 double *  mol_mass_const(mol * m);
 void      position(mol * m, double d[3]);
 

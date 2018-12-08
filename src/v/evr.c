@@ -359,7 +359,7 @@ void kp_exit(void * ent, task_t task, drawpars * dp){
   exit(0);
 }
 
-void kp_fw_toggle(void * ent, task_t task, drawpars * dp){
+void kp_fw_toggle(void * ent __attribute__ ((unused)), task_t task, drawpars * dp){
   if ( (task == AT3COORDS) || (task == VIBRO) ){
     if(dp->fbw != 1){
       dp->fbw = 1;
@@ -370,7 +370,7 @@ void kp_fw_toggle(void * ent, task_t task, drawpars * dp){
   }
 }
 
-void kp_bw_toggle(void * ent, task_t task, drawpars * dp){
+void kp_bw_toggle(void * ent __attribute__ ((unused)), task_t task, drawpars * dp){
   if (task == AT3COORDS){
     if(dp->fbw != -1){
       dp->fbw = -1;
@@ -457,7 +457,7 @@ void time_gone(void * ent, task_t task, drawpars * dp){
   }
 }
 
-void savevib  (void * ent, task_t task, drawpars * dp, int c){
+void savevib  (void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp, int c){
   char s[256];
   snprintf(s, sizeof(s), "%s_%03d.xpm", dp->capt, c);
   if ( savepic(s) != XpmSuccess){
@@ -469,7 +469,7 @@ void savevib  (void * ent, task_t task, drawpars * dp, int c){
   return;
 }
 
-void kp_savepic  (void * ent, task_t task, drawpars * dp){
+void kp_savepic  (void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
   char s[256];
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
   snprintf(s, sizeof(s), "%s_%.*d.xpm", dp->capt, l, dp->n + 1);

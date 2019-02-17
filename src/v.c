@@ -72,7 +72,10 @@ printf("\
   symtol:%%lf               tolerance for symmetry determination in Å (default %g) \n\
   cell:%%lf,%%lf,%%lf         cuboid size in a.u. \n\
   shell:%%lf,%%lf            spheres radii in a.u. \n\
-  z:%%d,%%d,%%d,%%d,%%d         show an internal coordinate \n\
+  z:%%d,%%d,%%d,%%d,%%d         show an internal coordinate: \n\
+                                 1,i,j,0,0 - distance i-j\n\
+                                 2,i,j,k,0 - angle    i-j-k\n\
+                                 3,i,j,k,l - torsion  i-j-k-l\n\
   font:%%s                  font (xlfd) \n\
   \n\
  keyboard reference:\n\
@@ -80,8 +83,8 @@ printf("\
   ←/↑/→/↓/pgup/pgdn        rotate                \n\
   w/a/s/d                  move                  \n\
   \n\
-  0                        go to first point     \n\
-  =                        go to last point      \n\
+  0                        go to the first point \n\
+  =                        go to the last point  \n\
   enter/backspace          next/previous point   \n\
   ins                      play forwards  / stop \n\
   del                      play backwards / stop \n\
@@ -92,17 +95,17 @@ printf("\
   \n\
   .                        show point group      \n\
   \n\
-  n                        show/hide atom numbers   \n\
-  t                        show/hide atom types       \n\
-  l                        show/hide bond lengths     \n\
-  b                        show/hide bonds     \n\
+  n                        show/hide atom numbers\n\
+  t                        show/hide atom types  \n\
+  l                        show/hide bond lengths\n\
+  b                        show/hide bonds       \n\
   \n\
   tab                      read new points       \n\
   r                        reread file           \n\
   x                        print molecule (1)    \n\
   p                        print molecule (2)    \n\
-  f                        save all pictures [for selected normal mode] \n\
-  m                        save one picture      \n\
+  m                        save one picture  (.xpm)\n\
+  f                        save all pictures (if vibrations: for selected normal mode)\n\
   \n\
   q                        quit                  \n\
   \n\

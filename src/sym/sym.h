@@ -3,6 +3,7 @@
 #include "3d.h"
 
 #define EPS1 1e-15
+#define EPS2 1e-5
 
 #define MAXCN   16
 #define PISTEPS 65536

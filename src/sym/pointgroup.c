@@ -118,8 +118,8 @@ static int findc3(mol * m, double axis[30], double eps2){
         r3scal(h, 1.0/sqrt(t));
         p = isc3(m, h, eps2);
         if(p){
-          if(n>=10){
-            GOTOHELL;
+          if(n>=10){ // bad
+            return n+1;
           }
           r3cp(axis+n*3, h);
           n++;
@@ -369,11 +369,12 @@ molsym * pointgroup(mol * m,  double eps){
 
   double dm[2];
   sort3(d,dm);
-  if((dm[1]-dm[0])/dm[0]<1e-5){ //TODO
+  if((dm[1]-dm[0])/dm[0]<EPS2){
     double c3[30]={0.0};
     int p = findc3(m, c3, eps2);
     if((p>1)&&(p!=4)&&(p!=10)){
-      GOTOHELL;
+      snprintf(ms->s, sizeof(styp), "C1:%dC3", p);
+      return ms;
     }
     ms->e[0] = CN;
     ms->o[0] = 3;

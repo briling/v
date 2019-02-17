@@ -11,10 +11,10 @@ typedef enum {INV, SIGMA, CN, SN} elsym;
 
 typedef struct {
   styp     s;
-  int      a;  // число атомов
+  int      a;  // number of atoms
   int      n;
   elsym  * e;
-  int    * o;  //порядки элементов
+  int    * o;  // orders of elements
   double * r;
 } molsym;
 

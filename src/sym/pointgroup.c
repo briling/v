@@ -475,14 +475,14 @@ molsym * pointgroup(mol * m,  double eps){
     }
   }
 
-  /* ищем поворотную ось || одной из главных осей */
+  /* find a rotational axis || one of the principal axes */
   ms->e[0] = CN;
   ms->o[0] = 0;
   hascn(m, ms, 0, eps2);
   if(ms->o[0]){
     ms->n++;
     PRINTSYMEL(ms,0);
-    /* ищем С2' перпендикулярно главной оси */
+    /* find C2' perpendicular the principal axis */
     ms->e[1] = CN;
     ms->o[1] = 0;
     findc2(m, ms, 0, 1, eps2);

@@ -145,7 +145,7 @@ int savepic(char * s){
   a.valuemask = (0 | XpmSize) ;
   a.width     = W;
   a.height    = H;
-  XCopyArea (dis, win, px, gc_white, 0, 0, W, H, 0, 0);   /* с буковками */
+  XCopyArea (dis, win, px, gc_white, 0, 0, W, H, 0, 0);   /* with text */
   return XpmWriteFileFromPixmap(dis, s, px, 0, &a);
 }
 

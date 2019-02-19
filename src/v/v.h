@@ -45,7 +45,6 @@ typedef struct {
   int    b, fbw, num, t;
   int    vert;
   int    z[5];
-  char   text[256];
   char   capt[256];
 } drawpars;
 
@@ -79,12 +78,12 @@ void ac3_draw      (atcoord * ac, double r0, double scale, double xy0[2], double
 void ac3_print     (atcoord * ac, double xy0[2], double rl);
 void ac3_print2fig (atcoord * ac, double xy0[2], double rl, int b, double * v);
 
-double acscale   (atcoord  * ac,  int dim);
-double acsscale  (atcoords * acs, int dim);
-void   printcoord(int * z, char * s, int n, atcoord * ac);
-int    cmpz (const void * p1, const void * p2);
-void   getshell(double shell[2], drawpars * dp);
-void   getcell (double cell[3],  drawpars * dp);
+double acscale  (atcoord  * ac,  int dim);
+double acsscale (atcoords * acs, int dim);
+int printcoord(int * z, char * s, int n, atcoord * ac);
+int cmpz(const void * p1, const void * p2);
+void getshell(double shell[2], drawpars * dp);
+void getcell (double cell[3],  drawpars * dp);
 
 /* pg.c */
 void pg(atcoord * a, styp s, double symtol);

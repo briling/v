@@ -14,18 +14,18 @@ static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
   styp    * gr = ((atcoords *)ent)->sym+dp->n;
   ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
-  char z[64] = { 0 };
-  if (dp->z[0]){
-    printcoord(dp->z, z, sizeof(z), ac);
+
+  char text[256];
+  int tp = snprintf(text, sizeof(text),
+      "%d / %d   r = %.1lf   rl = %.1lf",
+      dp->n+1, dp->N, dp->r, dp->rl);
+  if( tp<sizeof(text)-1 && dp->z[0] ){
+    tp += printcoord(dp->z, text+tp, sizeof(text)-tp, ac);
   }
-  char g[64] = { 0 };
-  if((*gr)[0]){
-    sprintf(g, "PG: %s", gr);
+  if( tp<sizeof(text)-1 && (*gr)[0] ){
+    tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", gr);
   }
-  snprintf(dp->text, sizeof(dp->text),
-           "%d / %d   r = %.1lf   rl = %.1lf  %s  %s",
-            dp->n+1, dp->N, dp->r, dp->rl, z, g);
-  textincorner(dp->text);
+  textincorner(text);
 
   if(dp->vert == 1){
     double v[24];
@@ -47,25 +47,24 @@ static void redraw_vibro(void * ent, drawpars * dp){
   double  * m0  = ((vibrstr *)ent)->mode0;
   modestr * ms  = ((vibrstr *)ent)->modes;
   double  * m   = ms->d + (dp->n)*(ac->n)*3;
-  double    fq  = ms->f[dp->n];
-  char      i;
-
-  i  = fq > 0.0 ? ' ' : 'i';
-  fq = fabs(fq);
 
   vecsums(ac->n*3, ac->r, m0, m, sin( dp->t * 2.0*M_PI/TMAX ) * 0.1*sqrt(ac->n) );
-
   double v[3];
   for(int j=0; j<ac->n; j++){
-    r3mx (v, ac->r+3*j , dp->ac3rmx);
+    r3mx(v, ac->r+3*j, dp->ac3rmx);
     r3cp(ac->r+3*j, v);
   }
 
   ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
-  snprintf(dp->text, sizeof(dp->text),
+
+  double fq = ms->f[dp->n];
+  char i = fq > 0.0 ? ' ' : 'i';
+  char text[256];
+  snprintf(text, sizeof(text),
            "%d / %d   %.1lf%c   r = %.1lf   rl = %.1lf",
-           dp->n+1, ms->n, fq, i, dp->r, dp->rl);
-  textincorner(dp->text);
+           dp->n+1, ms->n, fabs(fq), i, dp->r, dp->rl);
+  textincorner(text);
+
   return;
 }
 

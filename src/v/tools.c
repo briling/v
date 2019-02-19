@@ -42,10 +42,9 @@ double acsscale(atcoords * acs, int dim){
   return 1.0 / max;
 }
 
-void printcoord(int * z, char * s, int n, atcoord * ac){
+int printcoord(int * z, char * s, int n, atcoord * ac){
   double t = intcoord_calc(1, z, ac->r);
-  snprintf(s, n, "|  %d,%d,%d,%d,%d: %lf", z[0], z[1], z[2], z[3], z[4], t);
-  return;
+  return snprintf(s, n, "  |  %d,%d,%d,%d,%d: %lf", z[0], z[1], z[2], z[3], z[4], t);
 }
 
 int cmpz(const void * p1, const void * p2){

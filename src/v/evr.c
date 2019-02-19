@@ -179,6 +179,9 @@ void kp_frame_inc(void * ent, task_t task, drawpars * dp){
     dp->n++;
     exp_redraw(ent, task, dp);
   }
+  if (dp->n == dp->N-1 && task == AT3COORDS){
+    dp->fbw = 0;
+  }
   return;
 }
 
@@ -186,6 +189,9 @@ void kp_frame_dec(void * ent, task_t task, drawpars * dp){
   if (dp->n > 0){
     dp->n--;
     exp_redraw(ent, task, dp);
+  }
+  if (dp->n == 0 && task == AT3COORDS){
+    dp->fbw = 0;
   }
   return;
 }

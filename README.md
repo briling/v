@@ -52,7 +52,7 @@ show this reference:
 | `0`                            |  go to the first point
 | `=`                            |  go to the last point
 | `enter`/`backspace`            |  next/previous point
-| `ins`                          |  play forwards  / stop
+| `ins`                          |  play forwards  / stop (if vibrations: animate selected normal mode / stop)
 | `del`                          |  play backwards / stop
 |                                |
 | `home`/`end`                   |  zoom in/out

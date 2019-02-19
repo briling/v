@@ -86,7 +86,7 @@ printf("\
   0                        go to the first point \n\
   =                        go to the last point  \n\
   enter/backspace          next/previous point   \n\
-  ins                      play forwards  / stop \n\
+  ins                      play forwards  / stop  (if vibrations: animate selected normal mode / stop)\n\
   del                      play backwards / stop \n\
   \n\
   home/end                 zoom in/out           \n\
@@ -229,46 +229,36 @@ int main (int argc, char * argv[]) {
       }
     }
 
-    {
-      if ( task == AT3COORDS ){
+    if(dp.fbw){
+
+      if (task == AT3COORDS){
         if (dp.fbw > 0){
-          if((dp.n)>(dp.N)-2){
-            dp.fbw = 0;
-          }
-          else{
-            kp_frame_inc(ent, task, &dp);
-            usleep(to);
-          }
+          kp_frame_inc(ent, task, &dp);
         }
-        else if(dp.fbw < 0){
-          if(dp.n<1){
-            dp.fbw = 0;
-          }
-          else{
-            kp_frame_dec(ent, task, &dp);
-            usleep(to);
-          }
+        else{
+          kp_frame_dec(ent, task, &dp);
         }
+        usleep(to);
       }
+
       else if(task == VIBRO){
-/* We draw 5 times for each dp.t,
- * because 'to' is too small to look well
- * and 5*to is too big to behave well (keyboard control).
- * Also we cannot draw only when tr==4,
- * because we need an XEvent to reiterate the main loop.
- * Alternatively, we can send an event manually.
- */
-        if(dp.fbw){
-          tr++;
-          if(tr==4){
-            tr = 0;
-            dp.t++;
-          }
-          usleep(to);
-          time_gone(ent, task, &dp);
+        /* We draw 5 times for each dp.t,
+         * because 'to' is too small to look good
+         * and 5*to is too big to behave well (keyboard control).
+         * Also we cannot draw only when tr==4,
+         * because we need an XEvent to reiterate the main loop.
+         * Alternatively, we can send an event manually.
+         */
+        if(++tr == 4){
+          tr = 0;
+          dp.t++;
         }
+        usleep(to);
+        time_gone(ent, task, &dp);
       }
+
     }
+
   }
   return 0;
 }

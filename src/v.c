@@ -113,6 +113,29 @@ printf("\
   return;
 }
 
+static void dp_init(drawpars * dp, char * fname){
+  dp->n   = 0;
+  dp->fbw = 0;
+  dp->num = 0;
+  dp->t   = 0;
+  dp->rl  = 1.0;
+  dp->r   = 1.0;
+  dp->xy0[0] = dp->xy0[1] = 0.0;
+  mx_id(3, dp->ac3rmx);
+  strncpy(dp->capt, fname, sizeof(dp->capt));
+  // from command-line
+  dp->b = 1;
+  dp->symtol = SYMTOL;
+  dp->vert = -1;
+  dp->z[0] = dp->z[1] = dp->z[2] = dp->z[3] = dp->z[4] = 0;
+  vecset(3*8, dp->vertices, 0.0);
+  // from data read
+  dp->scale = 1.0;
+  dp->N = 0.0;
+  dp->f = NULL;
+  return;
+}
+
 int main (int argc, char * argv[]) {
 
   if(argc == 1){
@@ -121,34 +144,30 @@ int main (int argc, char * argv[]) {
     return 0;
   }
 
-  void     * ent;
-  drawpars   dpl;
-  drawpars * dp = &dpl;
-  task_t     task = UNKNOWN;
+  void  * ent;
+  drawpars dp;
+  task_t   task = UNKNOWN;
 
-  char    capt[256];
-  char    fontname[256]={0};
-  ptf     kp  [NKP];
-  XEvent  event, event1;
+  char   capt[256];
+  char   fontname[256]={0};
+  ptf    kp  [NKP];
+  XEvent event, event1;
+
+  dp_init(&dp, argv[1]);
 
   int to = TO;
-  dp->symtol = SYMTOL;
-  dp->vert = -1;
-  dp->z[0] = dp->z[1] = dp->z[2] = dp->z[3] = dp->z[4] = 0;
-  vecset(3*8, dp->vertices, 0.0);
   double schell[3]={0};
-  int bonds = 1;
   for(int i=2; i<argc; i++){
     sscanf (argv[i], "to:%d", &to);
-    sscanf (argv[i], "symtol:%lf", &(dp->symtol));
-    sscanf (argv[i], "bonds:%d", &bonds);
-    sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp->z, dp->z+1, dp->z+2, dp->z+3, dp->z+4);
+    sscanf (argv[i], "symtol:%lf", &dp.symtol);
+    sscanf (argv[i], "bonds:%d", &dp.b);
+    sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
     sscanf (argv[i], "font:%255s", fontname);
     if(sscanf (argv[i], "cell:%lf,%lf,%lf", schell, schell+1, schell+2) == 3){
-      getcell(schell, dp);
+      getcell(schell, &dp);
     }
     if(sscanf (argv[i], "shell:%lf,%lf", schell, schell+1) == 2){
-      getshell(schell, dp);
+      getshell(schell, &dp);
     }
     if( !strcmp(argv[i], "a") ){
       task = AT3COORDS;
@@ -157,25 +176,23 @@ int main (int argc, char * argv[]) {
       task = VIBRO;
     }
   }
-  dp->b = !!bonds;
 
-  if (!(ent = loadthings(&task, argv[1], dp))){
+  if (!(ent = loadthings(&task, argv[1], &dp))){
     GOTOHELL;
   }
 
   if(task == AT3COORDS){
-    atcoord * ac = ((atcoords *)ent)->m[dp->n];
-    intcoord_check(ac->n, dp->z);
+    atcoord * ac = ((atcoords *)ent)->m[dp.n];
+    intcoord_check(ac->n, dp.z);
   }
   else{
-    dp->z[0] = 0;
+    dp.z[0] = 0;
   }
 
-  snprintf(capt, sizeof(capt), "%s - %s", argv[0], dp->capt);
-  init_x  (capt);
+  snprintf (capt, sizeof(capt), "%s - %s", argv[0], dp.capt);
+  init_x   (capt);
   init_keys(kp);
   init_font(fontname);
-
 #if 0
     canv = win;
 #else
@@ -198,57 +215,57 @@ int main (int argc, char * argv[]) {
     }
 
     if (event.type == Expose && event.xexpose.count == 0) {
-      exp_redraw(ent, task, dp);
+      exp_redraw(ent, task, &dp);
     }
     else if (event.type == ConfigureNotify){
       W = event.xconfigure.width;
       H = event.xconfigure.height;
-      dp->xy0[0] = dp->xy0[1] = 0.0;
-      exp_redraw(ent, task, dp);
+      dp.xy0[0] = dp.xy0[1] = 0.0;
+      exp_redraw(ent, task, &dp);
     }
-    else if (event.type==KeyPress) {
+    else if (event.type == KeyPress) {
       if (kp[event.xkey.keycode]){
-        kp[event.xkey.keycode](ent, task, dp);
+        kp[event.xkey.keycode](ent, task, &dp);
       }
     }
 
     {
       if ( task == AT3COORDS ){
-        if (dp->fbw > 0){
-          if((dp->n)>(dp->N)-2){
-            dp->fbw = 0;
+        if (dp.fbw > 0){
+          if((dp.n)>(dp.N)-2){
+            dp.fbw = 0;
           }
           else{
-            kp_frame_inc(ent, task, dp);
+            kp_frame_inc(ent, task, &dp);
             usleep(to);
           }
         }
-        else if(dp->fbw < 0){
-          if(dp->n<1){
-            dp->fbw = 0;
+        else if(dp.fbw < 0){
+          if(dp.n<1){
+            dp.fbw = 0;
           }
           else{
-            kp_frame_dec(ent, task, dp);
+            kp_frame_dec(ent, task, &dp);
             usleep(to);
           }
         }
       }
       else if(task == VIBRO){
-/* We draw 5 times for each dp->t,
+/* We draw 5 times for each dp.t,
  * because 'to' is too small to look well
  * and 5*to is too big to behave well (keyboard control).
  * Also we cannot draw only when tr==4,
  * because we need an XEvent to reiterate the main loop.
  * Alternatively, we can send an event manually.
  */
-        if(dp->fbw){
+        if(dp.fbw){
           tr++;
           if(tr==4){
             tr = 0;
-            dp->t++;
+            dp.t++;
           }
           usleep(to);
-          time_gone(ent, task, dp);
+          time_gone(ent, task, &dp);
         }
       }
     }

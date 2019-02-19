@@ -105,6 +105,9 @@ void init_font(char * fontname){
   if(fontInfo){
     XSetFont (dis, gc_black, fontInfo->fid);
   }
+  else{
+    fprintf(stderr, "\e[1;31merror:\e[0m cannot load font '%s'\n", fontname);
+  }
   return;
 }
 
@@ -160,3 +163,4 @@ void drawshell(double rmin, double rmax, double scale, double xy0[2]){
   XSetLineAttributes(dis, gc_black,  0, 0, 0, 0);
   return;
 }
+

@@ -3,18 +3,6 @@
 
 void * loadthings(task_t * task, char * fname, drawpars * dp){
 
-  dp->n   = 0;
-  dp->fbw = 0;
-  dp->rl  = 1.0;
-  dp->num = 0;
-  dp->t   = 0;
-  dp->hn  = 3;
-  dp->vn  = 3;
-  dp->r   = 1.0;
-  dp->xy0[0] = dp->xy0[1] = 0.0;
-  strncpy(dp->capt, fname, sizeof(dp->capt));
-  mx_id(3, dp->ac3rmx);
-
   FILE * f;
   if ((f = fopen(fname, "r")) == NULL){
     return NULL;
@@ -72,6 +60,5 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
   dp->N     = acs->n;
   dp->scale = acsscale(acs, 3);
   return acs;
-
 }
 

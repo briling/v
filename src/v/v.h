@@ -36,18 +36,17 @@ typedef struct {
 } vibrstr;
 
 typedef struct {
-  double         c[2], xy0[2], ac3rmx[9];
-  double         scale, r, rl;
-  double         symtol;
-  FILE         * f;
-  unsigned int   hn, vn;
-  int            b, fbw, num, t;
-  int            n, N;
-  int            z[5];
-  char           text[256];
-  char           capt[256];
-  int            vert;
-  double         vertices[3*8];
+  double xy0[2], ac3rmx[9];
+  double scale, r, rl;
+  double vertices[3*8];
+  double symtol;
+  FILE * f;
+  int    n, N;
+  int    b, fbw, num, t;
+  int    vert;
+  int    z[5];
+  char   text[256];
+  char   capt[256];
 } drawpars;
 
 typedef struct{

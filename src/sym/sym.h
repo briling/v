@@ -27,6 +27,5 @@ typedef struct {
 } symmx;
 
 molsym * pointgroup(mol * m, double eps);
-mol    * breed(symmx * smx, mol * m, double eps);
 mol    * makemol(int n);
 

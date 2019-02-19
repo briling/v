@@ -115,6 +115,12 @@ printf("\
 
 int main (int argc, char * argv[]) {
 
+  if(argc == 1){
+    printman(argv[0]);
+    version(stdout);
+    return 0;
+  }
+
   void     * ent;
   drawpars   dpl;
   drawpars * dp = &dpl;
@@ -123,18 +129,9 @@ int main (int argc, char * argv[]) {
   char    capt[256];
   char    fontname[256]={0};
   ptf     kp  [NKP];
-  XEvent  event;
-  XEvent  event1;
-  int     to, zh;
-  int     tr = 0;
+  XEvent  event, event1;
 
-  if(argc == 1){
-    printman(argv[0]);
-    version(stdout);
-    return 0;
-  }
-
-  to = TO;
+  int to = TO;
   dp->symtol = SYMTOL;
   dp->vert = -1;
   dp->z[0] = dp->z[1] = dp->z[2] = dp->z[3] = dp->z[4] = 0;
@@ -146,7 +143,7 @@ int main (int argc, char * argv[]) {
     sscanf (argv[i], "symtol:%lf", &(dp->symtol));
     sscanf (argv[i], "bonds:%d", &bonds);
     sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp->z, dp->z+1, dp->z+2, dp->z+3, dp->z+4);
-    sscanf (argv[i], "font:%s", fontname);
+    sscanf (argv[i], "font:%255s", fontname);
     if(sscanf (argv[i], "cell:%lf,%lf,%lf", schell, schell+1, schell+2) == 3){
       getcell(schell, dp);
     }
@@ -185,17 +182,17 @@ int main (int argc, char * argv[]) {
     canv = px;
 #endif
 
+  int tr = 0;
   while(1) {
 
-    zh = 0;
+    int zh = 0;
     do{
       XNextEvent(dis, &event1);
       if(event1.type != NoExpose){
         event=event1;
         zh = 1;
       }
-    }
-    while(XEventsQueued(dis, QueuedAlready));
+    } while(XEventsQueued(dis, QueuedAlready));
     if(!zh){
       event=event1;
     }
@@ -206,7 +203,7 @@ int main (int argc, char * argv[]) {
     else if (event.type == ConfigureNotify){
       W = event.xconfigure.width;
       H = event.xconfigure.height;
-      dp->xyt[0] = dp->xyt[1] = dp->xyt[2] = 0.0;
+      dp->xy0[0] = dp->xy0[1] = 0.0;
       exp_redraw(ent, task, dp);
     }
     else if (event.type==KeyPress) {

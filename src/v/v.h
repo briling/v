@@ -36,7 +36,7 @@ typedef struct {
 } vibrstr;
 
 typedef struct {
-  double         c[2], xyt[3], ac3rmx[9];
+  double         c[2], xy0[2], ac3rmx[9];
   double         scale, r, rl;
   double         symtol;
   FILE         * f;
@@ -51,12 +51,12 @@ typedef struct {
 } drawpars;
 
 typedef struct{
-  int      k;
-  int      q;
-  int      r0;
-  int      x;
-  int      y;
-  double   z;
+  int    k;
+  int    q;
+  int    r;
+  int    x;
+  int    y;
+  double z;
 } kzstr;
 
 void * loadthings (task_t * task, char * fname, drawpars * dp);
@@ -67,7 +67,7 @@ void init_x       (char   capt[256]) ;
 void init_font    (char * fontname);
 void textincorner (char * text);
 void lineincorner (int    l);
-void drawvertices (double * v, double scale, double * xy0);
+void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
@@ -76,9 +76,9 @@ atcoords    acs_read (FILE * f);
 void        acs_readmore  (FILE * f, atcoords * acs);
 modestr   * mode_read     (FILE * f, int na);
 
-void ac3_draw      (atcoord * ac, double r, double scale, double xytheta[3], double rl, int b, int num);
-void ac3_print     (atcoord * ac, double * xy0, double rl);
-void ac3_print2fig (atcoord * ac, double * xy0, double rl, int b, double * v);
+void ac3_draw      (atcoord * ac, double r0, double scale, double xy0[2], double rl, int b, int num);
+void ac3_print     (atcoord * ac, double xy0[2], double rl);
+void ac3_print2fig (atcoord * ac, double xy0[2], double rl, int b, double * v);
 
 double acscale   (atcoord  * ac,  int dim);
 double acsscale  (atcoords * acs, int dim);

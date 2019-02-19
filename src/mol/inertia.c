@@ -24,11 +24,10 @@ void position(mol * m, double d[3]){
   int n = m->n;
   int i;
 
-  double sm, tm;
   double c[3] = {0,0,0};
-  sm = 0.0;
+  double sm = 0.0;
   for(i=0; i<n; i++){
-    tm  = mass[i];
+    double tm = mass[i];
     sm += tm;
     r3adds(c, m->r+i*3, tm);
   }

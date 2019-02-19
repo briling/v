@@ -50,7 +50,7 @@ static int arebound(double * ss, double * s0, atcoord * ac, int i, int j, double
   }
 }
 
-void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, int b, int num){
+void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, int b, int num){
 
   CLEARCANV;
 
@@ -66,13 +66,13 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
 
   for(int i=0; i<n; i++){
     int q = ac->q[i];
-    double r = re*resol*scale * (ra[ (q<NATOMS || q<0) ? q : 0]) ;
+    double r = r0*resol*scale * (ra[ (q<NATOMS || q<0) ? q : 0]) ;
     kz[i].k = i;
     kz[i].q = q;
-    kz[i].r0 = r;
-    kz[i].x  = W/2 + d*(xy0[0] + ac->r[i*3  ]);
-    kz[i].y  = H/2 - d*(xy0[1] + ac->r[i*3+1]);
-    kz[i].z  = ac->r[i*3+2];
+    kz[i].r = r;
+    kz[i].x = W/2 + d*(xy0[0] + ac->r[i*3  ]);
+    kz[i].y = H/2 - d*(xy0[1] + ac->r[i*3+1]);
+    kz[i].z = ac->r[i*3+2];
   }
   qsort(kz, n, sizeof(kzstr), cmpz);
 
@@ -80,7 +80,7 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
     int x = kz[i].x;
     int y = kz[i].y;
     int q = kz[i].q;
-    int r = MAX(2, kz[i].r0);
+    int r = MAX(2, kz[i].r);
     XFillArc (dis, canv, gcc[ (q<NCOLORS || q<0) ? q : 0], x-r/2, y-r/2, r, r, 0, 360*64);
     if(r>2){
       XDrawArc(dis, canv, gc_black, x-r/2, y-r/2, r, r, 0, 360*64);
@@ -107,7 +107,7 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
           dx = x2-x1;
           dy = y2-y1;
           s  = sqrt(ss);
-          dd = s0 / s / scale * (s <= 2.0 ? 0.0004 : 0.0002) * kz[i].r0;
+          dd = s0 / s / scale * (s <= 2.0 ? 0.0004 : 0.0002) * kz[i].r;
 
           XDrawLine(dis, canv, gc_black, x1+dd*dx, y1+dd*dy, x1+dx, y1+dy);
           if(b==2){
@@ -126,7 +126,7 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
 
 }
 
-void ac3_print(atcoord * ac, double * xy0, double rl){
+void ac3_print(atcoord * ac, double xy0[2], double rl){
   printf("$molecule\ncart\n");
   for(int i=0; i<ac->n; i++){
     printf(" %d\t%lf\t%lf\t%lf",
@@ -156,7 +156,7 @@ void ac3_print(atcoord * ac, double * xy0, double rl){
   printf("$end\n");
 }
 
-void ac3_print2fig(atcoord * ac, double * xy0, double rl, int b, double * v){
+void ac3_print2fig(atcoord * ac, double xy0[2], double rl, int b, double * v){
 
   int n = ac->n;
   for(int i=0; i<n; i++){

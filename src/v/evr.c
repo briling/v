@@ -8,7 +8,7 @@ extern int H,W;
 static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
   styp    * gr = ((atcoords *)ent)->sym+dp->n;
-  ac3_draw(ac, dp->r, dp->scale, dp->xyt, dp->rl, dp->b, dp->num);
+  ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
   char z[64] = { 0 };
   if (dp->z[0]){
     printcoord(dp->z, z, sizeof(z), ac);
@@ -27,10 +27,10 @@ static void redraw_ac3(void * ent, drawpars * dp){
     for(int i=0; i<8; i++){
       r3mx (v+3*i, dp->vertices+3*i, dp->ac3rmx);
     }
-    drawvertices(v, dp->scale, dp->xyt);
+    drawvertices(v, dp->scale, dp->xy0);
   }
   else if(dp->vert == 2){
-    drawshell(dp->vertices[0], dp->vertices[1], dp->scale, dp->xyt);
+    drawshell(dp->vertices[0], dp->vertices[1], dp->scale, dp->xy0);
   }
 
 }
@@ -55,7 +55,7 @@ static void redraw_vibro(void * ent, drawpars * dp){
     r3cp(ac->r+3*j, v);
   }
 
-  ac3_draw(ac, dp->r, dp->scale, dp->xyt, dp->rl, dp->b, dp->num);
+  ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
   snprintf(dp->text, sizeof(dp->text),
            "%d / %d   %.1lf%c   r = %.1lf   rl = %.1lf",
            dp->n+1, ms->n, fq, i, dp->r, dp->rl);
@@ -110,7 +110,7 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
 void kp_print(void * ent, task_t task, drawpars * dp){
   if (task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
-    ac3_print(ac, dp->xyt, dp->rl);
+    ac3_print(ac, dp->xy0, dp->rl);
   }
 }
 
@@ -123,7 +123,7 @@ void kp_print2fig(void * ent, task_t task, drawpars * dp){
       }
     }
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
-    ac3_print2fig(ac, dp->xyt, dp->rl, dp->b, dp->vert==1?v:NULL);
+    ac3_print2fig(ac, dp->xy0, dp->rl, dp->b, dp->vert==1?v:NULL);
   }
 }
 
@@ -302,7 +302,7 @@ void kp_move_l(void * ent, task_t task, drawpars * dp){
     move_pbc((atcoords *)ent, dp, 0, -0.2);
   }
   else {
-    dp->xyt[0] -= 0.2 ;
+    dp->xy0[0] -= 0.2 ;
   }
   exp_redraw(ent, task, dp);
 }
@@ -312,7 +312,7 @@ void kp_move_r(void * ent, task_t task, drawpars * dp){
     move_pbc((atcoords *)ent, dp, 0, +0.2);
   }
   else {
-    dp->xyt[0] += 0.2 ;
+    dp->xy0[0] += 0.2 ;
   }
   exp_redraw(ent, task, dp);
 }
@@ -322,7 +322,7 @@ void kp_move_u(void * ent, task_t task, drawpars * dp){
     move_pbc((atcoords *)ent, dp, 1, +0.2);
   }
   else {
-    dp->xyt[1] += 0.2 ;
+    dp->xy0[1] += 0.2 ;
   }
   exp_redraw(ent, task, dp);
 }
@@ -332,7 +332,7 @@ void kp_move_d(void * ent, task_t task, drawpars * dp){
     move_pbc((atcoords *)ent, dp, 1, -0.2);
   }
   else {
-    dp->xyt[1] -= 0.2 ;
+    dp->xy0[1] -= 0.2 ;
   }
   exp_redraw(ent, task, dp);
 }

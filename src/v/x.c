@@ -114,7 +114,7 @@ void textincorner(char * text){
   return;
 }
 
-void drawvertices(double * v, double scale, double * xy0){
+void drawvertices(double * v, double scale, double xy0[2]){
   double d = MIN(H, W)*scale;
   int lw;
 #define LINE(I,J) \
@@ -149,7 +149,7 @@ int savepic(char * s){
   return XpmWriteFileFromPixmap(dis, s, px, 0, &a);
 }
 
-void drawshell(double rmin, double rmax, double scale, double * xy0){
+void drawshell(double rmin, double rmax, double scale, double xy0[2]){
   double d = MIN(H, W)*scale;
   rmax *= d;
   rmin *= d;

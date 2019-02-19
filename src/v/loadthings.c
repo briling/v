@@ -11,7 +11,7 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
   dp->hn  = 3;
   dp->vn  = 3;
   dp->r   = 1.0;
-  dp->xyt[0] = dp->xyt[1] = dp->xyt[2] = 0.0;
+  dp->xy0[0] = dp->xy0[1] = 0.0;
   strncpy(dp->capt, fname, sizeof(dp->capt));
   mx_id(3, dp->ac3rmx);
 
@@ -28,12 +28,11 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
     return NULL;
   }
 
-  vibrstr tv;
-
   if(*task==UNKNOWN || *task==VIBRO){
 
     long pos = ftell(f);
     rewind(f);
+    vibrstr tv;
     tv.ac = acs->m[acs->n-1];
     tv.modes = mode_read(f, tv.ac->n);
 
@@ -69,12 +68,10 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
 
   }
 
-  if( *task==AT3COORDS ){
-    dp->f     = f;
-    dp->N     = acs->n;
-    dp->scale = acsscale(acs, 3);
-    return acs;
-  }
+  dp->f     = f;
+  dp->N     = acs->n;
+  dp->scale = acsscale(acs, 3);
+  return acs;
 
 }
 

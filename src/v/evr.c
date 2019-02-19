@@ -6,7 +6,6 @@
 extern int H,W;
 
 static void redraw_ac3(void * ent, drawpars * dp){
-  int    D = MIN(W, H);
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
   styp    * gr = ((atcoords *)ent)->sym+dp->n;
   ac3_draw(ac, dp->r, dp->scale, dp->xyt, dp->rl, dp->b, dp->num);
@@ -20,7 +19,7 @@ static void redraw_ac3(void * ent, drawpars * dp){
   }
   snprintf(dp->text, sizeof(dp->text),
            "%d / %d   r = %.1lf   rl = %.1lf  %s  %s",
-            dp->n+1, dp->N, dp->r/D, dp->rl, z, g);
+            dp->n+1, dp->N, dp->r, dp->rl, z, g);
   textincorner(dp->text);
 
   if(dp->vert == 1){
@@ -56,11 +55,10 @@ static void redraw_vibro(void * ent, drawpars * dp){
     r3cp(ac->r+3*j, v);
   }
 
-  int    D = MIN(W, H);
   ac3_draw(ac, dp->r, dp->scale, dp->xyt, dp->rl, dp->b, dp->num);
   snprintf(dp->text, sizeof(dp->text),
            "%d / %d   %.1lf%c   r = %.1lf   rl = %.1lf",
-           dp->n+1, ms->n, fq, i, dp->r/D, dp->rl);
+           dp->n+1, ms->n, fq, i, dp->r, dp->rl);
   textincorner(dp->text);
 }
 
@@ -144,10 +142,8 @@ void kp_rl_inc(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_r_dec(void * ent, task_t task, drawpars * dp){
-  if(dp->r > 1.0){
-    dp->r *= .90909090909090909090;
-    exp_redraw(ent, task, dp);
-  }
+  dp->r *= .90909090909090909090;
+  exp_redraw(ent, task, dp);
 }
 
 void kp_r_inc(void * ent, task_t task, drawpars * dp){

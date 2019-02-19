@@ -59,19 +59,16 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
   } ;
 
   int n = ac->n;
-  int r, x, y, q;
-
   kzstr * kz = malloc(sizeof(kzstr)*n);
 
-  double d     = MIN(H,W)*scale;
-  double resol = MIN(H,W) / 768.0;
+  double d     = MIN(H,W) * scale;
+  double resol = MIN(H,W) * (200.0/768.0);
 
   for(int i=0; i<n; i++){
-    q = ac->q[i];
+    int q = ac->q[i];
+    double r = re*resol*scale * (ra[ (q<NATOMS || q<0) ? q : 0]) ;
     kz[i].k = i;
     kz[i].q = q;
-    r = re * scale * (ra[ (q<NATOMS || q<0) ? q : 0]) ;
-    r = MAX(r, 2);
     kz[i].r0 = r;
     kz[i].x  = W/2 + d*(xy0[0] + ac->r[i*3  ]);
     kz[i].y  = H/2 - d*(xy0[1] + ac->r[i*3+1]);
@@ -80,10 +77,10 @@ void ac3_draw(atcoord * ac, double re, double scale, double * xy0, double rl, in
   qsort(kz, n, sizeof(kzstr), cmpz);
 
   for(int i=0; i<n; i++){
-    x = kz[i].x;
-    y = kz[i].y;
-    q = kz[i].q;
-    r = kz[i].r0 * resol;
+    int x = kz[i].x;
+    int y = kz[i].y;
+    int q = kz[i].q;
+    int r = MAX(2, kz[i].r0);
     XFillArc (dis, canv, gcc[ (q<NCOLORS || q<0) ? q : 0], x-r/2, y-r/2, r, r, 0, 360*64);
     if(r>2){
       XDrawArc(dis, canv, gc_black, x-r/2, y-r/2, r, r, 0, 360*64);

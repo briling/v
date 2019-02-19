@@ -10,7 +10,7 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
   dp->t   = 0;
   dp->hn  = 3;
   dp->vn  = 3;
-  dp->r   = 200;
+  dp->r   = 1.0;
   dp->xyt[0] = dp->xyt[1] = dp->xyt[2] = 0.0;
   strncpy(dp->capt, fname, sizeof(dp->capt));
   mx_id(3, dp->ac3rmx);

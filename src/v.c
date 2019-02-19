@@ -80,8 +80,8 @@ printf("\
   \n\
  keyboard reference:\n\
   \n\
-  ←/↑/→/↓/pgup/pgdn        rotate                \n\
-  w/a/s/d                  move                  \n\
+  ←/↑/→/↓/pgup/pgdn        rotate (slower with `ctrl` or `shift`)\n\
+  w/a/s/d                  move   (slower with `ctrl` or `shift`)\n\
   \n\
   0                        go to the first point \n\
   =                        go to the last point  \n\
@@ -225,6 +225,7 @@ int main (int argc, char * argv[]) {
     }
     else if (event.type == KeyPress) {
       if (kp[event.xkey.keycode]){
+        dp.modkey = event.xkey.state & (ShiftMask | ControlMask);
         kp[event.xkey.keycode](ent, task, &dp);
       }
     }

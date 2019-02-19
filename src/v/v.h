@@ -44,6 +44,7 @@ typedef struct {
   int    n, N;
   int    b, fbw, num, t;
   int    vert;
+  int    modkey;
   int    z[5];
   char   capt[256];
 } drawpars;

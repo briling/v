@@ -46,8 +46,8 @@ show this reference:
 ### Keyboard reference:
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |
-| `←`/`↑`/`→`/`↓`/`pgup`/`pgdn`  |  rotate
-| `w`/`a`/`s`/`d`                |  move
+| `←`/`↑`/`→`/`↓`/`pgup`/`pgdn`  |  rotate (slower with `ctrl` or `shift`)
+| `w`/`a`/`s`/`d`                |  move   (slower with `ctrl` or `shift`)
 |                                |
 | `0`                            |  go to the first point
 | `=`                            |  go to the last point

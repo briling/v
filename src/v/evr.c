@@ -7,8 +7,9 @@ extern int H,W;
 
 static const double step_rot  = M_PI/90.0;
 static const double step_move = 0.2;
-static const double step_zoom = 1.6;
+static const double step_zoom = 1.1;
 static const double step_r    = 1.1;
+static const double step_mod  = 0.03125;
 
 static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
@@ -196,6 +197,9 @@ void kp_frame_dec(void * ent, task_t task, drawpars * dp){
 }
 
 static void rot_ent(void * ent, task_t task, drawpars * dp, int axis, double angle){
+  if(dp->modkey){
+    angle *= step_mod;
+  }
   if (task == AT3COORDS){
     atcoords * acs = ent;
     for(int i=0; i<dp->N; i++){
@@ -283,6 +287,9 @@ static void move_pbc(atcoords * acs, drawpars * dp, char a, double d){
 }
 
 static void move_ent(void * ent, drawpars * dp, int dir, double step){
+  if(dp->modkey){
+    step *= step_mod;
+  }
   if(dp->vert == 1){
     move_pbc((atcoords *)ent, dp, dir, step);
   }

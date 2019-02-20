@@ -1,5 +1,7 @@
-#include <stdlib.h>
+#include "v.h"
+
 #define NATOMS  102
+
 static const double ra[NATOMS+1] = {
   1.0,
   0.455, 0.260, 1.885, 1.365, 1.105,
@@ -25,7 +27,15 @@ static const double ra[NATOMS+1] = {
   1.820, 1.820
 };
 
+static const char aname[NATOMS+1][3]={
+  #include "elements.h"
+};
+
 double getradius(int q){
   return ra[ abs(q)<=NATOMS ? abs(q) : 0 ];
+}
+
+const char * getname(int q){
+  return abs(q)<=NATOMS ? aname[abs(q)]: NULL;
 }
 

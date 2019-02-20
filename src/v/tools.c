@@ -34,8 +34,8 @@ void getcell(double cell[3], drawpars * dp){
 }
 
 void getshell(double shell[2], drawpars * dp){
-  dp->vertices[0] = 2*shell[0]*BA;
-  dp->vertices[1] = 2*shell[1]*BA;
+  dp->vertices[0] = shell[0]*BA;
+  dp->vertices[1] = shell[1]*BA;
   dp->vert = 2;
   return;
 }

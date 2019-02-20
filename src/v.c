@@ -8,7 +8,7 @@
 Display * dis;
 int       screen;
 Window    win;
-GC        gc, gc_white, gc_black, gcc[NCOLORS];
+GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
 Pixmap    px;
 Drawable  canv;
 XFontStruct * fontInfo;

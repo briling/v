@@ -1,7 +1,7 @@
 #include "mol.h"
 
+#define NKP    256
 #define NATCOORDS 10240
-#define NCOLORS 19
 
 typedef void (* ptf )();
 
@@ -88,6 +88,7 @@ void getshell(double shell[2], drawpars * dp);
 void getcell (double cell[3],  drawpars * dp);
 
 double getradius(int q);
+const char * getname(int q);
 
 /* pg.c */
 void pg(atcoord * a, styp s, double symtol);

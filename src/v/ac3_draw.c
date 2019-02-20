@@ -5,10 +5,14 @@
 extern int W,H;
 extern int       screen;
 extern Display * dis;
-extern GC        gc_white, gc_black, gcc[NCOLORS];
+extern GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
 extern Window    win;
 extern Pixmap    px;
 extern Drawable  canv;
+
+static inline int getgci(int q){
+  return abs(q)<NCOLORS ? abs(q) : 0;
+}
 
 static int arebound(double * ss, atcoord * ac, int i, int j, double rl){
   double s0 = getradius(ac->q[i]) + getradius(ac->q[j]);
@@ -25,15 +29,11 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, i
 
   CLEARCANV;
 
-  const char aname[][3]={
-    #include "elements.h"
-  } ;
-
   int n = ac->n;
   kzstr * kz = malloc(sizeof(kzstr)*n);
 
   double d     = MIN(H,W) * scale;
-  double resol = MIN(H,W) * (200.0/768.0);
+  double resol = MIN(H,W) * (128.0/768.0);
 
   for(int i=0; i<n; i++){
     int q = ac->q[i];
@@ -51,10 +51,10 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, i
     int x = kz[i].x;
     int y = kz[i].y;
     int q = kz[i].q;
-    int r = MAX(2, kz[i].r);
-    XFillArc (dis, canv, gcc[ (q<NCOLORS || q<0) ? q : 0], x-r/2, y-r/2, r, r, 0, 360*64);
-    if(r>2){
-      XDrawArc(dis, canv, gc_black, x-r/2, y-r/2, r, r, 0, 360*64);
+    int r = MAX(1, kz[i].r);
+    XFillArc (dis, canv, gcc[getgci(q)], x-r, y-r, 2*r, 2*r, 0, 360*64);
+    if(r>1){
+      XDrawArc(dis, canv, q>0?gc_black:gc_dot[1], x-r, y-r, 2*r, 2*r, 0, 360*64);
     }
     if(num == 1){
       char text[16];
@@ -63,7 +63,8 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, i
     }
     else if(num == -1){
       char text[16];
-      aname[kz[i].q][0] ? snprintf(text, sizeof(text), "%s", aname[kz[i].q] ) :  snprintf(text, sizeof(text), "%d", kz[i].q );
+      const char * s = getname(q);
+      s ? snprintf(text, sizeof(text), "%s", s) :  snprintf(text, sizeof(text), "%d", q );
       XDrawString(dis, canv, gc_black, x, y, text, strlen(text));
     }
     if(b){
@@ -78,7 +79,7 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, i
           if(r2d < 1e-15){
             continue;
           }
-          double dd = 0.333 * kz[i].r/sqrt(r2d);
+          double dd = 0.666 * r / sqrt(r2d);
           XDrawLine(dis, canv, gc_black, x+dd*dx, y+dd*dy, x1, y1);
           if(b==2){
             char text[16];

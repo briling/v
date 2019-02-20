@@ -4,7 +4,7 @@
 extern Display * dis;
 extern int       screen;
 extern Window    win;
-extern GC        gc, gc_white, gc_black, gcc[NCOLORS];
+extern GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
 extern Pixmap    px;
 extern Drawable  canv;
 extern XFontStruct * fontInfo;
@@ -12,9 +12,10 @@ extern XFontStruct * fontInfo;
 extern int W,H;
 
 void close_x(void) {
-  XFreeGC(dis, gc);
   XFreeGC(dis, gc_black);
   XFreeGC(dis, gc_white);
+  XFreeGC(dis, gc_dot[0]);
+  XFreeGC(dis, gc_dot[1]);
   for(int i=0; i<NCOLORS; i++){
     XFreeGC(dis, gcc[i]);
   }
@@ -63,20 +64,15 @@ void init_x(char capt[256]) {
   screen = DefaultScreen(dis);
   W = DisplayWidth  (dis, screen);
   H = DisplayHeight (dis, screen);
-  win = XCreateSimpleWindow(dis, DefaultRootWindow(dis),
-      0, 0, W, H, 0,
-      BlackPixel (dis, screen),
-      WhitePixel (dis, screen));
-
-  XSetStandardProperties(dis, win, capt, "icon", None, NULL, 0, NULL);
-  XSelectInput   (dis, win, ExposureMask|KeyPressMask|StructureNotifyMask);
 
   unsigned long bp = BlackPixel (dis, screen);
   unsigned long wp = WhitePixel (dis, screen);
 
-  gc = XCreateGC (dis, win, 0, 0);
-  XSetBackground (dis, gc,  wp);
-  XSetForeground (dis, gc,  bp);
+  win = XCreateSimpleWindow(dis, DefaultRootWindow(dis),
+      0, 0, W, H, 0, bp, wp);
+
+  XSetStandardProperties(dis, win, capt, "icon", None, NULL, 0, NULL);
+  XSelectInput   (dis, win, ExposureMask|KeyPressMask|StructureNotifyMask);
 
   gc_black = XCreateGC (dis, win, 0, 0);
   XSetBackground (dis, gc_black, wp);
@@ -86,6 +82,16 @@ void init_x(char capt[256]) {
   XSetBackground (dis, gc_white, wp);
   XSetForeground (dis, gc_white, wp);
 
+  gc_dot[0] = XCreateGC (dis, win, 0, 0);
+  XSetBackground (dis, gc_black, wp);
+  XSetForeground (dis, gc_black, bp);
+  XSetLineAttributes(dis, gc_dot[0], 2, 1, 0, 0);
+
+  gc_dot[1] = XCreateGC (dis, win, 0, 0);
+  XSetBackground (dis, gc_black, wp);
+  XSetForeground (dis, gc_black, bp);
+  XSetLineAttributes(dis, gc_dot[1], 0, 1, 0, 0);
+
   setcolors();
 
   XClearWindow   (dis, win);
@@ -93,7 +99,6 @@ void init_x(char capt[256]) {
 
   px = XCreatePixmap(dis, win, W, H, DefaultDepth(dis, 0));
   return;
-
 };
 
 void init_font(char * fontname){
@@ -119,11 +124,10 @@ void textincorner(char * text){
 
 void drawvertices(double * v, double scale, double xy0[2]){
   double d = MIN(H, W)*scale;
-  int lw;
+  int iw;
 #define LINE(I,J) \
-  lw=(v[(I)*3+2]>0.0||v[(J)*3+2]>0.0)?2:0;\
-  XSetLineAttributes(dis, gc_black, lw, 1, 0, 0);\
-  XDrawLine(dis, win, gc_black,\
+  iw=( v[(I)*3+2]>0.0 || v[(J)*3+2]>0.0) ? 0 : 1; \
+  XDrawLine(dis, win, gc_dot[iw],\
       W/2+d*(xy0[0]+v[(I)*3]), H/2-d*(xy0[1]+v[(I)*3+1]),\
       W/2+d*(xy0[0]+v[(J)*3]), H/2-d*(xy0[1]+v[(J)*3+1]));
   LINE(0,1);
@@ -139,7 +143,17 @@ void drawvertices(double * v, double scale, double xy0[2]){
   LINE(5,7);
   LINE(6,7);
 #undef LINE
-  XSetLineAttributes(dis, gc_black,  0, 0, 0, 0);
+  return;
+}
+
+void drawshell(double rmin, double rmax, double scale, double xy0[2]){
+  double d = MIN(H,W)*scale;
+  rmax *= d;
+  rmin *= d;
+  int x = W/2+d*xy0[0];
+  int y = H/2-d*xy0[1];
+  XDrawArc(dis, win, gc_dot[0], x-rmax, y-rmax, 2*rmax, 2*rmax, 0, 360*64);
+  XDrawArc(dis, win, gc_dot[1], x-rmin, y-rmin, 2*rmin, 2*rmin, 0, 360*64);
   return;
 }
 
@@ -150,17 +164,5 @@ int savepic(char * s){
   a.height    = H;
   XCopyArea (dis, win, px, gc_white, 0, 0, W, H, 0, 0);   /* with text */
   return XpmWriteFileFromPixmap(dis, s, px, 0, &a);
-}
-
-void drawshell(double rmin, double rmax, double scale, double xy0[2]){
-  double d = MIN(H, W)*scale;
-  rmax *= d;
-  rmin *= d;
-  XSetLineAttributes(dis, gc_black,  2, 1, 0, 0);
-  XDrawArc(dis, win, gc_black, W/2-rmax/2+d*xy0[0], H/2-rmax/2-d*xy0[1], rmax, rmax, 0, 360*64);
-  XSetLineAttributes(dis, gc_black,  0, 1, 0, 0);
-  XDrawArc(dis, win, gc_black, W/2-rmin/2+d*xy0[0], H/2-rmin/2-d*xy0[1], rmin, rmin, 0, 360*64);
-  XSetLineAttributes(dis, gc_black,  0, 0, 0, 0);
-  return;
 }
 

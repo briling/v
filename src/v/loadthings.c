@@ -9,8 +9,11 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
   }
 
   atcoords * acs = malloc(sizeof(atcoords));
-  memset(acs->sym, 0, sizeof(acs->sym[0])*NATCOORDS);
-  *acs = acs_read(f);
+  acs->m = NULL;
+  acs->n = 0;
+  acs->N = 0;
+  acs_readmore(f, acs);
+
   if(acs->n == 0){
     free(acs);
     return NULL;
@@ -25,12 +28,9 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
     tv.modes = mode_read(f, tv.ac->n);
 
     if(tv.modes){
-      *task = VIBRO;
 
-      for (int i=0; i<acs->n-1; i++){
-        free(acs->m[i]);
-      }
-      free(acs);
+      acs->n--;
+      acs_free(acs);
       fclose(f);
 
       vibrstr * vib = malloc( sizeof(vibrstr) +
@@ -40,8 +40,9 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
       vib->mode0 = (double *)(vib + 1);
       veccp(vib->ac->n*3, vib->mode0, vib->ac->r);
 
-      dp->N = vib->modes->n;
       dp->scale = acscale(vib->ac);
+      dp->N = vib->modes->n;
+      *task = VIBRO;
       return vib;
     }
 
@@ -50,14 +51,14 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
       if(*task==VIBRO){
         fprintf(stderr, "\e[1;31merror:\e[0m the file '%s' does not contain vibrations\n", fname);
       }
-      *task = AT3COORDS;
     }
 
   }
 
-  dp->f     = f;
-  dp->N     = acs->n;
   dp->scale = acsscale(acs);
+  dp->N = acs->n;
+  dp->f = f;
+  *task = AT3COORDS;
   return acs;
 }
 

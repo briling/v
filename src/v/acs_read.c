@@ -1,22 +1,23 @@
 #include "v.h"
 
-atcoords acs_read(FILE * f){
-  atcoords acs;
-  acs.n = 0;
-  while ( (acs.n < NATCOORDS) &&
-          (acs.m[acs.n] = ac3_read(f)) ){
-    acs.sym[acs.n][0] = 0;
-    acs.n ++;
-  }
-  return acs;
-}
+#define N_MIN 256
 
 void acs_readmore(FILE * f, atcoords * acs){
-
-  while ( (acs->n < NATCOORDS) &&
-          (acs->m[acs->n] = ac3_read(f)) ){
-    acs->sym[acs->n][0] = 0;
-    acs->n ++;
+  atcoord * m;
+  while((m = ac3_read(f))!=NULL){
+    if(acs->n==acs->N){
+      int N = acs->N ? acs->N*2 : N_MIN;
+      atcoord ** ms = realloc(acs->m, N*sizeof(atcoord *));
+      if(!ms){
+        acs_free(acs);
+        free(m);
+        fclose(f);
+        GOTOHELL;
+      }
+      acs->m = ms;
+      acs->N = N;
+    }
+    acs->m[acs->n++] = m;
   }
   return;
 }

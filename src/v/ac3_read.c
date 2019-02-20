@@ -36,6 +36,7 @@ atcoord * ac3_read (FILE * f){
   m->n = n;
   m->r = (double *)(m    + 1  );
   m->q = (int    *)(m->r + 3*n);
+  memset(m->sym, 0, sizeof(m->sym));
   for(int i=0; i<n;i++){
     m->q[i    ] = a[i].t;
     m->r[i*3  ] = a[i].x;

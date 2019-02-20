@@ -13,7 +13,6 @@ static const double step_mod  = 0.03125;
 
 static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
-  styp    * gr = ((atcoords *)ent)->sym+dp->n;
   ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
 
   char text[256];
@@ -23,8 +22,8 @@ static void redraw_ac3(void * ent, drawpars * dp){
   if( tp<sizeof(text)-1 && dp->z[0] ){
     tp += printcoord(dp->z, text+tp, sizeof(text)-tp, ac);
   }
-  if( tp<sizeof(text)-1 && (*gr)[0] ){
-    tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", gr);
+  if( tp<sizeof(text)-1 && ac->sym[0] ){
+    tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", ac->sym);
   }
   textincorner(text);
 
@@ -331,11 +330,7 @@ void kp_exit(void * ent, task_t task, drawpars * dp){
   }
   else if (task == AT3COORDS){
     fclose(dp->f);
-    atcoords * acs = ent;
-    for(int i=0; i<acs->n; i++){
-      free(acs->m[i]);
-    }
-    free(ent);
+    acs_free(ent);
   }
   close_x();
   exit(0);
@@ -466,13 +461,12 @@ void kp_film(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_pg(void * ent, task_t task, drawpars * dp){
-  if (task == AT3COORDS ){
+  if(task == AT3COORDS ){
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
-    styp    * gr = ((atcoords *)ent)->sym+dp->n;
-    if(!(*gr)[0]){
-      pg(ac, *gr, dp->symtol);
+    if(!ac->sym[0]){
+      pg(ac, ac->sym, dp->symtol);
+      redraw_ac3(ent, dp);
     }
-    exp_redraw(ent, task, dp);
   }
   return;
 }

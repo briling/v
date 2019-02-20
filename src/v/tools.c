@@ -1,6 +1,15 @@
 #include "v.h"
 #include "vecn.h"
 
+void acs_free(atcoords * acs){
+  for(int i=0; i<acs->n; i++){
+    free(acs->m[i]);
+  }
+  free(acs->m);
+  free(acs);
+  return;
+}
+
 int printcoord(int * z, char * s, int n, atcoord * ac){
   double t = intcoord_calc(1, z, ac->r);
   return snprintf(s, n, "  |  %d,%d,%d,%d,%d: %lf", z[0], z[1], z[2], z[3], z[4], t);

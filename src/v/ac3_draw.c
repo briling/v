@@ -2,8 +2,7 @@
 #include "x.h"
 #include "vec3.h"
 
-#define NATOMS  102
-
+extern int W,H;
 extern int       screen;
 extern Display * dis;
 extern GC        gc_white, gc_black, gcc[NCOLORS];
@@ -11,36 +10,8 @@ extern Window    win;
 extern Pixmap    px;
 extern Drawable  canv;
 
-extern int W,H;
-
-static const double ra[NATOMS+1] = {
-  1.0,
-  0.455, 0.260, 1.885, 1.365, 1.105,
-  0.910, 0.845, 0.780, 0.650, 0.520,
-  2.340, 1.950, 1.625, 1.430, 1.300,
-  1.300, 1.300, 1.170, 2.860, 2.340,
-  2.080, 1.820, 1.755, 1.820, 1.820,
-  1.820, 1.755, 1.755, 1.755, 1.755,
-  1.690, 1.625, 1.495, 1.495, 1.495,
-  1.300, 3.055, 2.600, 2.340, 2.015,
-  1.885, 1.885, 1.755, 1.690, 1.755,
-  1.820, 2.080, 2.015, 2.015, 1.885,
-  1.885, 1.820, 1.820, 1.690, 3.055,
-  2.574, 2.197, 2.145, 2.145, 2.132,
-  2.145, 2.158, 2.405, 2.093, 2.067,
-  2.067, 2.054, 2.041, 2.028, 2.210,
-  2.028, 1.872, 1.742, 1.690, 1.664,
-  1.638, 1.638, 1.677, 1.742, 1.872,
-  2.015, 2.002, 1.976, 1.989, 1.989,
-  1.950, 3.510, 2.899, 2.431, 2.314,
-  2.093, 1.820, 1.820, 1.820, 1.820,
-  1.820, 1.820, 1.820, 1.820, 1.820,
-  1.820, 1.820
-};
-
 static int arebound(double * ss, atcoord * ac, int i, int j, double rl){
-  double s0 = ra[ abs(ac->q[i])<=NATOMS ? abs(ac->q[i]) : 0 ] +
-              ra[ abs(ac->q[j])<=NATOMS ? abs(ac->q[j]) : 0 ] ;
+  double s0 = getradius(ac->q[i]) + getradius(ac->q[j]);
   *ss = r3d2( ac->r+i*3, ac->r+j*3);
   if(*ss < rl*s0*s0){
     return 1;
@@ -66,7 +37,7 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, i
 
   for(int i=0; i<n; i++){
     int q = ac->q[i];
-    double r = r0*resol*scale * (ra[ (q<NATOMS || q<0) ? q : 0]) ;
+    double r = r0*resol*scale * getradius(ac->q[i]);
     kz[i].k = i;
     kz[i].q = q;
     kz[i].r = r;

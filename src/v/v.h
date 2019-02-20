@@ -86,6 +86,8 @@ int cmpz(const void * p1, const void * p2);
 void getshell(double shell[2], drawpars * dp);
 void getcell (double cell[3],  drawpars * dp);
 
+double getradius(int q);
+
 /* pg.c */
 void pg(atcoord * a, styp s, double symtol);
 

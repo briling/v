@@ -41,8 +41,7 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
       veccp(vib->ac->n*3, vib->mode0, vib->ac->r);
 
       dp->N = vib->modes->n;
-      dp->scale = acscale(vib->ac, 3);
-
+      dp->scale = acscale(vib->ac);
       return vib;
     }
 
@@ -58,7 +57,7 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
 
   dp->f     = f;
   dp->N     = acs->n;
-  dp->scale = acsscale(acs, 3);
+  dp->scale = acsscale(acs);
   return acs;
 }
 

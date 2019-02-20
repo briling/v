@@ -38,11 +38,11 @@ static const double ra[NATOMS+1] = {
   1.820, 1.820
 };
 
-static int arebound(double * ss, double * s0, atcoord * ac, int i, int j, double rl){
+static int arebound(double * ss, atcoord * ac, int i, int j, double rl){
+  double s0 = ra[ abs(ac->q[i])<=NATOMS ? abs(ac->q[i]) : 0 ] +
+              ra[ abs(ac->q[j])<=NATOMS ? abs(ac->q[j]) : 0 ] ;
   *ss = r3d2( ac->r+i*3, ac->r+j*3);
-  *s0 = ( ra[ (ac->q[i]<NATOMS || ac->q[i]<0) ? ac->q[i] : 0 ] +
-          ra[ (ac->q[j]<NATOMS || ac->q[j]<0) ? ac->q[j] : 0 ] );
-  if(*ss < rl**s0**s0){
+  if(*ss < rl*s0*s0){
     return 1;
   }
   else{
@@ -97,33 +97,30 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], double rl, i
     }
     if(b){
       for(int j=i+1; j<n; j++){
-        double s0, ss, s;
-        if(arebound(&ss, &s0, ac, kz[i].k, kz[j].k, rl)){
-          double x1, x2, y1, y2, dx, dy, dd;
-          x1 = kz[i].x;
-          x2 = kz[j].x;
-          y1 = kz[i].y;
-          y2 = kz[j].y;
-          dx = x2-x1;
-          dy = y2-y1;
-          s  = sqrt(ss);
-          dd = s0 / s / scale * (s <= 2.0 ? 0.0004 : 0.0002) * kz[i].r;
-
-          XDrawLine(dis, canv, gc_black, x1+dd*dx, y1+dd*dy, x1+dx, y1+dy);
+        double ss;
+        if(arebound(&ss, ac, kz[i].k, kz[j].k, rl)){
+          int x1 = kz[j].x;
+          int y1 = kz[j].y;
+          int dx = x1-x;
+          int dy = y1-y;
+          double r2d = dx*dx+dy*dy;
+          if(r2d < 1e-15){
+            continue;
+          }
+          double dd = 0.333 * kz[i].r/sqrt(r2d);
+          XDrawLine(dis, canv, gc_black, x+dd*dx, y+dd*dy, x1, y1);
           if(b==2){
             char text[16];
-            snprintf(text, sizeof(text), "%.3lf", s);
-            XDrawString(dis, canv, gc_black, x1+dx/2, y1+dy/2, text, strlen(text));
+            snprintf(text, sizeof(text), "%.3lf", sqrt(ss));
+            XDrawString(dis, canv, gc_black, x+dx/2, y+dy/2, text, strlen(text));
           }
         }
       }
     }
   }
-
   free(kz);
-
   FILLCANV;
-
+  return;
 }
 
 void ac3_print(atcoord * ac, double xy0[2], double rl){
@@ -139,8 +136,8 @@ void ac3_print(atcoord * ac, double xy0[2], double rl){
       if(j==i){
         continue;
       }
-      double s0,ss;
-      if(arebound(&ss, &s0, ac, i, j, rl)){
+      double ss;
+      if(arebound(&ss, ac, i, j, rl)){
         if(k){
           printf(",");
         }
@@ -154,6 +151,7 @@ void ac3_print(atcoord * ac, double xy0[2], double rl){
     printf("\n");
   }
   printf("$end\n");
+  return;
 }
 
 void ac3_print2fig(atcoord * ac, double xy0[2], double rl, int b, double * v){
@@ -171,15 +169,15 @@ void ac3_print2fig(atcoord * ac, double xy0[2], double rl, int b, double * v){
       printf("atom %3d% 13.7lf% 13.7lf% 13.7lf\n", 0,
           xy0[0] + v[i*3  ],
           xy0[1] + v[i*3+1],
-          v[i*3+2]);
+                   v[i*3+2]);
     }
   }
 
   if(b){
     for(int i=0; i<n; i++){
       for (int j=0; j<i; j++){
-        double s0, ss;
-        if(arebound(&ss, &s0, ac, i, j, rl)){
+        double ss;
+        if(arebound(&ss, ac, i, j, rl)){
           printf("bond %3d %3d\n", j+1, i+1);
         }
       }

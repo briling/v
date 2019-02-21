@@ -1,26 +1,28 @@
 #include "3d.h"
 #include "vec3.h"
 
-void rot3d(int N, double * r, double * mx, char a, double phi){
+void rotmx0_update(double mx[9], double mx1[9], double phi, int axis){
+
   double c = cos(phi);
   double s = sin(phi);
-  double m[3][9]={
+  double ms[3][9]={
     { 1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c },
     { c, 0.0, -s, 0.0, 1.0, 0.0, s, 0.0, c },
     { c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0 }
   };
+  veccp(9, mx1, ms[axis]);
 
-  if(r){
-    for(int i=0; i<N; i+=3){
-      double v[3];
-      r3mx(v, r+i, m[a]);
-      r3cp(r+i, v);
-    }
-  }
-  if(mx){
-    double mx0[9];
-    veccp(9, mx0, mx);
-    mx_multmx(3,3,3, mx, m[a], mx0);
+  double mx0[9];
+  veccp(9, mx0, mx);
+  mx_multmx(3,3,3, mx, mx1, mx0);
+  return;
+}
+
+void rot3d(int n, double * r, double m[9]){
+  for(int i=0; i<n; i++){
+    double v[3];
+    r3mx(v, r+3*i, m);
+    r3cp(r+3*i, v);
   }
   return;
 }

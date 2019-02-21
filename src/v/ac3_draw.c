@@ -147,7 +147,7 @@ void ac3_print2fig(atcoord * ac, double xy0[2], double rl, int b, double * v){
 
   if(b){
     for(int i=0; i<n; i++){
-      for (int j=0; j<i; j++){
+      for(int j=0; j<i; j++){
         double ss;
         if(arebound(&ss, ac, i, j, rl)){
           printf("bond %3d %3d\n", j+1, i+1);

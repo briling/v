@@ -3,8 +3,6 @@
 #include "evr.h"
 #include "vec3.h"
 
-extern int H,W;
-
 static const double step_rot  = M_PI/90.0;
 static const double step_move = 0.2;
 static const double step_zoom = 1.1;
@@ -199,14 +197,15 @@ static void rot_ent(void * ent, task_t task, drawpars * dp, int axis, double ang
   if(dp->modkey){
     angle *= step_mod;
   }
-  if (task == AT3COORDS){
+
+  double m[9];
+  rotmx0_update(dp->ac3rmx, m, angle, axis);
+
+  if(task == AT3COORDS){
     atcoords * acs = ent;
     for(int i=0; i<dp->N; i++){
-      rot3d(3*(acs->m[i]->n), acs->m[i]->r, (i ? NULL : dp->ac3rmx), axis, angle);
+      rot3d(acs->m[i]->n, acs->m[i]->r, m);
     }
-  }
-  else if (task == VIBRO){
-    rot3d(0, NULL, dp->ac3rmx, axis, angle);
   }
   return;
 }
@@ -274,11 +273,11 @@ static void mol2cell(double r0[3], drawpars * dp){
   return;
 }
 
-static void move_pbc(atcoords * acs, drawpars * dp, char a, double d){
+static void move_pbc(atcoords * acs, drawpars * dp, int dir, double d){
   for(int i=0; i<dp->N; i++){
-    for(int j=0; j<(acs->m[i]->n); j++){
+    for(int j=0; j<acs->m[i]->n; j++){
       double * r = acs->m[i]->r+j*3;
-      r[a] += d;
+      r[dir] += d;
       mol2cell(r, dp);
     }
   }
@@ -290,7 +289,7 @@ static void move_ent(void * ent, drawpars * dp, int dir, double step){
     step *= step_mod;
   }
   if(dp->vert == 1){
-    move_pbc((atcoords *)ent, dp, dir, step);
+    move_pbc(ent, dp, dir, step);
   }
   else {
     dp->xy0[dir] += step;
@@ -418,7 +417,7 @@ static void savevib(drawpars * dp, int c){
   char s[256];
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
   snprintf(s, sizeof(s), "%s_%0*d_%02d.xpm", dp->capt, l, dp->n+1, c);
-  if ( savepic(s) != XpmSuccess){
+  if (savepic(s) != XpmSuccess){
     fprintf(stderr, "cannot save %s\n", s);
   }
   else{
@@ -431,7 +430,7 @@ void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ (
   char s[256];
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
   snprintf(s, sizeof(s), "%s_%0*d.xpm", dp->capt, l, dp->n + 1);
-  if ( savepic(s) != XpmSuccess){
+  if (savepic(s) != XpmSuccess){
     fprintf(stderr, "cannot save %s\n", s);
   }
   else{

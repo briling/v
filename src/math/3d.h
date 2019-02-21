@@ -1,4 +1,5 @@
 #include "matrix.h"
 
-void rot3d (int N, double * r, double * mx, char a, double phi);
+void rotmx0_update(double mx[9], double mx1[9], double phi, int axis);
+void rot3d (int n, double * r, double m[9]);
 void rotmx (double * rot, double * u, double phi);

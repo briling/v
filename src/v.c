@@ -1,6 +1,7 @@
 #include "v.h"
 #include "x.h"
 #include "evr.h"
+#include "mytime.h"
 
 #define TO     20000
 #define SYMTOL 1e-3
@@ -189,14 +190,29 @@ int main (int argc, char * argv[]) {
     dp.z[0] = 0;
   }
 
+//////////////////////////////////////////////////////////////////////////////////////
+/*
+ * +заполнять, когда догружаются новые геометрии или всё перегружается
+ * +разобраться, rl к расст. или к квадрату применяется
+ * +перезаполнять, когда меняется rl
+ *  перезаполнять, когда rl уменьшается, -- только удаляются старые связи
+ *  заполнять быстрее
+ *  заполнять, только если связи включены по умолчанию (в первом случае тоже), и запоминать это где-то
+ */
+  double time_sec = myutime();
+  fill_bonds_ent(ent, task, &dp);
+  time_sec = myutime()-time_sec;
+  printf("time          : %.2f s\n", time_sec);
+//////////////////////////////////////////////////////////////////////////////////////
+
   snprintf (capt, sizeof(capt), "%s - %s", argv[0], dp.capt);
   init_x   (capt);
   init_keys(kp);
   init_font(fontname);
 #if 0
-    canv = win;
+  canv = win;
 #else
-    canv = px;
+  canv = px;
 #endif
 
   int tr = 0;
@@ -213,7 +229,6 @@ int main (int argc, char * argv[]) {
     if(!zh){
       event=event1;
     }
-
     if (event.type == Expose && event.xexpose.count == 0) {
       exp_redraw(ent, task, &dp);
     }

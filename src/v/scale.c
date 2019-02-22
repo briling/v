@@ -1,7 +1,7 @@
 #include "v.h"
 #include "vec3.h"
 
-double acscale(atcoord * ac){
+double ac3_scale(atcoord * ac){
   double center[3] = {};
   for(int k=0; k<ac->n; k++){
     r3add(center, ac->r+3*k);
@@ -16,10 +16,10 @@ double acscale(atcoord * ac){
   return 0.5 / sqrt(d2max);
 }
 
-double acsscale(atcoords * acs){
-  double d2max = acscale(acs->m[0]);
+double acs_scale(atcoords * acs){
+  double d2max = ac3_scale(acs->m[0]);
   for(int i=1; i<acs->n; i++){
-    d2max = MIN(acscale(acs->m[i]), d2max);
+    d2max = MIN(ac3_scale(acs->m[i]), d2max);
   }
   return d2max;
 }

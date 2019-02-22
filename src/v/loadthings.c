@@ -10,8 +10,8 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
 
   atcoords * acs = malloc(sizeof(atcoords));
   acs->m = NULL;
+  acs->Nmem = 0;
   acs->n = 0;
-  acs->N = 0;
   acs_readmore(f, acs);
 
   if(acs->n == 0){
@@ -40,7 +40,7 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
       vib->mode0 = (double *)(vib + 1);
       veccp(vib->ac->n*3, vib->mode0, vib->ac->r);
 
-      dp->scale = acscale(vib->ac);
+      dp->scale = ac3_scale(vib->ac);
       dp->N = vib->modes->n;
       *task = VIBRO;
       return vib;
@@ -55,7 +55,7 @@ void * loadthings(task_t * task, char * fname, drawpars * dp){
 
   }
 
-  dp->scale = acsscale(acs);
+  dp->scale = acs_scale(acs);
   dp->N = acs->n;
   dp->f = f;
   *task = AT3COORDS;

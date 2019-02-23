@@ -74,13 +74,14 @@ void init_x(char capt[256]) {
   XSetStandardProperties(dis, win, capt, "icon", None, NULL, 0, NULL);
   XSelectInput   (dis, win, ExposureMask|KeyPressMask|StructureNotifyMask);
 
-  gc_black = XCreateGC (dis, win, 0, 0);
-  XSetBackground (dis, gc_black, wp);
-  XSetForeground (dis, gc_black, bp);
-
   gc_white = XCreateGC (dis, win, 0, 0);
   XSetBackground (dis, gc_white, wp);
   XSetForeground (dis, gc_white, wp);
+
+  gc_black = XCreateGC (dis, win, 0, 0);
+  XSetBackground (dis, gc_black, wp);
+  XSetForeground (dis, gc_black, bp);
+  XSetLineAttributes(dis, gc_black, 2, 0, 0, 0);
 
   gc_dot[0] = XCreateGC (dis, win, 0, 0);
   XSetBackground (dis, gc_black, wp);

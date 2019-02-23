@@ -11,7 +11,7 @@ static const double step_mod  = 0.03125;
 
 static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
-  ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
+  ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->b, dp->num);
 
   char text[256];
   int tp = snprintf(text, sizeof(text),
@@ -53,7 +53,7 @@ static void redraw_vibro(void * ent, drawpars * dp){
     r3cp(ac->r+3*j, v);
   }
 
-  ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->rl, dp->b, dp->num);
+  ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->b, dp->num);
 
   double fq = ms->f[dp->n];
   char i = fq > 0.0 ? ' ' : 'i';
@@ -66,12 +66,14 @@ static void redraw_vibro(void * ent, drawpars * dp){
   return;
 }
 
-static void newmol_rot(atcoords * acs, drawpars * dp){
+static void newmol_prep(atcoords * acs, drawpars * dp){
   for(int j=dp->N; j<acs->n; j++){
-    for(int i=0; i<acs->m[j]->n; i++){
+    atcoord * ac = acs->m[j];
+    bonds_fill(dp->rl, ac);
+    for(int i=0; i<ac->n; i++){
       double v[3];
-      r3mx(v, acs->m[j]->r+3*i, dp->ac3rmx);
-      r3cp(acs->m[j]->r+3*i, v);
+      r3mx(v, ac->r+3*i, dp->ac3rmx);
+      r3cp(ac->r+3*i, v);
     }
   }
   dp->N = acs->n;
@@ -86,8 +88,8 @@ void kp_readmore(void * ent, task_t task, drawpars * dp){
       return;
     }
     acs_readmore(dp->f, acs);
-    newmol_rot(acs, dp);
-    redraw_ac3(ent, dp);
+    newmol_prep(acs, dp);
+    redraw_ac3 (acs, dp);
   }
   return;
 }
@@ -107,8 +109,8 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
     }
 
     acs_readmore(dp->f, acs);
-    newmol_rot(acs, dp);
-    redraw_ac3(ent, dp);
+    newmol_prep(acs, dp);
+    redraw_ac3 (acs, dp);
   }
   return;
 }
@@ -116,7 +118,7 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
 void kp_print(void * ent, task_t task, drawpars * dp){
   if (task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
-    ac3_print(ac, dp->xy0, dp->rl);
+    ac3_print(ac, dp->xy0, dp->b);
   }
   return;
 }
@@ -130,20 +132,26 @@ void kp_print2fig(void * ent, task_t task, drawpars * dp){
       }
     }
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
-    ac3_print2fig(ac, dp->xy0, dp->rl, dp->b, dp->vert==1?v:NULL);
+    ac3_print2fig(ac, dp->xy0, dp->b, dp->vert==1?v:NULL);
   }
   return;
 }
 
 void kp_rl_dec(void * ent, task_t task, drawpars * dp){
-  dp->rl /= step_r;
-  exp_redraw(ent, task, dp);
+  if(dp->b){
+    dp->rl /= step_r;
+    bonds_fill_ent(1, ent, task, dp);
+    exp_redraw(ent, task, dp);
+  }
   return;
 }
 
 void kp_rl_inc(void * ent, task_t task, drawpars * dp){
-  dp->rl *= step_r;
-  exp_redraw(ent, task, dp);
+  if(dp->b){
+    dp->rl *= step_r;
+    bonds_fill_ent(0, ent, task, dp);
+    exp_redraw(ent, task, dp);
+  }
   return;
 }
 
@@ -460,7 +468,7 @@ void kp_film(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_pg(void * ent, task_t task, drawpars * dp){
-  if(task == AT3COORDS ){
+  if(task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
     if(!ac->sym[0]){
       pg(ac, ac->sym, dp->symtol);

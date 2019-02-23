@@ -1,5 +1,7 @@
 #include "v.h"
 
+#define END(S,X) ( (S)->X + (X##_size)/sizeof(*((S)->X)) )
+
 atcoord * ac3_read (FILE * f){
 
   struct txyz {
@@ -30,12 +32,19 @@ atcoord * ac3_read (FILE * f){
     n++;
   }
 
-  size_t size = sizeof(atcoord) + sizeof(int)*n + sizeof(double)*3*n;
+  size_t q_size = sizeof(int) * n;
+  size_t r_size = sizeof(double) * 3*n;
+  size_t bond_a_size = sizeof(int) * n*BONDS_MAX;
+  size_t bond_r_size  = sizeof(double) * n*BONDS_MAX;
+  size_t size = sizeof(atcoord) + q_size + r_size + bond_a_size + bond_r_size;
 
   atcoord * m = malloc(size);
   m->n = n;
-  m->r = (double *)(m    + 1  );
-  m->q = (int    *)(m->r + 3*n);
+  m->r      = (double *) (m + 1);
+  m->bond_r = (double *) END(m,r);
+  m->q      = (int    *) END(m,bond_r);
+  m->bond_a = (int    *) END(m,q);
+
   memset(m->sym, 0, sizeof(m->sym));
   for(int i=0; i<n; i++){
     m->q[i    ] = a[i].t;

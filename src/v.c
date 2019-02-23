@@ -180,6 +180,7 @@ int main (int argc, char * argv[]) {
   if (!(ent = loadthings(&task, argv[1], &dp))){
     GOTOHELL;
   }
+  bonds_fill_ent(0, ent, task, &dp);
 
   if(task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp.n];
@@ -194,9 +195,9 @@ int main (int argc, char * argv[]) {
   init_keys(kp);
   init_font(fontname);
 #if 0
-    canv = win;
+  canv = win;
 #else
-    canv = px;
+  canv = px;
 #endif
 
   int tr = 0;
@@ -213,7 +214,6 @@ int main (int argc, char * argv[]) {
     if(!zh){
       event=event1;
     }
-
     if (event.type == Expose && event.xexpose.count == 0) {
       exp_redraw(ent, task, &dp);
     }

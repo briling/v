@@ -69,7 +69,7 @@ static void redraw_vibro(void * ent, drawpars * dp){
 static void newmol_prep(atcoords * acs, drawpars * dp){
   for(int j=dp->N; j<acs->n; j++){
     atcoord * ac = acs->m[j];
-    fill_bonds(dp->rl, ac);
+    bonds_fill(dp->rl, ac);
     for(int i=0; i<ac->n; i++){
       double v[3];
       r3mx(v, ac->r+3*i, dp->ac3rmx);
@@ -140,7 +140,7 @@ void kp_print2fig(void * ent, task_t task, drawpars * dp){
 void kp_rl_dec(void * ent, task_t task, drawpars * dp){
   if(dp->b){
     dp->rl /= step_r;
-    fill_bonds_ent(ent, task, dp);
+    bonds_fill_ent(1, ent, task, dp);
     exp_redraw(ent, task, dp);
   }
   return;
@@ -149,7 +149,7 @@ void kp_rl_dec(void * ent, task_t task, drawpars * dp){
 void kp_rl_inc(void * ent, task_t task, drawpars * dp){
   if(dp->b){
     dp->rl *= step_r;
-    fill_bonds_ent(ent, task, dp);
+    bonds_fill_ent(0, ent, task, dp);
     exp_redraw(ent, task, dp);
   }
   return;

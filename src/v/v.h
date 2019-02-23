@@ -84,6 +84,9 @@ void ac3_print2fig (atcoord * ac, double xy0[2], int b, double * v);
 double ac3_scale(atcoord * ac);
 double acs_scale(atcoords * acs);
 
+void bonds_fill(double rl, atcoord * ac);
+void bonds_fill_ent(int reduce, void * ent, task_t task, drawpars * dp);
+
 void acs_free(atcoords * acs);
 int printcoord(int * z, char * s, int n, atcoord * ac);
 int cmpz(const void * p1, const void * p2);
@@ -91,7 +94,7 @@ void getshell(double shell[2], drawpars * dp);
 void getcell (double cell[3],  drawpars * dp);
 
 double getradius(int q);
-double getmaxradius();
+double getmaxradius(int n, int * q);
 const char * getname(int q);
 
 /* pg.c */

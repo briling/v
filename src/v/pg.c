@@ -11,7 +11,7 @@ void pg(atcoord * a, styp s, double symtol){
   veccp  (n*3,  m.r, a->r);
   vecscal(n*3,  m.r, AB);
 
-  molsym * ms = pointgroup(&m, symtol);
+  molsym * ms = pointgroup(&m, symtol*AB);
   strcpy(s, ms->s);
 
   free(m.r);

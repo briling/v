@@ -20,5 +20,4 @@ typedef struct {
 } molsym;
 
 molsym * pointgroup(mol * m, double eps);
-mol    * makemol(int n);
 

@@ -170,10 +170,10 @@ int main (int argc, char * argv[]) {
     if(sscanf (argv[i], "shell:%lf,%lf", schell, schell+1) == 2){
       getshell(schell, &dp);
     }
-    if( !strcmp(argv[i], "a") ){
+    if(!strcmp(argv[i], "a")){
       task = AT3COORDS;
     }
-    if( !strcmp(argv[i], "v") ){
+    if(!strcmp(argv[i], "v")){
       task = VIBRO;
     }
   }
@@ -181,7 +181,7 @@ int main (int argc, char * argv[]) {
     dp.b = -1;
   }
 
-  if (!(ent = ent_read(&task, argv[1], &dp))){
+  if(!(ent = ent_read(&task, argv[1], &dp))){
     GOTOHELL;
   }
   bonds_fill_ent(0, ent, task, &dp);
@@ -218,17 +218,17 @@ int main (int argc, char * argv[]) {
     if(!zh){
       event=event1;
     }
-    if (event.type == Expose && event.xexpose.count == 0) {
+    if(event.type == Expose && event.xexpose.count == 0) {
       exp_redraw(ent, task, &dp);
     }
-    else if (event.type == ConfigureNotify){
+    else if(event.type == ConfigureNotify){
       W = event.xconfigure.width;
       H = event.xconfigure.height;
       dp.xy0[0] = dp.xy0[1] = 0.0;
       exp_redraw(ent, task, &dp);
     }
-    else if (event.type == KeyPress) {
-      if (kp[event.xkey.keycode]){
+    else if(event.type == KeyPress) {
+      if(kp[event.xkey.keycode]){
         dp.modkey = event.xkey.state & (ShiftMask | ControlMask);
         kp[event.xkey.keycode](ent, task, &dp);
       }
@@ -236,8 +236,8 @@ int main (int argc, char * argv[]) {
 
     if(dp.fbw){
 
-      if (task == AT3COORDS){
-        if (dp.fbw > 0){
+      if(task == AT3COORDS){
+        if(dp.fbw > 0){
           kp_frame_inc(ent, task, &dp);
         }
         else{

@@ -51,7 +51,9 @@ static void redraw_vibro(void * ent, drawpars * dp){
 static void newmol_prep(atcoords * acs, drawpars * dp){
   for(int j=dp->N; j<acs->n; j++){
     atcoord * ac = acs->m[j];
-    bonds_fill(dp->rl, ac);
+    if(dp->b!=-1){
+      bonds_fill(dp->rl, ac);
+    }
     for(int i=0; i<ac->n; i++){
       double v[3];
       r3mx(v, ac->r+3*i, dp->ac3rmx);
@@ -69,7 +71,7 @@ void kp_readmore(void * ent, task_t task, drawpars * dp){
       fprintf(stderr, "\e[1;31merror:\e[0m cannot read from file '%s'\n", dp->capt);
       return;
     }
-    acs_readmore(dp->f, acs);
+    acs_readmore(dp->f, dp->b, acs);
     newmol_prep(acs, dp);
     redraw_ac3 (acs, dp);
   }
@@ -90,7 +92,7 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
       return;
     }
 
-    acs_readmore(dp->f, acs);
+    acs_readmore(dp->f, dp->b, acs);
     newmol_prep(acs, dp);
     redraw_ac3 (acs, dp);
   }
@@ -120,7 +122,7 @@ void kp_print2fig(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_rl_dec(void * ent, task_t task, drawpars * dp){
-  if(dp->b){
+  if(dp->b>0){
     dp->rl /= step_r;
     bonds_fill_ent(1, ent, task, dp);
     exp_redraw(ent, task, dp);
@@ -129,7 +131,7 @@ void kp_rl_dec(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_rl_inc(void * ent, task_t task, drawpars * dp){
-  if(dp->b){
+  if(dp->b>0){
     dp->rl *= step_r;
     bonds_fill_ent(0, ent, task, dp);
     exp_redraw(ent, task, dp);
@@ -338,7 +340,7 @@ void kp_bw_toggle(void * ent __attribute__ ((unused)), task_t task, drawpars * d
 }
 
 void kp_l_toggle(void * ent, task_t task, drawpars * dp){
-  if(dp->b){
+  if(dp->b>0){
     dp->b = 1+!(dp->b-1);
     exp_redraw(ent, task, dp);
   }
@@ -346,7 +348,9 @@ void kp_l_toggle(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_b_toggle(void * ent, task_t task, drawpars * dp){
-  dp->b = !dp->b;
+  if(dp->b>-1){
+    dp->b = !dp->b;
+  }
   exp_redraw(ent, task, dp);
   return;
 }

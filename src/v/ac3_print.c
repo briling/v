@@ -8,7 +8,7 @@ void ac3_print(atcoord * ac, double xy0[2], int b){
         xy0[0] + ac->r[k*3  ],
         xy0[1] + ac->r[k*3+1],
                  ac->r[k*3+2]);
-    if(b){
+    if(b>0){
       for(int j=0; j<BONDS_MAX; j++){
         int k1 = ac->bond_a[k*BONDS_MAX+j];
         if(k1 == -1 ){
@@ -42,7 +42,7 @@ void ac3_print2fig(atcoord * ac, double xy0[2], int b, double * v){
     }
   }
 
-  if(b){
+  if(b>0){
     for(int k=0; k<n; k++){
       for(int j=0; j<BONDS_MAX; j++){
         int k1 = ac->bond_a[k*BONDS_MAX+j];

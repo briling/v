@@ -160,6 +160,9 @@ static void bonds_reduce(double rl, atcoord * ac){
 }
 
 void bonds_fill_ent(int reduce, void * ent, task_t task, drawpars * dp){
+  if(dp->b==-1){
+    return;
+  }
   if(task==AT3COORDS){
     for(int i=0; i<dp->N; i++){
       atcoord * ac = ((atcoords *)ent)->m[i];

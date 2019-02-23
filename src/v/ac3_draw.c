@@ -38,7 +38,7 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], int b, int n
 
   int n = ac->n;
   kzstr * kz = malloc(sizeof(kzstr)*n);
-  int   * ks = b ? malloc(sizeof(int)*n) : NULL;
+  int   * ks = (b>0) ? malloc(sizeof(int)*n) : NULL;
 
   double d     = MIN(H,W) * scale;
   double resol = MIN(H,W) * (128.0/768.0);
@@ -49,7 +49,7 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], int b, int n
     kz[k].z = ac->r[k*3+2];
   }
   qsort(kz, n, sizeof(kzstr), cmpz);
-  if(b){
+  if(b>0){
     for(int i=0; i<n; i++){
       ks[ kz[i].k ] = i;
     }
@@ -81,7 +81,7 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], int b, int n
       XDrawString(dis, canv, gc_black, x, y, text, strlen(text));
     }
 
-    if(b){
+    if(b>0){
       for(int j=k*BONDS_MAX; j<(k+1)*BONDS_MAX; j++){
         int k1 = ac->bond_a[j];
         if(k1 == -1 ){

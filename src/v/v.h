@@ -66,8 +66,8 @@ void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
 void * ent_read    (task_t * task, char * fname, drawpars * dp);
-void acs_readmore  (FILE * f, atcoords * acs);
-atcoord * ac3_read (FILE * f);
+void acs_readmore  (FILE * f, int b, atcoords * acs);
+atcoord * ac3_read (FILE * f, int b);
 modestr * mode_read(FILE * f, int na);
 
 double ac3_scale(atcoord * ac);

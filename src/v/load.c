@@ -3,9 +3,9 @@
 
 #define N_MIN 256
 
-void acs_readmore(FILE * f, atcoords * acs){
+void acs_readmore(FILE * f, int b, atcoords * acs){
   atcoord * m;
-  while((m = ac3_read(f))!=NULL){
+  while((m = ac3_read(f, b))!=NULL){
     if(acs->n==acs->Nmem){
       int N = acs->Nmem ? acs->Nmem*2 : N_MIN;
       atcoord ** ms = realloc(acs->m, N*sizeof(atcoord *));
@@ -56,7 +56,7 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
   acs->Nmem = 0;
   acs->n = 0;
   acs->m = NULL;
-  acs_readmore(f, acs);
+  acs_readmore(f, dp->b, acs);
 
   if(!acs->n){
     free(acs);

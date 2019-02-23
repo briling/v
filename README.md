@@ -35,7 +35,7 @@ show this reference:
 |                          |                                                                |
 | ------------------------ | -------------------------------------------------------------- |
 |  `a/v`                   |      force to show geometries / vibrations                     |
-|  `bonds:0`               |      do not show bonds on startup                              |
+|  `bonds:0`               |      disable bonds                                             |
 |  `to:%d`                 |      delay between frames in μs (default 20000)                |
 |  `symtol:%lf`            |      tolerance for symmetry determination in Å (default 0.001) |
 |  `cell:%lf,%lf,%lf`      |      cuboid size in a.u. (for periodical boundary conditions)  |

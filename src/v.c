@@ -67,7 +67,7 @@ printf("\
  options:\n\
   \n\
   a/v                      force to show geometries / vibrations \n\
-  bonds:0                  do not show bonds on startup\n\
+  bonds:0                  disable bonds\n\
   to:%%d                    delay between frames in μs (default %d)\n\
   symtol:%%lf               tolerance for symmetry determination in Å (default %g) \n\
   cell:%%lf,%%lf,%%lf         cuboid size in a.u. \n\
@@ -156,11 +156,12 @@ int main (int argc, char * argv[]) {
   dp_init(&dp, argv[1]);
 
   int to = TO;
+  int bonds = 1;
   double schell[3]={0};
   for(int i=2; i<argc; i++){
     sscanf (argv[i], "to:%d", &to);
     sscanf (argv[i], "symtol:%lf", &dp.symtol);
-    sscanf (argv[i], "bonds:%d", &dp.b);
+    sscanf (argv[i], "bonds:%d", &bonds);
     sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
     sscanf (argv[i], "font:%255s", fontname);
     if(sscanf (argv[i], "cell:%lf,%lf,%lf", schell, schell+1, schell+2) == 3){
@@ -175,6 +176,9 @@ int main (int argc, char * argv[]) {
     if( !strcmp(argv[i], "v") ){
       task = VIBRO;
     }
+  }
+  if(!bonds){
+    dp.b = -1;
   }
 
   if (!(ent = ent_read(&task, argv[1], &dp))){

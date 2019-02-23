@@ -109,7 +109,7 @@ static int findc3(mol * m, double axis[30], double eps2){
         d[2] = r3d2 (a,b);
         sort3(d,dm);
         double s = sqrt(dm[1])-sqrt(dm[0]);
-        if( s*s > eps2){
+        if(s*s > eps2){
           continue;
         }
         if(!isnewaxis(n, axis, h, eps2)){
@@ -332,7 +332,7 @@ static int findc5(mol * m, double c3[30], double c5[3], double eps2){
   return 0;
 }
 
-molsym * pointgroup(mol * m,  double eps){
+molsym * pointgroup(mol * m, double eps){
 
   double eps2 = eps*eps;
 
@@ -369,11 +369,11 @@ molsym * pointgroup(mol * m,  double eps){
 
   double dm[2];
   sort3(d,dm);
-  if((dm[1]-dm[0])/dm[0]<EPS2){
+  if((dm[1]-dm[0])/dm[0]<EPS4){
     double c3[30]={0.0};
     int p = findc3(m, c3, eps2);
     if((p>1)&&(p!=4)&&(p!=10)){
-      snprintf(ms->s, sizeof(styp), "C1:%dC3", p);
+      snprintf(ms->s, sizeof(styp), "???");
       return ms;
     }
     ms->e[0] = CN;
@@ -413,13 +413,14 @@ molsym * pointgroup(mol * m,  double eps){
       r3diff(c2, c3+0*3, c3+1*3);
       r3scal(c2, 1.0/sqrt(r3dot(c2,c2)));
       q = isc2(m, c2, eps2);
-      if( q == 0){
+      if(q == 0){
         r3sum(c2, c3+0*3, c3+1*3);
         r3scal(c2, 1.0/sqrt(r3dot(c2,c2)));
         q = isc2(m, c2, eps2);
       }
       if(q == 0){
-        GOTOHELL;
+        snprintf(ms->s, sizeof(styp), "???");
+        return ms;
       }
       ms->e[1] = CN;
       ms->o[1] = 2;
@@ -449,12 +450,14 @@ molsym * pointgroup(mol * m,  double eps){
       int q;
       q = findc5(m, c3, c5, eps2);
       if(q == 0){
-        GOTOHELL;
+        snprintf(ms->s, sizeof(styp), "???");
+        return ms;
       }
       double c2[3];
       q = findc2inI(m, c3, c2, eps2);
       if(q == 0){
-        GOTOHELL;
+        snprintf(ms->s, sizeof(styp), "???");
+        return ms;
       }
       ms->e[1] = CN;
       ms->o[1] = 5;
@@ -554,11 +557,11 @@ molsym * pointgroup(mol * m,  double eps){
   }
   else{
     /* Cs, Ci, C1 */
-    ms->e[0] = SIGMA;
     ms->o[0] = 0;
     hassigma(m, ms, 0, eps2);
     if(ms->o[0]){
-      ms->n++;
+      ms->n    = 1;
+      ms->e[0] = SIGMA;
       snprintf(ms->s, sizeof(styp), "Cs");
       return ms;
     }

@@ -177,7 +177,7 @@ int main (int argc, char * argv[]) {
     }
   }
 
-  if (!(ent = loadthings(&task, argv[1], &dp))){
+  if (!(ent = ent_read(&task, argv[1], &dp))){
     GOTOHELL;
   }
   bonds_fill_ent(0, ent, task, &dp);

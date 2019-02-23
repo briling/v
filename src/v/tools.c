@@ -10,20 +10,28 @@ void acs_free(atcoords * acs){
   return;
 }
 
-int printcoord(int * z, char * s, int n, atcoord * ac){
-  double t = intcoord_calc(1, z, ac->r);
-  return snprintf(s, n, "  |  %d,%d,%d,%d,%d: %lf", z[0], z[1], z[2], z[3], z[4], t);
+void ac3_text(atcoord * ac, drawpars * dp){
+  char text[256];
+  int tp = snprintf(text, sizeof(text), "%d / %d   r = %.1lf   rl = %.1lf", dp->n+1, dp->N, dp->r, dp->rl);
+  if( tp<sizeof(text)-1 && dp->z[0] ){
+    tp += snprintf(text+tp, sizeof(text)-tp, "  |  %d,%d,%d,%d,%d: %lf", dp->z[0], dp->z[1], dp->z[2], dp->z[3], dp->z[4], intcoord_calc(1, dp->z, ac->r));
+  }
+  if( tp<sizeof(text)-1 && ac->sym[0] ){
+    tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", ac->sym);
+  }
+  textincorner(text);
+  return;
 }
 
-int cmpz(const void * p1, const void * p2){
-  double d;
-  d = ((kzstr *)p1)->z - ((kzstr *)p2)->z ;
-  if (d > 0)
-    return  1;
-  else if (d < 0)
-    return -1;
-  else
-    return  0;
+void vibro_text(modestr * ms, drawpars * dp){
+  char text[256];
+  double fq = ms->f[dp->n];
+  char i = fq > 0.0 ? ' ' : 'i';
+  snprintf(text, sizeof(text),
+           "%d / %d   %.1lf%c   r = %.1lf   rl = %.1lf",
+           dp->n+1, ms->n, fabs(fq), i, dp->r, dp->rl);
+  textincorner(text);
+  return;
 }
 
 void getcell(double cell[3], drawpars * dp){

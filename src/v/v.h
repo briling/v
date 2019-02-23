@@ -56,40 +56,33 @@ typedef struct {
   char   capt[256];
 } drawpars;
 
-typedef struct{
-  int    k;
-  double z;
-} kzstr;
-
-void * loadthings (task_t * task, char * fname, drawpars * dp);
-
 /* x.c */
 void close_x      (void) ;
 void init_x       (char   capt[256]) ;
 void init_font    (char * fontname);
 void textincorner (char * text);
-void lineincorner (int    l);
 void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
+void * ent_read    (task_t * task, char * fname, drawpars * dp);
 void acs_readmore  (FILE * f, atcoords * acs);
 atcoord * ac3_read (FILE * f);
 modestr * mode_read(FILE * f, int na);
+
+double ac3_scale(atcoord * ac);
+double acs_scale(atcoords * acs);
 
 void ac3_draw      (atcoord * ac, double r0, double scale, double xy0[2], int b, int num);
 void ac3_print     (atcoord * ac, double xy0[2], int b);
 void ac3_print2fig (atcoord * ac, double xy0[2], int b, double * v);
 
-double ac3_scale(atcoord * ac);
-double acs_scale(atcoords * acs);
-
 void bonds_fill(double rl, atcoord * ac);
 void bonds_fill_ent(int reduce, void * ent, task_t task, drawpars * dp);
 
 void acs_free(atcoords * acs);
-int printcoord(int * z, char * s, int n, atcoord * ac);
-int cmpz(const void * p1, const void * p2);
+void ac3_text(atcoord * ac, drawpars * dp);
+void vibro_text(modestr * ms, drawpars * dp);
 void getshell(double shell[2], drawpars * dp);
 void getcell (double cell[3],  drawpars * dp);
 

@@ -13,6 +13,22 @@ static inline int getgci(int q){
   return abs(q)<NCOLORS ? abs(q) : 0;
 }
 
+typedef struct{
+  int    k;
+  double z;
+} kzstr;
+
+static int cmpz(const void * p1, const void * p2){
+  double d;
+  d = ((kzstr *)p1)->z - ((kzstr *)p2)->z ;
+  if (d > 0)
+    return  1;
+  else if (d < 0)
+    return -1;
+  else
+    return  0;
+}
+
 void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], int b, int num){
 
 #define SCREEN_X(X)  (W/2 + d*(xy0[0] + (X)))

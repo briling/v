@@ -35,6 +35,10 @@ double getradius(int q){
   return ra[ abs(q)<=NATOMS ? abs(q) : 0 ];
 }
 
+double getmaxradius(){
+  return ra[87];
+}
+
 const char * getname(int q){
   return abs(q)<=NATOMS ? aname[abs(q)]: NULL;
 }

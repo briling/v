@@ -91,6 +91,7 @@ void getshell(double shell[2], drawpars * dp);
 void getcell (double cell[3],  drawpars * dp);
 
 double getradius(int q);
+double getmaxradius();
 const char * getname(int q);
 
 /* pg.c */

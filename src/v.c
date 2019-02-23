@@ -1,7 +1,6 @@
 #include "v.h"
 #include "x.h"
 #include "evr.h"
-#include "mytime.h"
 
 #define TO     20000
 #define SYMTOL 1e-3
@@ -181,6 +180,7 @@ int main (int argc, char * argv[]) {
   if (!(ent = loadthings(&task, argv[1], &dp))){
     GOTOHELL;
   }
+  bonds_fill_ent(0, ent, task, &dp);
 
   if(task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp.n];
@@ -189,13 +189,6 @@ int main (int argc, char * argv[]) {
   else{
     dp.z[0] = 0;
   }
-
-//////////////////////////////////////////////////////////////////////////////////////
-  double time_sec = myutime();
-  bonds_fill_ent(0, ent, task, &dp);
-  time_sec = myutime()-time_sec;
-  printf("time          : %.2f s\n", time_sec);
-//////////////////////////////////////////////////////////////////////////////////////
 
   snprintf (capt, sizeof(capt), "%s - %s", argv[0], dp.capt);
   init_x   (capt);

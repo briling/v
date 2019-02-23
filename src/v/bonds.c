@@ -13,12 +13,6 @@ static int cmpint(const void * p1, const void * p2){
     return  0;
 }
 
-static int arebound(atcoord * ac, double ri, int i, int j, double rl){
-  double s0 = rl * (ri + getradius(ac->q[j]) );
-  double ss = r3d2(ac->r+i*3, ac->r+j*3);
-  return ss < s0*s0;
-}
-
 static void makelist(int bsize_max, int * bsize, int * list,
     double d, int box_n[3], double rmin[3], atcoord * ac){
 
@@ -96,7 +90,7 @@ void bonds_fill(double rl, atcoord * ac){
           }
 
           int nb = 0;
-          double rk1 = getradius(ac->q[k1]);
+          double r1 = getradius(ac->q[k1]);
 
           int b2[3];
           for(b2[0]=b1[0]+bra[0]; b2[0]<b1[0]+ket[0]; b2[0]++){
@@ -106,7 +100,12 @@ void bonds_fill(double rl, atcoord * ac){
 
                 for(int jj=0; jj<bsize[j]; jj++){
                   int k2 = list[bsize_max*j+jj];
-                  if(k2==k1 || !arebound(ac, rk1, k1, k2, rl)){
+                  if(k2==k1) continue;
+
+                  double r2 = getradius(ac->q[k2]);
+                  double s0  = rl * (r1 + r2);
+                  double s2  = r3d2(ac->r+k1*3, ac->r+k2*3);
+                  if(s2 > s0*s0){
                     continue;
                   }
                   if(nb<BONDS_MAX){
@@ -140,14 +139,14 @@ toomany:
 
 static void bonds_reduce(double rl, atcoord * ac){
   for(int k1=0; k1<ac->n; k1++){
-    double rk1 = getradius(ac->q[k1]);
+    double r1 = getradius(ac->q[k1]);
     int nb = 0;
     for(int j=0; j<BONDS_MAX; j++){
       int    k2 = ac->bond_a[k1*BONDS_MAX+j];
       if(k2==-1) break;
       double r  = ac->bond_r[k1*BONDS_MAX+j];
-      double rk2 = getradius(ac->q[k2]);
-      if( r < rl*(rk1+rk2) ){
+      double r2 = getradius(ac->q[k2]);
+      if( r < rl*(r1+r2) ){
         ac->bond_a[k1*BONDS_MAX+nb] = k2;
         ac->bond_r[k1*BONDS_MAX+nb] = r;
         nb++;

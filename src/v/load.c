@@ -12,8 +12,8 @@ void acs_readmore(FILE * f, int b, atcoords * acs){
       if(!ms){
         acs_free(acs);
         free(m);
-        fclose(f);
-        GOTOHELL;
+        PRINT_ERR("cannot reallocate memory\n");
+        abort();
       }
       acs->m = ms;
       acs->Nmem = N;
@@ -76,7 +76,7 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
     }
     else{
       if(*task==VIBRO){
-        fprintf(stderr, "\e[1;31merror:\e[0m the file '%s' does not contain vibrations\n", fname);
+        PRINT_WARN("the file '%s' does not contain vibrations\n", fname);
       }
     }
   }

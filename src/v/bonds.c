@@ -113,7 +113,7 @@ void bonds_fill(double rl, atcoord * ac){
                     nb++;
                   }
                   else{
-                    fprintf(stderr, "\e[1;31merror:\e[0m too many bonds (> %d)\n", BONDS_MAX);
+                    PRINT_WARN("too many bonds (> %d)\n", BONDS_MAX);
                     goto toomany;
                   }
                 }

@@ -65,10 +65,10 @@ static void newmol_prep(atcoords * acs, drawpars * dp){
 }
 
 void kp_readmore(void * ent, task_t task, drawpars * dp){
-  if (task == AT3COORDS){
+  if(task == AT3COORDS){
     atcoords * acs = ent;
     if(!dp->f){
-      fprintf(stderr, "\e[1;31merror:\e[0m cannot read from file '%s'\n", dp->capt);
+      PRINT_ERR("cannot read from the file '%s'\n", dp->capt);
       return;
     }
     acs_readmore(dp->f, dp->b, acs);
@@ -79,16 +79,15 @@ void kp_readmore(void * ent, task_t task, drawpars * dp){
 }
 
 void kp_readagain(void * ent, task_t task, drawpars * dp){
-  if (task == AT3COORDS){
+  if(task == AT3COORDS){
     atcoords * acs = ent;
     for(int i=0; i<acs->n; i++){
       free(acs->m[i]);
     }
     acs->n = dp->N = dp->n = 0;
 
-    fclose(dp->f);
-    if ((dp->f = fopen(dp->capt, "r")) == NULL){
-      fprintf(stderr, "\e[1;31merror:\e[0m cannot reload file '%s'\n", dp->capt);
+    if(!dp->f || !(fclose(dp->f), dp->f = fopen(dp->capt, "r"))){
+      PRINT_ERR("cannot reload the file '%s'\n", dp->capt);
       return;
     }
 
@@ -320,7 +319,9 @@ void kp_exit(void * ent, task_t task, drawpars * dp){
     free(ent);
   }
   else if (task == AT3COORDS){
-    fclose(dp->f);
+    if(dp->f){
+      fclose(dp->f);
+    }
     acs_free(ent);
   }
   close_x();
@@ -412,7 +413,7 @@ static void savevib(drawpars * dp, int c){
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
   snprintf(s, sizeof(s), "%s_%0*d_%02d.xpm", dp->capt, l, dp->n+1, c);
   if (savepic(s) != XpmSuccess){
-    fprintf(stderr, "cannot save %s\n", s);
+    PRINT_ERR("cannot save '%s'\n", s);
   }
   else{
     fprintf(stderr, "%s\n", s);
@@ -425,7 +426,7 @@ void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ (
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
   snprintf(s, sizeof(s), "%s_%0*d.xpm", dp->capt, l, dp->n + 1);
   if (savepic(s) != XpmSuccess){
-    fprintf(stderr, "cannot save %s\n", s);
+    PRINT_ERR("cannot save '%s'\n", s);
   }
   else{
     fprintf(stderr, "%s\n", s);

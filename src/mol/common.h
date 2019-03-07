@@ -18,6 +18,8 @@
 
 #define fprintf_if(F, ...) if(F) fprintf(F, __VA_ARGS__);
 
+#define PRINT_ERR(...) fprintf(stderr, "\e[1;31merror:\e[0m " __VA_ARGS__ );
+#define PRINT_WARN(...) fprintf(stderr, "\e[1;35mwarning:\e[0m " __VA_ARGS__ );
 
 typedef char styp[8];
 

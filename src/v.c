@@ -182,7 +182,8 @@ int main (int argc, char * argv[]) {
   }
 
   if(!(ent = ent_read(&task, argv[1], &dp))){
-    GOTOHELL;
+    PRINT_ERR("cannot read file '%s'\n", argv[1]);
+    exit(1);
   }
   bonds_fill_ent(0, ent, task, &dp);
 

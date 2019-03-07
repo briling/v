@@ -112,7 +112,7 @@ void init_font(char * fontname){
     XSetFont (dis, gc_black, fontInfo->fid);
   }
   else{
-    fprintf(stderr, "\e[1;31merror:\e[0m cannot load font '%s'\n", fontname);
+    PRINT_WARN("cannot load font '%s'\n", fontname);
   }
   return;
 }

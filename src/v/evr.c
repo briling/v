@@ -11,6 +11,12 @@ static const double step_mod  = 0.03125;
 
 static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
+
+  if(dp->b>0 && !ac->bond_flag){
+    bonds_fill(dp->rl, ac);
+    ac->bond_flag = 1;
+  }
+
   ac3_draw(ac, dp->r, dp->scale, dp->xy0, dp->b, dp->num);
   ac3_text(ac, dp);
 
@@ -35,6 +41,11 @@ static void redraw_vibro(void * ent, drawpars * dp){
   modestr * ms  = ((vibrstr *)ent)->modes;
   double  * m   = ms->d + dp->n * ac->n*3;
 
+  if(dp->b>0 && !ac->bond_flag){
+    bonds_fill(dp->rl, ac);
+    ac->bond_flag = 1;
+  }
+
   vecsums(ac->n*3, ac->r, m0, m, sin( dp->t * 2.0*M_PI/TMAX ) * 0.1*sqrt(ac->n) );
   for(int j=0; j<ac->n; j++){
     double v[3];
@@ -51,9 +62,6 @@ static void redraw_vibro(void * ent, drawpars * dp){
 static void newmol_prep(atcoords * acs, drawpars * dp){
   for(int j=dp->N; j<acs->n; j++){
     atcoord * ac = acs->m[j];
-    if(dp->b!=-1){
-      bonds_fill(dp->rl, ac);
-    }
     for(int i=0; i<ac->n; i++){
       double v[3];
       r3mx(v, ac->r+3*i, dp->ac3rmx);
@@ -120,11 +128,24 @@ void kp_print2fig(void * ent, task_t task, drawpars * dp){
   return;
 }
 
+static void rl_changed(void * ent, task_t task, drawpars * dp){
+  if(task==AT3COORDS){
+    for(int i=0; i<dp->N; i++){
+      ((atcoords *)ent)->m[i]->bond_flag = 0;
+    }
+    redraw_ac3(ent, dp);
+  }
+  else{
+    ((vibrstr *)ent)->ac->bond_flag = 0;
+    redraw_vibro(ent, dp);
+  }
+  return;
+}
+
 void kp_rl_dec(void * ent, task_t task, drawpars * dp){
   if(dp->b>0){
     dp->rl /= step_r;
-    bonds_fill_ent(1, ent, task, dp);
-    exp_redraw(ent, task, dp);
+    rl_changed(ent, task, dp);
   }
   return;
 }
@@ -132,8 +153,7 @@ void kp_rl_dec(void * ent, task_t task, drawpars * dp){
 void kp_rl_inc(void * ent, task_t task, drawpars * dp){
   if(dp->b>0){
     dp->rl *= step_r;
-    bonds_fill_ent(0, ent, task, dp);
-    exp_redraw(ent, task, dp);
+    rl_changed(ent, task, dp);
   }
   return;
 }

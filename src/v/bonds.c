@@ -32,7 +32,7 @@ static void makelist(int bsize_max, int * bsize, int * list,
   return;
 }
 
-void bonds_fill(double rl, atcoord * ac){
+static void bonds_add(double rl, atcoord * ac){
 
   double dmax = 2.01 * rl * getmaxradius(ac->n, ac->q);
 
@@ -67,6 +67,7 @@ void bonds_fill(double rl, atcoord * ac){
 
   makelist(bsize_max, bsize, list, dmax, box_n, rmin, ac);
 
+  int warned = 0;
   int b1[3];
   for(b1[0]=0; b1[0]<box_n[0]; b1[0]++){
     for(b1[1]=0; b1[1]<box_n[1]; b1[1]++){
@@ -84,6 +85,15 @@ void bonds_fill(double rl, atcoord * ac){
 
         for(int ii=0; ii<bsize[i]; ii++){
           int k1 = list[bsize_max*i+ii];
+
+          if(ac->bond_rl > 0.0 && ac->bond_a[k1*BONDS_MAX+BONDS_MAX-1] != -1){
+            // at the 1st time ac->bond_rl==0.0
+            if(!warned){
+              PRINT_WARN("too many bonds (>= %d)\n", BONDS_MAX);
+              warned = 1;
+            }
+            continue;
+          }
 
           for(int l=0; l<BONDS_MAX; l++){
             ac->bond_a[k1*BONDS_MAX+l] = -1;
@@ -113,7 +123,10 @@ void bonds_fill(double rl, atcoord * ac){
                     nb++;
                   }
                   else{
-                    PRINT_WARN("too many bonds (> %d)\n", BONDS_MAX);
+                    if(!warned){
+                      PRINT_WARN("too many bonds (> %d)\n", BONDS_MAX);
+                      warned = 1;
+                    }
                     goto toomany;
                   }
                 }
@@ -159,20 +172,14 @@ static void bonds_reduce(double rl, atcoord * ac){
   return;
 }
 
-void bonds_fill_ent(int reduce, void * ent, task_t task, drawpars * dp){
-  if(dp->b==-1){
-    return;
-  }
-  if(task==AT3COORDS){
-    for(int i=0; i<dp->N; i++){
-      atcoord * ac = ((atcoords *)ent)->m[i];
-      (reduce ? bonds_reduce : bonds_fill) (dp->rl, ac);
-    }
+void bonds_fill(double rl, atcoord * ac){
+  if(rl > ac->bond_rl){
+    bonds_add   (rl, ac);
   }
   else{
-    atcoord * ac = ((vibrstr *)ent)->ac;
-    (reduce ? bonds_reduce : bonds_fill) (dp->rl, ac);
+    bonds_reduce(rl, ac);
   }
+  ac->bond_rl = rl;
   return;
 }
 

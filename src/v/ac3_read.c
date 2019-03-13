@@ -45,6 +45,8 @@ atcoord * ac3_read (FILE * f, int b){
     m->bond_r = (double *) END(m,r);
     m->q      = (int    *) END(m,bond_r);
     m->bond_a = (int    *) END(m,q);
+    m->bond_flag = 0;
+    m->bond_rl = 0.0;
   }
   else{
     size_t size = sizeof(atcoord) + q_size + r_size;
@@ -54,6 +56,8 @@ atcoord * ac3_read (FILE * f, int b){
     m->bond_r = NULL;
     m->q      = (int    *) END(m,r);
     m->bond_a = NULL;
+    m->bond_flag = -1;
+    m->bond_rl = 0.0;
   }
 
   memset(m->sym, 0, sizeof(m->sym));

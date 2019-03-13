@@ -185,7 +185,6 @@ int main (int argc, char * argv[]) {
     PRINT_ERR("cannot read file '%s'\n", argv[1]);
     exit(1);
   }
-  bonds_fill_ent(0, ent, task, &dp);
 
   if(task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp.n];

@@ -5,7 +5,10 @@ and beyond.
 
 ## Contents
 * [Build](#build)
+  * [Requirements](#requirements)
 * [Usage](#usage)
+  * [Command-line options](#command-line-options)
+  * [Keyboard reference](#keyboard-reference)
 * [File examples](#file-examples)
 
 ---
@@ -32,7 +35,7 @@ show this reference:
 ./v
 ```
 
-### Command-line options:
+### Command-line options
 |                          |                                                                |
 | ------------------------ | -------------------------------------------------------------- |
 |  `a`/`v`                 |      force to show geometries / vibrations                     |
@@ -44,7 +47,7 @@ show this reference:
 |  `z:%d,%d,%d,%d,%d`      |      show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
 |  `font:%s`               |      font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
 
-### Keyboard reference:
+### Keyboard reference
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |
 | `←`/`↑`/`→`/`↓`/`pgup`/`pgdn`  |  rotate (slower with `ctrl` or `shift`)

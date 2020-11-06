@@ -1,15 +1,16 @@
-# _v_
+# v
 
-A simple viewer for Priroda outputs.
+A simple viewer for [Priroda](http://rad.chem.msu.ru/~laikov) outputs
+and beyond.
 
 ## Contents
-* [build](#build)
-* [usage](#usage)
-* [file examples](#file-examples)
+* [Build](#build)
+* [Usage](#usage)
+* [File examples](#file-examples)
 
 ---
 
-## Build
+## Build [(↑)](#contents)
 
 ```
 make v
@@ -22,7 +23,7 @@ make v
 * `libX11-devel`, `libXpm-devel`, `xproto-devel`
 * `make`
 
-## Usage
+## Usage [(↑)](#contents)
 ```
 ./v file [options]
 ```
@@ -34,7 +35,7 @@ show this reference:
 ### Command-line options:
 |                          |                                                                |
 | ------------------------ | -------------------------------------------------------------- |
-|  `a/v`                   |      force to show geometries / vibrations                     |
+|  `a`/`v`                 |      force to show geometries / vibrations                     |
 |  `bonds:0`               |      disable bonds                                             |
 |  `to:%d`                 |      delay between frames in μs (default 20000)                |
 |  `symtol:%lf`            |      tolerance for symmetry determination in Å (default 0.001) |
@@ -52,7 +53,7 @@ show this reference:
 | `0`                            |  go to the first point
 | `=`                            |  go to the last point
 | `enter`/`backspace`            |  next/previous point
-| `ins`                          |  play forwards  / stop (if vibrations: animate selected normal mode / stop)
+| `ins`                          |  play forwards  / stop (vibration mode: animate selected normal mode / stop)
 | `del`                          |  play backwards / stop
 |                                |
 | `home`/`end`                   |  zoom in/out
@@ -70,12 +71,12 @@ show this reference:
 | `r`                            |  reread file
 | `x`                            |  print molecule (1)
 | `p`                            |  print molecule (2)
-| `m`                            |  save one picture ([.xpm](https://en.wikipedia.org/wiki/X_PixMap))
-| `f`                            |  save all pictures (if vibrations: for selected normal mode)
+| `m`                            |  save the current frame ([.xpm](https://en.wikipedia.org/wiki/X_PixMap) format)
+| `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)
 |                                |
 | `q`                            |  quit
 
-## File examples
+## File examples [(↑)](#contents)
 * `mol/S8.qm.out`     — [output](mol/S8.qm.out) with geometries
 * `mol/C10H16.qm.out` — [output](mol/C10H16.qm.out) with vibrations
 * `mol/C3H6~mCPBA_01x11.qm.out` — [output](mol/C3H6~mCPBA_01x11.qm.out) with geometries + vibrations

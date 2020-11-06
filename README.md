@@ -10,7 +10,7 @@ and beyond.
 
 ---
 
-## Build [(↑)](#contents)
+## Build [↑](#contents)
 
 ```
 make v
@@ -23,7 +23,7 @@ make v
 * `libX11-devel`, `libXpm-devel`, `xproto-devel`
 * `make`
 
-## Usage [(↑)](#contents)
+## Usage [↑](#contents)
 ```
 ./v file [options]
 ```
@@ -76,7 +76,7 @@ show this reference:
 |                                |
 | `q`                            |  quit
 
-## File examples [(↑)](#contents)
+## File examples [↑](#contents)
 * `mol/S8.qm.out`     — [output](mol/S8.qm.out) with geometries
 * `mol/C10H16.qm.out` — [output](mol/C10H16.qm.out) with vibrations
 * `mol/C3H6~mCPBA_01x11.qm.out` — [output](mol/C3H6~mCPBA_01x11.qm.out) with geometries + vibrations

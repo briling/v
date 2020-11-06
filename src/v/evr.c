@@ -79,7 +79,7 @@ void kp_readmore(void * ent, task_t task, drawpars * dp){
       PRINT_ERR("cannot read from the file '%s'\n", dp->capt);
       return;
     }
-    acs_readmore(dp->f, dp->b, acs);
+    acs_readmore(dp->f, dp->b, dp->center, dp->xyz, acs);
     newmol_prep(acs, dp);
     redraw_ac3 (acs, dp);
   }
@@ -99,7 +99,7 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
       return;
     }
 
-    acs_readmore(dp->f, dp->b, acs);
+    acs_readmore(dp->f, dp->b, dp->center, dp->xyz, acs);
     newmol_prep(acs, dp);
     redraw_ac3 (acs, dp);
   }

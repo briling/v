@@ -1,11 +1,6 @@
 #include "v.h"
 #include "vec3.h"
 
-
-#define USEXYZ
-#define CENTER
-
-
 #define END(S,X) ( (S)->X + (X##_size)/sizeof(*((S)->X)) )
 
 #define NATOMS  102
@@ -91,14 +86,16 @@ static txyz * ac3_read_xyz(int * n_p, FILE * f){
   return a;
 }
 
-atcoord * ac3_read (FILE * f, int b){
+atcoord * ac3_read(FILE * f, int b, int center, int xyz){
 
   int n;
-#ifdef USEXYZ
-  txyz * a = ac3_read_xyz(&n, f);
-#else
-  txyz * a = ac3_read_ac(&n, f);
-#endif
+  txyz * a;
+  if(xyz){
+    a = ac3_read_xyz(&n, f);
+  }
+  else{
+    a = ac3_read_ac(&n, f);
+  }
   if(!a){
     return NULL;
   }
@@ -139,18 +136,18 @@ atcoord * ac3_read (FILE * f, int b){
     m->r[i*3+2] = a[i].z;
   }
 
-#ifdef CENTER
-  double c[3]={};
-  for(int i=0; i<n; i++){
-    r3add(c, m->r+i*3);
+  if(center){
+    double c[3]={};
+    for(int i=0; i<n; i++){
+      r3add(c, m->r+i*3);
+    }
+    c[0] /= n;
+    c[1] /= n;
+    c[2] /= n;
+    for(int i=0; i<n; i++){
+      r3min(m->r+i*3, c);
+    }
   }
-  c[0] /= n;
-  c[1] /= n;
-  c[2] /= n;
-  for(int i=0; i<n; i++){
-    r3min(m->r+i*3, c);
-  }
-#endif
 
 #if 0
   for(int i=0; i<n; i++){

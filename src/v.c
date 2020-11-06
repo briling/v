@@ -54,7 +54,11 @@ static void init_keys(ptf kp[NKP]){
 }
 
 static void version(FILE * f){
-  fprintf(f, WD"  "__TIMESTAMP__"  "UH"\n\n");
+  fprintf(f, "built on "__TIMESTAMP__"\n"
+             "user:      "BUILD_USER"\n"
+             "directory: "BUILD_DIRECTORY"\n"
+             "commit:    "GIT_HASH" ("GIT_BRANCH")\n"
+             "\n");
 }
 
 static void printman(char * exename){
@@ -180,6 +184,14 @@ int main (int argc, char * argv[]) {
   if(!bonds){
     dp.b = -1;
   }
+
+#ifdef USE_XYZ
+  dp.center = 1;
+  dp.xyz    = 1;
+#else
+  dp.center = 0;
+  dp.xyz    = 0;
+#endif
 
   if(!(ent = ent_read(&task, argv[1], &dp))){
     PRINT_ERR("cannot read file '%s'\n", argv[1]);

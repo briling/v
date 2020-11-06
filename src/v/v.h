@@ -63,12 +63,15 @@ typedef struct {
   int    fbw;           // 0: nothing;     1: play forwards; -1: play backwards
   int    num;           // 0: do not show; 1: show numbers;  -1: show atom types
   int    vert;          // 0: nothing;     1: show cell;      2: show shell
+  // compiled:
+  int    center;  // 0: nothing;        1: center each molecule upon reading
+  int    xyz;     // 0: priroda format; 1: xyz format
 
 } drawpars;
 
 void * ent_read    (task_t * task, char * fname, drawpars * dp);
-void acs_readmore  (FILE * f, int b, atcoords * acs);
-atcoord * ac3_read (FILE * f, int b);
+void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs);
+atcoord * ac3_read (FILE * f, int b, int center, int xyz);
 modestr * mode_read(FILE * f, int na);
 
 double ac3_scale(atcoord * ac);

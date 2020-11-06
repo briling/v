@@ -1,5 +1,7 @@
 #include "mol.h"
 
+#define DEFAULT_TIMEOUT  20000
+#define DEFAULT_SYMTOL   1e-3
 #define NKP  256
 #define BONDS_MAX 32
 
@@ -103,4 +105,6 @@ void textincorner (char * text);
 void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
+
+void printman(char * exename);
 

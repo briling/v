@@ -2,9 +2,6 @@
 #include "x.h"
 #include "evr.h"
 
-#define TO     20000
-#define SYMTOL 1e-3
-
 Display * dis;
 int       screen;
 Window    win;
@@ -61,62 +58,6 @@ static void version(FILE * f){
              "\n");
 }
 
-static void printman(char * exename){
-printf("\
-  \n\
- usage:\n\
-  \n\
-  %s file [options] \n\
-  \n\
- options:\n\
-  \n\
-  a/v                      force to show geometries / vibrations \n\
-  bonds:0                  disable bonds\n\
-  to:%%d                    delay between frames in μs (default %d)\n\
-  symtol:%%lf               tolerance for symmetry determination in Å (default %g) \n\
-  cell:%%lf,%%lf,%%lf         cuboid size in a.u. \n\
-  shell:%%lf,%%lf            spheres radii in a.u. \n\
-  z:%%d,%%d,%%d,%%d,%%d         show an internal coordinate: \n\
-                                 1,i,j,0,0 - distance i-j\n\
-                                 2,i,j,k,0 - angle    i-j-k\n\
-                                 3,i,j,k,l - torsion  i-j-k-l\n\
-  font:%%s                  font (xlfd) \n\
-  \n\
- keyboard reference:\n\
-  \n\
-  ←/↑/→/↓/pgup/pgdn        rotate (slower with `ctrl` or `shift`)\n\
-  w/a/s/d                  move   (slower with `ctrl` or `shift`)\n\
-  \n\
-  0                        go to the first point \n\
-  =                        go to the last point  \n\
-  enter/backspace          next/previous point   \n\
-  ins                      play forwards  / stop  (if vibrations: animate selected normal mode / stop)\n\
-  del                      play backwards / stop \n\
-  \n\
-  home/end                 zoom in/out           \n\
-  1/2                      scale bond lengths    \n\
-  3/4                      scale atom sizes      \n\
-  \n\
-  .                        show point group      \n\
-  \n\
-  n                        show/hide atom numbers\n\
-  t                        show/hide atom types  \n\
-  l                        show/hide bond lengths\n\
-  b                        show/hide bonds       \n\
-  \n\
-  tab                      read new points       \n\
-  r                        reread file           \n\
-  x                        print molecule (1)    \n\
-  p                        print molecule (2)    \n\
-  m                        save one picture  (.xpm)\n\
-  f                        save all pictures (if vibrations: for selected normal mode)\n\
-  \n\
-  q                        quit                  \n\
-  \n\
-", exename, TO, SYMTOL);
-  return;
-}
-
 static void dp_init(drawpars * dp, char * fname){
   dp->n   = 0;
   dp->fbw = 0;
@@ -129,7 +70,7 @@ static void dp_init(drawpars * dp, char * fname){
   strncpy(dp->capt, fname, sizeof(dp->capt));
   // from command-line
   dp->b = 1;
-  dp->symtol = SYMTOL;
+  dp->symtol = DEFAULT_SYMTOL;
   dp->vert = -1;
   dp->z[0] = dp->z[1] = dp->z[2] = dp->z[3] = dp->z[4] = 0;
   vecset(3*8, dp->vertices, 0.0);
@@ -159,7 +100,7 @@ int main (int argc, char * argv[]) {
 
   dp_init(&dp, argv[1]);
 
-  int to = TO;
+  int to = DEFAULT_TIMEOUT;
   int bonds = 1;
   double schell[3]={0};
   for(int i=2; i<argc; i++){

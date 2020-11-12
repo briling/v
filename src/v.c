@@ -58,6 +58,26 @@ static void version(FILE * f){
              "\n");
 }
 
+static int sscan_cell(const char * arg, double cell[9]){
+  int count = sscanf (arg, "cell:b%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", cell,  cell+1, cell+2, cell+3, cell+4, cell+5, cell+6, cell+7, cell+8);
+  if(count==9 || count==3){
+    vecscal(count, cell, BA);
+    return count;
+  }
+  count = sscanf (arg, "cell:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", cell,  cell+1, cell+2, cell+3, cell+4, cell+5, cell+6, cell+7, cell+8);
+  return count;
+}
+
+static int sscan_shell(const char * arg, double shell[2]){
+  int count = sscanf (arg, "shell:b%lf,%lf", shell, shell+1);
+  if(count==2){
+    vecscal(count, shell, BA);
+    return count;
+  }
+  count = sscanf (arg, "shell:%lf,%lf", shell, shell+1);
+  return count;
+}
+
 static void dp_init(drawpars * dp, char * fname){
   dp->n   = 0;
   dp->fbw = 0;
@@ -102,18 +122,23 @@ int main (int argc, char * argv[]) {
 
   int to = DEFAULT_TIMEOUT;
   int bonds = 1;
-  double schell[3]={0};
+  double cell [9]={0};
+  double shell[2]={0};
+  int cell_count  = 0;
+  int shell_count = 0;
   for(int i=2; i<argc; i++){
     sscanf (argv[i], "to:%d", &to);
     sscanf (argv[i], "symtol:%lf", &dp.symtol);
     sscanf (argv[i], "bonds:%d", &bonds);
     sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
     sscanf (argv[i], "font:%255s", fontname);
-    if(sscanf (argv[i], "cell:%lf,%lf,%lf", schell, schell+1, schell+2) == 3){
-      getcell(schell, &dp);
+    cell_count  = sscan_cell (argv[i], cell);
+    shell_count = sscan_shell(argv[i], shell);
+    if(cell_count==3 || cell_count==9){
+      getcell(cell, &dp, cell_count);
     }
-    if(sscanf (argv[i], "shell:%lf,%lf", schell, schell+1) == 2){
-      getshell(schell, &dp);
+    if(shell_count==2){
+      getshell(shell, &dp);
     }
     if(!strcmp(argv[i], "a")){
       task = AT3COORDS;

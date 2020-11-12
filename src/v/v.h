@@ -53,6 +53,8 @@ typedef struct {
   FILE * f;             // opened file for kp_readmore()
   char   capt[256];     // file name
   double vertices[3*8]; // parameters of cell/shell
+  double rot_to_lab_basis[3*3];   // "rotation" matrix for PBC
+  double rot_to_cell_basis[3*3];  // "rotation" matrix for PBC
   double symtol;        // tolerance for symmetry determination
   int    z[5];          // internal coordinate to show
   int    modkey;        // whether ctrl of shift are pressed
@@ -90,7 +92,7 @@ void acs_free(atcoords * acs);
 void ac3_text(atcoord * ac, drawpars * dp);
 void vibro_text(modestr * ms, drawpars * dp);
 void getshell(double shell[2], drawpars * dp);
-void getcell (double cell[3],  drawpars * dp);
+void getcell (double cell[3],  drawpars * dp, int cell_count);
 
 double getradius(int q);
 double getmaxradius(int n, int * q);

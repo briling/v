@@ -262,25 +262,18 @@ static void mol2cell(double r0[3], drawpars * dp){
   veccp(9, mat, dp->ac3rmx);
   r3cp(r, r0);
   mx_inv (3, 1, r, mat, 1e-15);
-  if(r[0] < dp->vertices[0]){
-    r[0] -= 2*dp->vertices[0];
+  double rcell[3];
+  r3mx(rcell, r, dp->rot_to_cell_basis);
+  for(int i=0; i<3; i++){
+    if(rcell[i]<-0.5){
+      rcell[i] += 1.0;
+    }
+    else if(rcell[i]>0.5){
+      rcell[i] -= 1.0;
+    }
   }
-  else if(r[0] > dp->vertices[21]){
-    r[0] -= 2*dp->vertices[21];
-  }
-  if(r[1] < dp->vertices[1]){
-    r[1] -= 2*dp->vertices[1];
-  }
-  else if(r[1] > dp->vertices[22]){
-    r[1] -= 2*dp->vertices[22];
-  }
-  if(r[2] < dp->vertices[2]){
-    r[2] -= 2*dp->vertices[2];
-  }
-  else if(r[2] > dp->vertices[23]){
-    r[2] -= 2*dp->vertices[23];
-  }
-  r3mx (r0, r, dp->ac3rmx);
+  r3mx(r, rcell, dp->rot_to_lab_basis);
+  r3mx(r0, r, dp->ac3rmx);
   return;
 }
 

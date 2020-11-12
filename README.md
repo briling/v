@@ -38,14 +38,19 @@ show this reference:
 ### Command-line options
 |                          |                                                                |
 | ------------------------ | -------------------------------------------------------------- |
-|  `a`/`v`                 |      force to show geometries / vibrations                     |
-|  `bonds:0`               |      disable bonds                                             |
-|  `to:%d`                 |      delay between frames in μs (default 20000)                |
-|  `symtol:%lf`            |      tolerance for symmetry determination in Å (default 0.001) |
-|  `cell:%lf,%lf,%lf`      |      cuboid size in a.u. (for periodical boundary conditions)  |
-|  `shell:%lf,%lf`         |      spheres radii in a.u.                                     |
-|  `z:%d,%d,%d,%d,%d`      |      show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
-|  `font:%s`               |      font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
+| `a`/`v`                 |      force to show geometries / vibrations                     |
+| `bonds:0`               |      disable bonds                                             |
+| `to:%d`                 |      delay between frames in μs (default 20000)                |
+| `symtol:%lf`            |      tolerance for symmetry determination in Å (default 0.001) |
+| `z:%d,%d,%d,%d,%d`      |      show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
+| `font:%s`               |      font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
+| `cell:b%lf,%lf,%lf`                         | cuboid size in a.u. (for periodical boundary conditions) |
+| `cell:%lf,%lf,%lf`                          | cuboid size in Å                                         |
+| `cell:b%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf` | cell parameters in a.u.                                  |
+| `cell:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`  | cell parameters in Å                                     |
+| `shell:b%lf,%lf`                            | spheres radii in a.u.                                    |
+| `shell:%lf,%lf`                             | spheres radii in Å                                       |
+
 
 ### Keyboard reference
 |                                |                                                           |

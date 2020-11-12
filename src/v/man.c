@@ -13,13 +13,17 @@ printf("\
   bonds:0                  disable bonds\n\
   to:%%d                    delay between frames in μs (default %d)\n\
   symtol:%%lf               tolerance for symmetry determination in Å (default %g) \n\
-  cell:%%lf,%%lf,%%lf         cuboid size in a.u. \n\
-  shell:%%lf,%%lf            spheres radii in a.u. \n\
   z:%%d,%%d,%%d,%%d,%%d         show an internal coordinate: \n\
                                  1,i,j,0,0 - distance i-j\n\
                                  2,i,j,k,0 - angle    i-j-k\n\
                                  3,i,j,k,l - torsion  i-j-k-l\n\
-  font:%%s                  font (xlfd) \n\
+  font:%%s                  font (xlfd) \n\n\
+  cell:b%%lf,%%lf,%%lf                               cuboid size in a.u. \n\
+  cell:%%lf,%%lf,%%lf                                cuboid size in Å \n\
+  cell:b%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf       cell parameters in a.u. \n\
+  cell:%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf        cell parameters in Å \n\
+  shell:b%%lf,%%lf                                  spheres radii in a.u. \n\
+  shell:%%lf,%%lf                                   spheres radii in Å \n\
   \n\
  keyboard reference:\n\
   \n\

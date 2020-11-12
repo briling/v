@@ -92,6 +92,13 @@ static inline void r3sums (double * w, double * u, double s, double * v, double 
   return;
 }
 
+static inline void r3sums3 (double * w, double * u1, double s1, double * u2, double s2, double * u3, double s3){
+  w[0] = u1[0]*s1 + u2[0]*s2 + u3[0]*s3;
+  w[1] = u1[1]*s1 + u2[1]*s2 + u3[1]*s3;
+  w[2] = u1[2]*s1 + u2[2]*s2 + u3[2]*s3;
+  return;
+}
+
 static inline void r3cpsc (double * u, double * v, double c){
   u[0] = v[0]*c;
   u[1] = v[1]*c;

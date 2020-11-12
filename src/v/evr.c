@@ -291,6 +291,10 @@ static void move_pbc(atcoords * acs, drawpars * dp, int dir, double d){
       r[dir] += d;
       mol2cell(r, dp);
     }
+    if(dp->b>0){
+      acs->m[i]->bond_flag = 0;
+      acs->m[i]->bond_rl *= 0.9;
+    }
   }
   return;
 }

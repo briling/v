@@ -43,6 +43,7 @@ show this reference:
 | `to:%d`                 |      delay between frames in μs (default 20000)                |
 | `symtol:%lf`            |      tolerance for symmetry determination in Å (default 0.001) |
 | `z:%d,%d,%d,%d,%d`      |      show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
+| `rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`   | rotation matrix to start with (default identity matrix)  |
 | `font:%s`               |      font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
 | `cell:b%lf,%lf,%lf`                         | cuboid size in a.u. (for periodical boundary conditions) |
 | `cell:%lf,%lf,%lf`                          | cuboid size in Å                                         |
@@ -79,6 +80,7 @@ show this reference:
 | `r`                            |  reread file
 | `x`                            |  print molecule (1)
 | `p`                            |  print molecule (2)
+| `u`                            |  print current rotation matrix
 | `m`                            |  save the current frame ([.xpm](https://en.wikipedia.org/wiki/X_PixMap) format)
 | `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)
 |                                |

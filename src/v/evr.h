@@ -5,6 +5,7 @@ void kp_readmore (void * ent, task_t task, drawpars * dp);
 void kp_readagain(void * ent, task_t task, drawpars * dp);
 void kp_print    (void * ent, task_t task, drawpars * dp);
 void kp_print2fig(void * ent, task_t task, drawpars * dp);
+void kp_printrot (void * ent, task_t task, drawpars * dp);
 void kp_rl_inc   (void * ent, task_t task, drawpars * dp);
 void kp_rl_dec   (void * ent, task_t task, drawpars * dp);
 void kp_r_inc    (void * ent, task_t task, drawpars * dp);

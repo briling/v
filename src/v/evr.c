@@ -114,6 +114,16 @@ void kp_print(void * ent, task_t task, drawpars * dp){
   return;
 }
 
+void kp_printrot(void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
+  double * U = dp->ac3rmx;
+  for(int i=0; i<3; i++){
+    printf("rotation> % 20.15lf % 20.15lf % 20.15lf\n", U[i*3], U[i*3+1], U[i*3+2]);
+  }
+  printf("rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf\n\n",
+      U[0], U[1], U[2], U[3], U[4], U[5], U[6], U[7], U[8]);
+  return;
+}
+
 void kp_print2fig(void * ent, task_t task, drawpars * dp){
   if (task == AT3COORDS){
     double v[3*8];

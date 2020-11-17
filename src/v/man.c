@@ -3,29 +3,30 @@
 void printman(char * exename){
 printf("\
   \n\
- usage:\n\
+ USAGE:\n\
   \n\
   %s file [options] \n\
   \n\
- options:\n\
+ OPTIONS:\n\
   \n\
-  a/v                      force to show geometries / vibrations \n\
-  bonds:0                  disable bonds\n\
-  to:%%d                    delay between frames in μs (default %d)\n\
-  symtol:%%lf               tolerance for symmetry determination in Å (default %g) \n\
-  z:%%d,%%d,%%d,%%d,%%d         show an internal coordinate: \n\
-                                 1,i,j,0,0 - distance i-j\n\
-                                 2,i,j,k,0 - angle    i-j-k\n\
-                                 3,i,j,k,l - torsion  i-j-k-l\n\
-  font:%%s                  font (xlfd) \n\n\
-  cell:b%%lf,%%lf,%%lf                               cuboid size in a.u. \n\
-  cell:%%lf,%%lf,%%lf                                cuboid size in Å \n\
-  cell:b%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf       cell parameters in a.u. \n\
-  cell:%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf        cell parameters in Å \n\
-  shell:b%%lf,%%lf                                  spheres radii in a.u. \n\
-  shell:%%lf,%%lf                                   spheres radii in Å \n\
+  a/v                                          force to show geometries / vibrations \n\
+  bonds:0                                      disable bonds\n\
+  to:%%d                                        delay between frames in μs (default %d)\n\
+  symtol:%%lf                                   tolerance for symmetry determination in Å (default %g) \n\
+  z:%%d,%%d,%%d,%%d,%%d                             show an internal coordinate: \n\
+                                                     1,i,j,0,0 - distance i-j\n\
+                                                     2,i,j,k,0 - angle    i-j-k\n\
+                                                     3,i,j,k,l - torsion  i-j-k-l\n\
+  rot:%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf      rotation matrix to start with (default identity matrix)\n\
+  font:%%s                                      font (xlfd) \n\n\
+  cell:b%%lf,%%lf,%%lf                            cuboid size in a.u. \n\
+  cell:%%lf,%%lf,%%lf                             cuboid size in Å \n\
+  cell:b%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf    cell parameters in a.u. \n\
+  cell:%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf     cell parameters in Å \n\
+  shell:b%%lf,%%lf                               spheres radii in a.u. \n\
+  shell:%%lf,%%lf                                spheres radii in Å \n\
   \n\
- keyboard reference:\n\
+ KEYBOARD REFERENCE:\n\
   \n\
   ←/↑/→/↓/pgup/pgdn        rotate (slower with `ctrl` or `shift`)\n\
   w/a/s/d                  move   (slower with `ctrl` or `shift`)\n\
@@ -51,6 +52,7 @@ printf("\
   r                        reread file           \n\
   x                        print molecule (1)    \n\
   p                        print molecule (2)    \n\
+  u                        print current rotation matrix       \n\
   m                        save the current frame (.xpm format)\n\
   f                        save all frames (vibration mode: save all frames to animate the selected normal mode)\n\
   \n\

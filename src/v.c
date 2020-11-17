@@ -26,6 +26,7 @@ static void init_keys(ptf kp[NKP]){
   kp[ XKeysymToKeycode(dis, XK_w         ) ] = kp_move_u    ;
   kp[ XKeysymToKeycode(dis, XK_r         ) ] = kp_readagain ;
   kp[ XKeysymToKeycode(dis, XK_t         ) ] = kp_t_toggle  ;
+  kp[ XKeysymToKeycode(dis, XK_u         ) ] = kp_printrot  ;
   kp[ XKeysymToKeycode(dis, XK_p         ) ] = kp_print2fig ;
   kp[ XKeysymToKeycode(dis, XK_Return    ) ] = kp_frame_inc ;
   kp[ XKeysymToKeycode(dis, XK_a         ) ] = kp_move_l    ;
@@ -58,13 +59,17 @@ static void version(FILE * f){
              "\n");
 }
 
+static int sscan_rot(const char * arg, double rot[9]){
+  return sscanf(arg, "rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", rot,  rot+1, rot+2, rot+3, rot+4, rot+5, rot+6, rot+7, rot+8);
+}
+
 static int sscan_cell(const char * arg, double cell[9]){
-  int count = sscanf (arg, "cell:b%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", cell,  cell+1, cell+2, cell+3, cell+4, cell+5, cell+6, cell+7, cell+8);
+  int count = sscanf(arg, "cell:b%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", cell,  cell+1, cell+2, cell+3, cell+4, cell+5, cell+6, cell+7, cell+8);
   if(count==9 || count==3){
     vecscal(count, cell, BA);
     return count;
   }
-  count = sscanf (arg, "cell:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", cell,  cell+1, cell+2, cell+3, cell+4, cell+5, cell+6, cell+7, cell+8);
+  count = sscanf(arg, "cell:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", cell,  cell+1, cell+2, cell+3, cell+4, cell+5, cell+6, cell+7, cell+8);
   return count;
 }
 
@@ -122,8 +127,10 @@ int main (int argc, char * argv[]) {
 
   int to = DEFAULT_TIMEOUT;
   int bonds = 1;
+  double rot  [9]={0};
   double cell [9]={0};
   double shell[2]={0};
+  int rot_count   = 0;
   int cell_count  = 0;
   int shell_count = 0;
   for(int i=2; i<argc; i++){
@@ -132,8 +139,12 @@ int main (int argc, char * argv[]) {
     sscanf (argv[i], "bonds:%d", &bonds);
     sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
     sscanf (argv[i], "font:%255s", fontname);
+    rot_count   = sscan_rot  (argv[i], rot);
     cell_count  = sscan_cell (argv[i], cell);
     shell_count = sscan_shell(argv[i], shell);
+    if(rot_count==9){
+      veccp(9, dp.ac3rmx, rot); // we don't check if the matrix is unitary
+    }
     if(cell_count==3 || cell_count==9){
       getcell(cell, &dp, cell_count);
     }

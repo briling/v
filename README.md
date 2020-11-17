@@ -18,6 +18,11 @@ and beyond.
 ```
 make v
 ```
+>To open [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files
+>(with either atomic symbols or atomic numbers), build the special version:
+>```
+>make vr
+>```
 
 ### Requirements:
 * `GNU/Linux` or `Cygwin`
@@ -36,8 +41,8 @@ show this reference:
 ```
 
 ### Command-line options
-|                          |                                                                |
-| ------------------------ | -------------------------------------------------------------- |
+|                          |                                                               |
+| ------------------------ | ------------------------------------------------------------- |
 | `a`/`v`                 |      force to show geometries / vibrations                     |
 | `bonds:0`               |      disable bonds                                             |
 | `to:%d`                 |      delay between frames in μs (default 20000)                |
@@ -81,10 +86,11 @@ show this reference:
 | `x`                            |  print molecule (1)
 | `p`                            |  print molecule (2)
 | `u`                            |  print current rotation matrix
-| `m`                            |  save the current frame ([.xpm](https://en.wikipedia.org/wiki/X_PixMap) format)
+| `m`                            |  save the current frame ([`.xpm`](https://en.wikipedia.org/wiki/X_PixMap) format)
 | `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)
 |                                |
 | `q`                            |  quit
+
 
 ## File examples [↑](#contents)
 * `mol/S8.qm.out`     — [output](mol/S8.qm.out) with geometries

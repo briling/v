@@ -11,9 +11,14 @@ static const char aname[NATOMS+1][NAMELEN]={
 };
 
 static inline int get_element(const char * s){
-  for(int i=1; i<=NATOMS; i++){
-    if( ! strncmp(s, aname[i], NAMELEN)){
-      return i;
+  char * s_end;
+  long q = strtol(s, &s_end, 10);
+  if(s_end != s) {
+    return (int)q;
+  }
+  for(int q=1; q<=NATOMS; q++){
+    if(!strncmp(s, aname[q], NAMELEN)){
+      return q;
     }
   }
   return 0;

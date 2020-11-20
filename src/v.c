@@ -10,6 +10,7 @@ Pixmap    px;
 Drawable  canv;
 XFontStruct * fontInfo;
 int       W,H;
+int (*myDrawString)();
 
 static void init_keys(ptf kp[NKP]){
   memset(kp, 0, sizeof(ptf)*NKP);
@@ -187,6 +188,11 @@ int main (int argc, char * argv[]) {
   init_x   (capt);
   init_keys(kp);
   init_font(fontname);
+#if 0
+  myDrawString = &XDrawString;
+#else
+  myDrawString = &XDrawImageString;
+#endif
 #if 0
   canv = win;
 #else

@@ -8,6 +8,7 @@ extern GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
 extern Window    win;
 extern Pixmap    px;
 extern Drawable  canv;
+extern int (*myDrawString)();
 
 static inline int getgci(int q){
   return abs(q)<NCOLORS ? abs(q) : 0;
@@ -72,13 +73,13 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], int b, int n
     if(num == 1){
       char text[16];
       snprintf(text, sizeof(text), "%d", k+1);
-      XDrawString(dis, canv, gc_black, x, y, text, strlen(text));
+      myDrawString(dis, canv, gc_black, x, y, text, strlen(text));
     }
     else if(num == -1){
       char text[16];
       const char * s = getname(q);
       s ? snprintf(text, sizeof(text), "%s", s) :  snprintf(text, sizeof(text), "%d", q );
-      XDrawString(dis, canv, gc_black, x, y, text, strlen(text));
+      myDrawString(dis, canv, gc_black, x, y, text, strlen(text));
     }
 
     if(b>0){
@@ -103,7 +104,7 @@ void ac3_draw(atcoord * ac, double r0, double scale, double xy0[2], int b, int n
         if(b==2){
           char text[16];
           snprintf(text, sizeof(text), "%.3lf", ac->bond_r[j]);
-          XDrawString(dis, canv, gc_black, x+dx/2, y+dy/2, text, strlen(text));
+          myDrawString(dis, canv, gc_black, x+dx/2, y+dy/2, text, strlen(text));
         }
       }
     }

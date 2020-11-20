@@ -102,10 +102,24 @@ void init_x(char capt[256]) {
   return;
 };
 
+static void autosize_font(char * fontname){
+  const int screen_sizes[] = {1200, 1080, 960, 900, 840, 768};
+  const int font_sizes[]   = {  24,   20,  18,  16,  15,  14}; //  font_size='ceil'(screen_size) / 60
+  int font_size = 13;
+  int screen_size = MIN(W, H);
+  for(int i=0; i<sizeof(screen_sizes)/sizeof(screen_sizes[0]); i++){
+    if(screen_size>screen_sizes[i]){
+      font_size = font_sizes[i];
+      break;
+    }
+  }
+  sprintf(fontname, "*x%d", font_size);
+  return;
+}
+
 void init_font(char * fontname){
   if(!fontname[0]){
-    fontInfo = NULL;
-    return;
+    autosize_font(fontname);
   }
   fontInfo = XLoadQueryFont(dis, fontname);
   if(fontInfo){

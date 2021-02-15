@@ -49,6 +49,10 @@ static void init_keys(ptf kp[NKP]){
   kp[ XKeysymToKeycode(dis, XK_Page_Down ) ] = kp_rotz_r    ;
   kp[ XKeysymToKeycode(dis, XK_Insert    ) ] = kp_fw_toggle ;
   kp[ XKeysymToKeycode(dis, XK_Delete    ) ] = kp_bw_toggle ;
+  kp[ XKeysymToKeycode(dis, XK_KP_Up     ) ] = kp_move_u    ;
+  kp[ XKeysymToKeycode(dis, XK_KP_Left   ) ] = kp_move_l    ;
+  kp[ XKeysymToKeycode(dis, XK_KP_Right  ) ] = kp_move_r    ;
+  kp[ XKeysymToKeycode(dis, XK_KP_Down   ) ] = kp_move_d    ;
   return;
 }
 

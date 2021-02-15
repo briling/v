@@ -29,7 +29,8 @@ printf("\
  KEYBOARD REFERENCE:\n\
   \n\
   ←/↑/→/↓/pgup/pgdn        rotate (slower with `ctrl` or `shift`)\n\
-  w/a/s/d                  move   (slower with `ctrl` or `shift`)\n\
+  w/a/s/d or  \n\
+    ↑/←/↓/→ on numpad      move   (slower with `ctrl` or `shift`)\n\
   \n\
   0                        go to the first point \n\
   =                        go to the last point  \n\

@@ -72,7 +72,7 @@ void init_x(char capt[256]) {
       0, 0, W, H, 0, bp, wp);
 
   XSetStandardProperties(dis, win, capt, "icon", None, NULL, 0, NULL);
-  XSelectInput   (dis, win, ExposureMask|KeyPressMask|StructureNotifyMask);
+  XSelectInput   (dis, win, ExposureMask|KeyPressMask|StructureNotifyMask   |ButtonPressMask|ButtonReleaseMask|PointerMotionMask	  );
 
   gc_white = XCreateGC (dis, win, 0, 0);
   XSetBackground (dis, gc_white, wp);

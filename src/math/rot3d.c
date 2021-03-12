@@ -45,3 +45,12 @@ void rotmx(double * rot, double * u, double phi){
   return;
 }
 
+void rot_around_perp(double rot[9], double dx, double dy, double factor){
+  double l     = hypot(dx, dy);
+  double alpha = atan2(dx, dy);
+  double ox = cos(alpha);
+  double oy = sin(alpha);
+  double u[3] = {ox, oy, 0.0};
+  rotmx(rot, u, factor*l);
+  return;
+}

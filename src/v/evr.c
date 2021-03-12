@@ -214,6 +214,23 @@ void kp_frame_dec(void * ent, task_t task, drawpars * dp){
   return;
 }
 
+void rot_ent_pointer(void * ent, task_t task, drawpars * dp, int dx, int dy, double speed){
+
+  double rotation_matrix[9];
+  rot_around_perp(rotation_matrix, (double)dx, (double)dy, speed);
+
+  double mx0[9];
+  veccp(9, mx0, dp->ac3rmx);
+  mx_multmx(3,3,3, dp->ac3rmx, rotation_matrix, mx0);
+  if(task == AT3COORDS){
+    atcoords * acs = ent;
+    for(int i=0; i<dp->N; i++){
+      rot3d(acs->m[i]->n, acs->m[i]->r, rotation_matrix);
+    }
+  }
+  return;
+}
+
 static void rot_ent(void * ent, task_t task, drawpars * dp, int axis, double angle){
   if(dp->modkey){
     angle *= step_mod;

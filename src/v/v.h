@@ -4,6 +4,7 @@
 #define DEFAULT_SYMTOL   1e-3
 #define NKP  256
 #define BONDS_MAX 32
+#define POINTER_SPEED 2.0
 
 typedef void (* ptf )();
 

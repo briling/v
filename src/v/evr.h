@@ -40,3 +40,4 @@ void time_gone   (void * ent, task_t task, drawpars * dp);
 void kp_savepic  (void * ent, task_t task, drawpars * dp);
 void kp_film     (void * ent, task_t task, drawpars * dp);
 void kp_pg       (void * ent, task_t task, drawpars * dp);
+void rot_ent_pointer(void * ent, task_t task, drawpars * dp, int dx, int dy, double speed);

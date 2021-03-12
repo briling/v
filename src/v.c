@@ -203,12 +203,17 @@ int main (int argc, char * argv[]) {
   canv = px;
 #endif
 
+  int mouse_click = 0;
+  int mouse_x0 = 0;
+  int mouse_y0 = 0;
+
   int tr = 0;
   while(1) {
 
     int zh = 0;
     do{
       XNextEvent(dis, &event1);
+      //printf("%d\n", event1.type);
       if(event1.type != NoExpose){
         event=event1;
         zh = 1;
@@ -232,6 +237,26 @@ int main (int argc, char * argv[]) {
         kp[event.xkey.keycode](ent, task, &dp);
       }
     }
+
+    else if(event.type == ButtonPress){
+      mouse_click = 1;
+      mouse_x0 = event.xbutton.x;
+      mouse_y0 = event.xbutton.y;
+    }
+    else if(event.type == ButtonRelease){
+      mouse_click = 0;
+    }
+    else if(event.type == MotionNotify){
+      if(mouse_click){
+        int x = event.xmotion.x;
+        int y = event.xmotion.y;
+        rot_ent_pointer(ent, task, &dp, x-mouse_x0, y-mouse_y0, POINTER_SPEED/MIN(W,H));
+        exp_redraw(ent, task, &dp);
+        mouse_x0 = x;
+        mouse_y0 = y;
+      }
+    }
+
 
     if(dp.fbw){
 

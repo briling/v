@@ -22,6 +22,7 @@ typedef struct {
   styp   sym;            // point group
   int    * bond_a;       // lists of bounded atoms
   double * bond_r;       // distances to the bonded atoms
+  char   * fname;        // file name
 } atcoord;
 
 typedef struct {
@@ -74,8 +75,8 @@ typedef struct {
 } drawpars;
 
 void * ent_read    (task_t * task, char * fname, drawpars * dp);
-void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs);
-atcoord * ac3_read (FILE * f, int b, int center, int xyz);
+void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs, char * fname);
+atcoord * ac3_read (FILE * f, int b, int center, int xyz, char * fname);
 modestr * mode_read(FILE * f, int na);
 
 double ac3_scale(atcoord * ac);
@@ -103,7 +104,7 @@ void pg(atcoord * a, styp s, double symtol);
 void close_x      (void) ;
 void init_x       (char   capt[256]) ;
 void init_font    (char * fontname);
-void textincorner (char * text);
+void textincorner (const char * const text1, const char * const text2);
 void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);

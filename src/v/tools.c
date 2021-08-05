@@ -20,7 +20,7 @@ void ac3_text(atcoord * ac, drawpars * dp){
   if( tp<sizeof(text)-1 && ac->sym[0] ){
     tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", ac->sym);
   }
-  textincorner(text);
+  textincorner(text, ac->fname);
   return;
 }
 
@@ -31,7 +31,7 @@ void vibro_text(modestr * ms, drawpars * dp){
   snprintf(text, sizeof(text),
            "%d / %d   %.1lf%c   r = %.1lf   rl = %.1lf",
            dp->n+1, ms->n, fabs(fq), i, dp->r, dp->rl);
-  textincorner(text);
+  textincorner(text, NULL);
   return;
 }
 

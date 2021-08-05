@@ -139,14 +139,19 @@ int main (int argc, char * argv[]) {
   int cell_count  = 0;
   int shell_count = 0;
   for(int i=2; i<argc; i++){
-    sscanf (argv[i], "to:%d", &to);
-    sscanf (argv[i], "symtol:%lf", &dp.symtol);
-    sscanf (argv[i], "bonds:%d", &bonds);
-    sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
-    sscanf (argv[i], "font:%255s", fontname);
+    int a1 = sscanf (argv[i], "to:%d", &to);
+    int a2 = sscanf (argv[i], "symtol:%lf", &dp.symtol);
+    int a3 = sscanf (argv[i], "bonds:%d", &bonds);
+    int a4 = sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
+    int a5 = sscanf (argv[i], "font:%255s", fontname);
     rot_count   = sscan_rot  (argv[i], rot);
     cell_count  = sscan_cell (argv[i], cell);
     shell_count = sscan_shell(argv[i], shell);
+
+    int xxx = a1||a2||a3||a4||a5 || rot_count||cell_count||shell_count;
+    printf("%d %d\n", i, xxx);
+
+
     if(rot_count==9){
       veccp(9, dp.ac3rmx, rot); // we don't check if the matrix is unitary
     }

@@ -5,9 +5,9 @@
 #define CENTER 1
 #define XYZ    1
 
-void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs){
+void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs, char * fname){
   atcoord * m;
-  while((m = ac3_read(f, b, center, xyz))!=NULL){
+  while((m = ac3_read(f, b, center, xyz, fname))!=NULL){
     if(acs->n==acs->Nmem){
       int N = acs->Nmem ? acs->Nmem*2 : N_MIN;
       atcoord ** ms = realloc(acs->m, N*sizeof(atcoord *));
@@ -58,7 +58,7 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
   acs->Nmem = 0;
   acs->n = 0;
   acs->m = NULL;
-  acs_readmore(f, dp->b, dp->center, dp->xyz, acs);
+  acs_readmore(f, dp->b, dp->center, dp->xyz, acs, fname);
 
   if(!acs->n){
     free(acs);

@@ -59,20 +59,24 @@ static vibrstr * mode_read_try(FILE * f, atcoord * ac){
   }
 }
 
-void * ent_read(task_t * task, char * fname, drawpars * dp){
-
+FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   FILE * f = fopen(fname, "r");
   if(!f){
     return NULL;
   }
+  acs_readmore(f, dp->b, dp->center, dp->xyz, acs, fname);
+  return f;
+}
+
+void * ent_read(task_t * task, char * fname, drawpars * dp){
 
   atcoords * acs = malloc(sizeof(atcoords));
   acs->Nmem = 0;
   acs->n = 0;
   acs->m = NULL;
-  acs_readmore(f, dp->b, dp->center, dp->xyz, acs, fname);
 
-  if(!acs->n){
+  FILE * f = acs_read_newfile(acs, fname, dp);
+  if(!f || !acs->n){
     free(acs);
     return NULL;
   }
@@ -96,11 +100,7 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
   }
 
   *task = AT3COORDS;
-  dp->scale = acs_scale(acs);
   dp->f = f;
-  dp->N = 0;
-  newmol_prep(acs, dp);
-  dp->N = acs->n;
   return acs;
 }
 

@@ -194,18 +194,33 @@ int main (int argc, char * argv[]) {
 
   void * ent;
 
-  if(!(ent = ent_read(&task, argv[flist[0]], &dp))){
-    PRINT_ERR("cannot read file '%s'\n", argv[flist[0]]);
+  int i=0;
+  while(!(ent = ent_read(&task, argv[flist[i]], &dp)) && i<fn){
+    PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
+    i++;
+  }
+  if(i==fn){
+    PRINT_ERR("no files to read\n");
     exit(1);
   }
 
-  for(int i=0; i<fn; i++){
-    printf("%d %s\n", i, argv[flist[i]]);
-    if(i==0){
-      printf("__%s__\n", argv[flist[i]]);
+  if(task == AT3COORDS){
+    atcoords * acs = ent;
+    for(i++; i<fn; i++){
+      printf("%d\n", i);
+      FILE * f = acs_read_newfile(acs, argv[flist[i]], &dp);
+      if(!f){
+        PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
+      }
+      else{
+        dp.f = f;
+      }
     }
+    dp.scale = acs_scale(acs);
+    dp.N = 0;
+    newmol_prep(acs, &dp);
+    dp.N = acs->n;
   }
-
 
   /*= Check int coord ========================================================*/
   if(task == AT3COORDS){

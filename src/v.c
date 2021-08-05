@@ -88,7 +88,7 @@ static int sscan_shell(const char * arg, double shell[2]){
   return count;
 }
 
-static drawpars dp_init(char * fname){
+static drawpars dp_init(void){
   drawpars dp;
   dp.n   = 0;
   dp.fbw = 0;
@@ -105,7 +105,6 @@ static drawpars dp_init(char * fname){
   dp.center = 0;
   dp.xyz    = 0;
 #endif
-  strncpy(dp.capt, fname, sizeof(dp.capt));
   // from command-line
   dp.b = 1;
   dp.symtol = DEFAULT_SYMTOL;
@@ -116,6 +115,7 @@ static drawpars dp_init(char * fname){
   dp.scale = 1.0;
   dp.N = 0.0;
   dp.f = NULL;
+  dp.fname = NULL;
   return dp;
 }
 
@@ -175,7 +175,7 @@ int main (int argc, char * argv[]) {
 
   task_t   task = UNKNOWN;
   int      to   = DEFAULT_TIMEOUT;
-  drawpars dp   = dp_init(argv[1]);
+  drawpars dp   = dp_init();
   char     fontname[256]={0};
 
   int fn = 0;
@@ -207,7 +207,6 @@ int main (int argc, char * argv[]) {
   if(task == AT3COORDS){
     atcoords * acs = ent;
     for(i++; i<fn; i++){
-      printf("%d\n", i);
       FILE * f = acs_read_newfile(acs, argv[flist[i]], &dp);
       if(!f){
         PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
@@ -215,6 +214,7 @@ int main (int argc, char * argv[]) {
       else{
         fclose(dp.f);
         dp.f = f;
+        dp.fname = argv[flist[i]];
       }
     }
     dp.scale = acs_scale(acs);
@@ -235,10 +235,8 @@ int main (int argc, char * argv[]) {
 
   /*= X11 init ===============================================================*/
 
-  char capt[256];
-  ptf  kp  [NKP];
-  snprintf (capt, sizeof(capt), "%s - %s", argv[0], dp.capt);
-  init_x   (capt);
+  ptf kp[NKP];
+  init_x(dp.fname);
   init_keys(kp);
   init_font(fontname);
 #if 0

@@ -17,7 +17,7 @@ void newmol_prep(atcoords * acs, drawpars * dp){
   return;
 }
 
-void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs, char * fname){
+void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs, const char * fname){
   atcoord * m;
   while((m = ac3_read(f, b, center, xyz, fname))!=NULL){
     if(acs->n==acs->Nmem){
@@ -101,6 +101,7 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
 
   *task = AT3COORDS;
   dp->f = f;
+  dp->fname = fname;
   return acs;
 }
 

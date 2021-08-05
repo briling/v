@@ -73,6 +73,7 @@ typedef struct {
 
 } drawpars;
 
+void newmol_prep(atcoords * acs, drawpars * dp);
 void * ent_read    (task_t * task, char * fname, drawpars * dp);
 void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs);
 atcoord * ac3_read (FILE * f, int b, int center, int xyz);

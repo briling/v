@@ -83,6 +83,8 @@ clean :
 
 cleand :
 	rm -f $(OBJDIR)/*/*/*.d $(OBJDIR)/*/*.d $(OBJDIR)/*.d
+cleantags:
+	rm -f ./.tags ./.types.vim
 
 cleanasm :
 	rm -f $(OBJDIR)/*/*/*.s $(OBJDIR)/*/*.s $(OBJDIR)/*.s

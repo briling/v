@@ -113,4 +113,5 @@ void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
 void printman(char * exename);
+int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
 

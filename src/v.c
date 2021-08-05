@@ -213,6 +213,7 @@ int main (int argc, char * argv[]) {
         PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
       }
       else{
+        fclose(dp.f);
         dp.f = f;
       }
     }
@@ -221,6 +222,7 @@ int main (int argc, char * argv[]) {
     newmol_prep(acs, &dp);
     dp.N = acs->n;
   }
+  free(flist);
 
   /*= Check int coord ========================================================*/
   if(task == AT3COORDS){

@@ -17,9 +17,9 @@ void newmol_prep(atcoords * acs, drawpars * dp){
   return;
 }
 
-void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs){
+void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs, const char * fname){
   atcoord * m;
-  while((m = ac3_read(f, b, center, xyz))!=NULL){
+  while((m = ac3_read(f, b, center, xyz, fname))!=NULL){
     if(acs->n==acs->Nmem){
       int N = acs->Nmem ? acs->Nmem*2 : N_MIN;
       atcoord ** ms = realloc(acs->m, N*sizeof(atcoord *));
@@ -59,20 +59,24 @@ static vibrstr * mode_read_try(FILE * f, atcoord * ac){
   }
 }
 
-void * ent_read(task_t * task, char * fname, drawpars * dp){
-
+FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   FILE * f = fopen(fname, "r");
   if(!f){
     return NULL;
   }
+  acs_readmore(f, dp->b, dp->center, dp->xyz, acs, fname);
+  return f;
+}
+
+void * ent_read(task_t * task, char * fname, drawpars * dp){
 
   atcoords * acs = malloc(sizeof(atcoords));
   acs->Nmem = 0;
   acs->n = 0;
   acs->m = NULL;
-  acs_readmore(f, dp->b, dp->center, dp->xyz, acs);
 
-  if(!acs->n){
+  FILE * f = acs_read_newfile(acs, fname, dp);
+  if(!f || !acs->n){
     free(acs);
     return NULL;
   }
@@ -96,11 +100,8 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
   }
 
   *task = AT3COORDS;
-  dp->scale = acs_scale(acs);
   dp->f = f;
-  dp->N = 0;
-  newmol_prep(acs, dp);
-  dp->N = acs->n;
+  dp->fname = fname;
   return acs;
 }
 

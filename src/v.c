@@ -88,28 +88,80 @@ static int sscan_shell(const char * arg, double shell[2]){
   return count;
 }
 
-static void dp_init(drawpars * dp, char * fname){
-  dp->n   = 0;
-  dp->fbw = 0;
-  dp->num = 0;
-  dp->t   = 0;
-  dp->rl  = 1.0;
-  dp->r   = 1.0;
-  dp->xy0[0] = dp->xy0[1] = 0.0;
-  mx_id(3, dp->ac3rmx);
-  strncpy(dp->capt, fname, sizeof(dp->capt));
+static drawpars dp_init(void){
+  drawpars dp;
+  dp.n   = 0;
+  dp.fbw = 0;
+  dp.num = 0;
+  dp.t   = 0;
+  dp.rl  = 1.0;
+  dp.r   = 1.0;
+  dp.xy0[0] = dp.xy0[1] = 0.0;
+  mx_id(3, dp.ac3rmx);
+#ifdef USE_XYZ
+  dp.center = 1;
+  dp.xyz    = 1;
+#else
+  dp.center = 0;
+  dp.xyz    = 0;
+#endif
   // from command-line
-  dp->b = 1;
-  dp->symtol = DEFAULT_SYMTOL;
-  dp->vert = -1;
-  dp->z[0] = dp->z[1] = dp->z[2] = dp->z[3] = dp->z[4] = 0;
-  vecset(3*8, dp->vertices, 0.0);
+  dp.b = 1;
+  dp.symtol = DEFAULT_SYMTOL;
+  dp.vert = -1;
+  dp.z[0] = dp.z[1] = dp.z[2] = dp.z[3] = dp.z[4] = 0;
+  vecset(3*8, dp.vertices, 0.0);
   // from data read
-  dp->scale = 1.0;
-  dp->N = 0.0;
-  dp->f = NULL;
-  return;
+  dp.scale = 1.0;
+  dp.N = 0.0;
+  dp.f = NULL;
+  dp.fname = NULL;
+  return dp;
 }
+
+static int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task){
+  int vib   = -1;
+  int bonds = 1;
+  double rot  [9]={0};
+  double cell [9]={0};
+  double shell[2]={0};
+
+  int a0 = sscanf (arg, "vib:%d", &vib);
+  int a1 = sscanf (arg, "to:%d", to);
+  int a2 = sscanf (arg, "symtol:%lf", &(dp->symtol));
+  int a3 = sscanf (arg, "bonds:%d", &bonds);
+  int a4 = sscanf (arg, "z:%d,%d,%d,%d,%d", dp->z, dp->z+1, dp->z+2, dp->z+3, dp->z+4);
+  int a5 = sscanf (arg, "font:%255s", fontname);
+  int rot_count   = sscan_rot  (arg, rot);
+  int cell_count  = sscan_cell (arg, cell);
+  int shell_count = sscan_shell(arg, shell);
+
+  int cli = a0||a1||a2||a3||a4||a5 || rot_count||cell_count||shell_count;
+
+  if(vib==0){
+    *task = AT3COORDS;
+  }
+  else if(vib==1){
+    *task = VIBRO;
+  }
+
+  if(!bonds){
+    dp->b = -1;
+  }
+
+  if(rot_count==9){
+    veccp(9, dp->ac3rmx, rot); // we don't check if the matrix is unitary
+  }
+  if(cell_count==3 || cell_count==9){
+    getcell(cell, dp, cell_count);
+  }
+  if(shell_count==2){
+    getshell(shell, dp);
+  }
+
+  return cli;
+}
+
 
 int main (int argc, char * argv[]) {
 
@@ -119,71 +171,60 @@ int main (int argc, char * argv[]) {
     return 0;
   }
 
-  void  * ent;
-  drawpars dp;
+  /*= CLI arguments ==========================================================*/
+
   task_t   task = UNKNOWN;
+  int      to   = DEFAULT_TIMEOUT;
+  drawpars dp   = dp_init();
+  char     fontname[256]={0};
 
-  char   capt[256];
-  char   fontname[256]={0};
-  ptf    kp  [NKP];
-  XEvent event, event1;
-
-  dp_init(&dp, argv[1]);
-
-  int to = DEFAULT_TIMEOUT;
-  int bonds = 1;
-  int vib = -1;
-  double rot  [9]={0};
-  double cell [9]={0};
-  double shell[2]={0};
-  int rot_count   = 0;
-  int cell_count  = 0;
-  int shell_count = 0;
-  for(int i=2; i<argc; i++){
-    sscanf (argv[i], "to:%d", &to);
-    sscanf (argv[i], "symtol:%lf", &dp.symtol);
-    sscanf (argv[i], "bonds:%d", &bonds);
-    sscanf (argv[i], "z:%d,%d,%d,%d,%d", dp.z, dp.z+1, dp.z+2, dp.z+3, dp.z+4);
-    sscanf (argv[i], "font:%255s", fontname);
-    rot_count   = sscan_rot  (argv[i], rot);
-    cell_count  = sscan_cell (argv[i], cell);
-    shell_count = sscan_shell(argv[i], shell);
-    if(rot_count==9){
-      veccp(9, dp.ac3rmx, rot); // we don't check if the matrix is unitary
+  int fn = 0;
+  int * flist = malloc(argc*sizeof(int));
+  for(int i=1; i<argc; i++){
+    if(!cli_parse(argv[i], fontname, &to, &dp, &task)){
+      flist[fn++] = i;
     }
-    if(cell_count==3 || cell_count==9){
-      getcell(cell, &dp, cell_count);
-    }
-    if(shell_count==2){
-      getshell(shell, &dp);
-    }
-
-    sscanf (argv[i], "vib:%d", &vib);
-    if(vib==0){
-      task = AT3COORDS;
-    }
-    else if(vib==1){
-      task = VIBRO;
-    }
-
   }
-  if(!bonds){
-    dp.b = -1;
-  }
-
-#ifdef USE_XYZ
-  dp.center = 1;
-  dp.xyz    = 1;
-#else
-  dp.center = 0;
-  dp.xyz    = 0;
-#endif
-
-  if(!(ent = ent_read(&task, argv[1], &dp))){
-    PRINT_ERR("cannot read file '%s'\n", argv[1]);
+  if(!fn){
+    PRINT_ERR("no files to read\n");
     exit(1);
   }
 
+  /*= Read files =============================================================*/
+
+  void * ent;
+
+  int i=0;
+  while(!(ent = ent_read(&task, argv[flist[i]], &dp)) && i<fn){
+    PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
+    i++;
+  }
+  if(i==fn){
+    PRINT_ERR("no files to read\n");
+    exit(1);
+  }
+
+  if(task == AT3COORDS){
+    atcoords * acs = ent;
+    for(i++; i<fn; i++){
+      FILE * f = acs_read_newfile(acs, argv[flist[i]], &dp);
+      if(!f){
+        PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
+      }
+      else{
+        fclose(dp.f);
+        dp.f = f;
+        dp.fname = argv[flist[i]];
+      }
+    }
+    dp.scale = acs_scale(acs);
+    dp.N = 0;
+    newmol_prep(acs, &dp);
+    dp.N = acs->n;
+  }
+  free(flist);
+
+  /*= Check int coord ========================================================*/
   if(task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp.n];
     intcoord_check(ac->n, dp.z);
@@ -192,8 +233,10 @@ int main (int argc, char * argv[]) {
     dp.z[0] = 0;
   }
 
-  snprintf (capt, sizeof(capt), "%s - %s", argv[0], dp.capt);
-  init_x   (capt);
+  /*= X11 init ===============================================================*/
+
+  ptf kp[NKP];
+  init_x(dp.fname);
   init_keys(kp);
   init_font(fontname);
 #if 0
@@ -207,9 +250,11 @@ int main (int argc, char * argv[]) {
   canv = px;
 #endif
 
+  /*= Main loop ==============================================================*/
+
   int tr = 0;
   while(1) {
-
+    XEvent event, event1;
     int zh = 0;
     do{
       XNextEvent(dis, &event1);

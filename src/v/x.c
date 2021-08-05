@@ -58,7 +58,7 @@ static void setcolors(){
   return;
 }
 
-void init_x(char capt[256]) {
+void init_x(const char * const capt){
 
   dis    = XOpenDisplay((char *)0);
   screen = DefaultScreen(dis);
@@ -131,10 +131,17 @@ void init_font(char * fontname){
   return;
 }
 
-void textincorner(char * text){
-  int voffset = fontInfo ? (fontInfo->ascent + 9) : 20;
-  XDrawString(dis, win, gc_black, 10, voffset, text, strlen(text));
+void textincorner(const char * const text1, const char * const text2){
+  int voffset = fontInfo ? (fontInfo->ascent + fontInfo->descent + 5) : 20;
+  XDrawString(dis, win, gc_black, 10, voffset, text1, strlen(text1));
+  if(text2){
+    XDrawString(dis, win, gc_black, 10, voffset*2, text2, strlen(text2));
+  }
   return;
+}
+
+void setcaption(const char * const capt){
+  XStoreName(dis, win, capt);
 }
 
 void drawvertices(double * v, double scale, double xy0[2]){

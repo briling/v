@@ -132,6 +132,7 @@ int main (int argc, char * argv[]) {
 
   int to = DEFAULT_TIMEOUT;
   int bonds = 1;
+  int vib = -1;
   double rot  [9]={0};
   double cell [9]={0};
   double shell[2]={0};
@@ -156,12 +157,15 @@ int main (int argc, char * argv[]) {
     if(shell_count==2){
       getshell(shell, &dp);
     }
-    if(!strcmp(argv[i], "a")){
+
+    sscanf (argv[i], "vib:%d", &vib);
+    if(vib==0){
       task = AT3COORDS;
     }
-    if(!strcmp(argv[i], "v")){
+    else if(vib==1){
       task = VIBRO;
     }
+
   }
   if(!bonds){
     dp.b = -1;

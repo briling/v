@@ -59,19 +59,6 @@ static void redraw_vibro(void * ent, drawpars * dp){
   return;
 }
 
-static void newmol_prep(atcoords * acs, drawpars * dp){
-  for(int j=dp->N; j<acs->n; j++){
-    atcoord * ac = acs->m[j];
-    for(int i=0; i<ac->n; i++){
-      double v[3];
-      r3mx(v, ac->r+3*i, dp->ac3rmx);
-      r3cp(ac->r+3*i, v);
-    }
-  }
-  dp->N = acs->n;
-  return;
-}
-
 void kp_readmore(void * ent, task_t task, drawpars * dp){
   if(task == AT3COORDS){
     atcoords * acs = ent;

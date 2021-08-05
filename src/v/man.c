@@ -9,7 +9,7 @@ printf("\
   \n\
  OPTIONS:\n\
   \n\
-  a/v                                          force to show geometries / vibrations \n\
+  vib:%%d                                       force to show geometries (0) / vibrations (1) \n\
   bonds:0                                      disable bonds\n\
   to:%%d                                        delay between frames in μs (default %d)\n\
   symtol:%%lf                                   tolerance for symmetry determination in Å (default %g) \n\

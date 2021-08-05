@@ -1,9 +1,21 @@
 #include "v.h"
+#include "vec3.h"
 #include "vecn.h"
 
 #define N_MIN 256
-#define CENTER 1
-#define XYZ    1
+
+void newmol_prep(atcoords * acs, drawpars * dp){
+  for(int j=dp->N; j<acs->n; j++){
+    atcoord * ac = acs->m[j];
+    for(int i=0; i<ac->n; i++){
+      double v[3];
+      r3mx(v, ac->r+3*i, dp->ac3rmx);
+      r3cp(ac->r+3*i, v);
+    }
+  }
+  dp->N = acs->n;
+  return;
+}
 
 void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs, char * fname){
   atcoord * m;
@@ -83,10 +95,12 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
     }
   }
 
-  dp->scale = acs_scale(acs);
-  dp->N = acs->n;
-  dp->f = f;
   *task = AT3COORDS;
+  dp->scale = acs_scale(acs);
+  dp->f = f;
+  dp->N = 0;
+  newmol_prep(acs, dp);
+  dp->N = acs->n;
   return acs;
 }
 

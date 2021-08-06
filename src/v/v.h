@@ -23,6 +23,7 @@ typedef struct {
   int    * bond_a;       // lists of bounded atoms
   double * bond_r;       // distances to the bonded atoms
   const char * fname;    // file name
+  int nf[2];             // number of molecule in file, file size
 } atcoord;
 
 typedef struct {

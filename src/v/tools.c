@@ -22,7 +22,14 @@ void ac3_text(atcoord * ac, drawpars * dp){
   if( tp<sizeof(text)-1 && ac->sym[0] ){
     tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", ac->sym);
   }
-  textincorner(text, ac->fname);
+  if(ac->nf[1]==dp->N){
+    textincorner(text, ac->fname);
+  }
+  else{
+    char text2[256];
+    snprintf(text2, sizeof(text2), "%s (%*d / %d)", ac->fname, 1+(int)(log10(ac->nf[1])), ac->nf[0]+1, ac->nf[1]);
+    textincorner(text, text2);
+  }
   setcaption(ac->fname);
   return;
 }

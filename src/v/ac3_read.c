@@ -31,6 +31,82 @@ typedef struct {
   double z;
 } txyz;
 
+static txyz * ac3_read_in(int * n_p, FILE * f){
+
+  txyz * a = NULL;
+
+  int bohr = 0;
+  int zcf  = 0;
+  char s[256];
+  int    q;
+  double r[3];
+  double tf; char tc; char ts[256]; int ti1, ti2;
+  long pos = ftell(f);
+
+  do{
+    while (fscanf(f, " %255[^$ ]", s) == 1);
+    if (fscanf(f, "%255[$A-z]", s) != 1){
+      goto hell;
+    }
+  } while(strcmp(s, "$molecule"));
+  while (fscanf(f, " %255[^$ \n]", s) == 1) {
+    if (s[0] == 'u' ){
+      if ((*(strchr(s, '=')+1))=='b'){
+        bohr = 1;
+      }
+    }
+    else if (! strncmp(s, "cartesian", 4) ){
+      zcf = 0;
+      break;
+    }
+    else if( ! strncmp(s, "z-matrix", 1 ) ){
+      zcf = 1;
+      break;
+    }
+  }
+
+  int n = 0;
+  while (fscanf(f, " $%255s", s) != 1){
+    if (zcf == 0){
+      if (fscanf(f, "%d%lf%lf%lf", &q, r, r+1, r+2) != 4){
+        if ( fscanf(f, " %255[^\n]", s) && strstr(s, "set")){
+          continue;
+        }
+        goto hell;
+      }
+    }
+    else if (zcf == 1){
+      PRINT_WARN("sorry, z-matrix has not been implemented yet\n"); //TODO
+      goto hell;
+    }
+    if(bohr == 1){
+      r3scal(r, BA);
+    }
+
+    a = realloc(a, sizeof(txyz)*(n+1));
+    a[n].t = q;
+    a[n].x = r[0];
+    a[n].y = r[1];
+    a[n].z = r[2];
+
+    fscanf(f, " mass = %lf", &tf);
+    fscanf(f, " type = %7s", ts);
+    if (fscanf(f, " k%c",&tc) == 1){
+      do{
+        fscanf(f, "%d(%d)", &ti1, &ti2);
+      } while((char)getc(f)==',');
+    }
+
+    n++;
+  }
+  *n_p = n;
+  return a;
+hell:
+  fseek(f, pos, SEEK_SET);
+  free(a);
+  return NULL;
+}
+
 static txyz * ac3_read_ac(int * n_p, FILE * f){
 
   txyz * a = NULL;
@@ -94,9 +170,10 @@ static txyz * ac3_read_xyz(int * n_p, FILE * f){
 atcoord * ac3_read(FILE * f, int b, int center, const char * fname){
 
   int n;
-  txyz * a;
-
-  a = ac3_read_xyz(&n, f);
+  txyz * a = ac3_read_xyz(&n, f);
+  if(!a){
+    a = ac3_read_in(&n, f);
+  }
   if(!a){
     a = ac3_read_ac(&n, f);
   }

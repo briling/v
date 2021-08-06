@@ -75,9 +75,8 @@ typedef struct {
 } drawpars;
 
 void newmol_prep(atcoords * acs, drawpars * dp);
-void * ent_read    (task_t * task, char * fname, drawpars * dp);
-FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp);
 void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs, const char * fname);
+void * read_files(int fn, char ** flist, task_t * task, drawpars * dp);
 atcoord * ac3_read (FILE * f, int b, int center, int xyz, const char * fname);
 modestr * mode_read(FILE * f, int na);
 

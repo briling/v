@@ -165,7 +165,7 @@ int main (int argc, char * argv[]) {
     return 0;
   }
 
-  /*= CLI arguments ==========================================================*/
+  /*= Input ==================================================================*/
 
   task_t   task = UNKNOWN;
   int      to   = DEFAULT_TIMEOUT;
@@ -173,10 +173,10 @@ int main (int argc, char * argv[]) {
   char     fontname[256]={0};
 
   int fn = 0;
-  int * flist = malloc(argc*sizeof(int));
+  char ** flist = malloc(argc*sizeof(char*));
   for(int i=1; i<argc; i++){
     if(!cli_parse(argv[i], fontname, &to, &dp, &task)){
-      flist[fn++] = i;
+      flist[fn++] = argv[i];
     }
   }
   if(!fn){
@@ -184,47 +184,11 @@ int main (int argc, char * argv[]) {
     exit(1);
   }
 
-  /*= Read files =============================================================*/
-
-  void * ent;
-
-  int i=0;
-  while(!(ent = ent_read(&task, argv[flist[i]], &dp)) && i<fn){
-    PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
-    i++;
-  }
-  if(i==fn){
+  void * ent = read_files(fn, flist, &task, &dp);
+  free(flist);
+  if(!ent){
     PRINT_ERR("no files to read\n");
     exit(1);
-  }
-
-  if(task == AT3COORDS){
-    atcoords * acs = ent;
-    for(i++; i<fn; i++){
-      FILE * f = acs_read_newfile(acs, argv[flist[i]], &dp);
-      if(!f){
-        PRINT_WARN("cannot read file '%s'\n", argv[flist[i]]);
-      }
-      else{
-        fclose(dp.f);
-        dp.f = f;
-        dp.fname = argv[flist[i]];
-      }
-    }
-    dp.scale = acs_scale(acs);
-    dp.N = 0;
-    newmol_prep(acs, &dp);
-    dp.N = acs->n;
-  }
-  free(flist);
-
-  /*= Check int coord ========================================================*/
-  if(task == AT3COORDS){
-    atcoord * ac = ((atcoords *)ent)->m[dp.n];
-    intcoord_check(ac->n, dp.z);
-  }
-  else{
-    dp.z[0] = 0;
   }
 
   /*= X11 init ===============================================================*/

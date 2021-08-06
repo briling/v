@@ -17,7 +17,7 @@ void ac3_text(atcoord * ac, drawpars * dp){
     "%*d / %d   r = %.1lf   rl = %.1lf",
     1+(int)(log10(dp->N)), dp->n+1, dp->N, dp->r, dp->rl);
   if( tp<sizeof(text)-1 && dp->z[0] ){
-    tp += snprintf(text+tp, sizeof(text)-tp, "  |  %d,%d,%d,%d,%d: %lf", dp->z[0], dp->z[1], dp->z[2], dp->z[3], dp->z[4], intcoord_calc(1, dp->z, ac->r));
+    tp += snprintf(text+tp, sizeof(text)-tp, "  |  %d,%d,%d,%d,%d: %lf", dp->z[0], dp->z[1], dp->z[2], dp->z[3], dp->z[4], intcoord_calc(1, ac->n, dp->z, ac->r));
   }
   if( tp<sizeof(text)-1 && ac->sym[0] ){
     tp += snprintf(text+tp, sizeof(text)-tp, "  |  PG: %s", ac->sym);

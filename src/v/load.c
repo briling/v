@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "v.h"
 #include "vec3.h"
 #include "vecn.h"
@@ -59,7 +60,7 @@ static vibrstr * mode_read_try(FILE * f, atcoord * ac){
   }
 }
 
-FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
+static FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   FILE * f = fopen(fname, "r");
   if(!f){
     return NULL;
@@ -68,7 +69,7 @@ FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   return f;
 }
 
-void * ent_read(task_t * task, char * fname, drawpars * dp){
+static void * ent_read(task_t * task, char * fname, drawpars * dp){
 
   atcoords * acs = malloc(sizeof(atcoords));
   acs->Nmem = 0;
@@ -105,3 +106,39 @@ void * ent_read(task_t * task, char * fname, drawpars * dp){
   return acs;
 }
 
+void * read_files(int fn, char ** flist, task_t * task, drawpars * dp){
+
+  void * ent;
+  int i=0;
+  while(!(ent = ent_read(task, flist[i], dp)) && i<fn){
+    PRINT_WARN("cannot read file '%s'\n", flist[i]);
+    i++;
+  }
+  if(i==fn){
+    return NULL;
+  }
+
+  if(*task == AT3COORDS){
+    atcoords * acs = ent;
+    for(i++; i<fn; i++){
+      FILE * f = acs_read_newfile(acs, flist[i], dp);
+      if(!f){
+        PRINT_WARN("cannot read file '%s'\n", flist[i]);
+      }
+      else{
+        fclose(dp->f);
+        dp->f = f;
+        dp->fname = flist[i];
+      }
+    }
+    dp->scale = acs_scale(acs);
+    dp->N = 0;
+    newmol_prep(acs, dp);
+    dp->N = acs->n;
+    intcoord_check(INT_MAX, dp->z);
+  }
+  else{
+    dp->z[0] = 0;
+  }
+  return ent;
+}

@@ -1,6 +1,7 @@
 # v
 
-A simple viewer for [Priroda](http://rad.chem.msu.ru/~laikov) outputs
+A simple viewer for [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files,
+[Priroda](http://rad.chem.msu.ru/~laikov) outputs,
 and beyond.
 
 ## Contents
@@ -18,11 +19,6 @@ and beyond.
 ```
 make v
 ```
->To open [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files
->(with either atomic symbols or atomic numbers), build the special version:
->```
->make vr
->```
 
 ### Requirements:
 * `GNU/Linux` or `Cygwin`
@@ -33,7 +29,7 @@ make v
 
 ## Usage [↑](#contents)
 ```
-./v file [options]
+./v file [file2 ... fileN] [options]
 ```
 show this reference:
 ```

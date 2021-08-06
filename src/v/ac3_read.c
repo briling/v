@@ -91,14 +91,13 @@ static txyz * ac3_read_xyz(int * n_p, FILE * f){
   return a;
 }
 
-atcoord * ac3_read(FILE * f, int b, int center, int xyz, const char * fname){
+atcoord * ac3_read(FILE * f, int b, int center, const char * fname){
 
   int n;
   txyz * a;
-  if(xyz){
-    a = ac3_read_xyz(&n, f);
-  }
-  else{
+
+  a = ac3_read_xyz(&n, f);
+  if(!a){
     a = ac3_read_ac(&n, f);
   }
   if(!a){

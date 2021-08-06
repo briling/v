@@ -63,11 +63,9 @@ symobj=$(symsrc:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 default : v
 
-all : v vr
+all : v
 
 v  : $(vobj) $(molobj) $(mathobj) $(symobj) $(OBJDIR)/v.o
-	$(CC) $^ -o $@ $(OFLAGS) -lX11 -lXpm
-vr : $(vobj) $(molobj) $(mathobj) $(symobj) $(OBJDIR)/vr.o
 	$(CC) $^ -o $@ $(OFLAGS) -lX11 -lXpm
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
@@ -75,11 +73,9 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 $(OBJDIR)/v.o : $(SRCDIR)/v.c
 	$(CC) $(CFLAGS) $< -o $@ $(INCL) -I$(SRCDIR)/v $(VERSION_FLAGS)
-$(OBJDIR)/vr.o : $(SRCDIR)/v.c
-	$(CC) $(CFLAGS) $< -o $@ $(INCL) -I$(SRCDIR)/v $(VERSION_FLAGS) -DUSE_XYZ
 
 clean :
-	rm -f $(OBJDIR)/*/*/*.o $(OBJDIR)/*/*.o $(OBJDIR)/*.o v vr
+	rm -f $(OBJDIR)/*/*/*.o $(OBJDIR)/*/*.o $(OBJDIR)/*.o v
 
 cleand :
 	rm -f $(OBJDIR)/*/*/*.d $(OBJDIR)/*/*.d $(OBJDIR)/*.d

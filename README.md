@@ -6,10 +6,7 @@ and beyond.
 
 ## Contents
 * [Build](#build)
-  * [Requirements](#requirements)
 * [Usage](#usage)
-  * [Command-line options](#command-line-options)
-  * [Keyboard reference](#keyboard-reference)
 * [File examples](#file-examples)
 
 ---
@@ -36,8 +33,7 @@ Show the reference:
 ./v
 ```
 
-### Command-line options
-<details><summary></summary>
+<details><summary><strong>Command-line options</strong></summary>
 
 |                          |                                                               |
 | ------------------------ | ------------------------------------------------------------- |
@@ -57,9 +53,7 @@ Show the reference:
 
 </details>
 
-
-### Keyboard reference
-<details><summary></summary>
+<details><summary><strong>Keyboard reference</strong></summary>
 
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |

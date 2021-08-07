@@ -6,20 +6,24 @@ static const double amass[]={
   #include "masses.h"
 };
 
-void position(mol * m, double d[3]){
+void center_mol(int n, double * r, int * q){
   double c[3] = {0,0,0};
-  double sm = 0.0;
-  for(int i=0; i<m->n; i++){
-    double tm = amass[m->q[i]];
-    sm += tm;
-    r3adds(c, m->r+i*3, tm);
+  double s = 0.0;
+  for(int i=0; i<n; i++){
+    double w = q?amass[q[i]]:1.0;
+    s += w;
+    r3adds(c, r+i*3, w);
   }
-  r3scal(c, 1.0/sm);
+  r3scal(c, 1.0/s);
 
-  for(int i=0; i<m->n; i++){
-    r3min(m->r+i*3, c);
+  for(int i=0; i<n; i++){
+    r3min(r+i*3, c);
   }
+  return;
+}
 
+void position(mol * m, double d[3]){
+  center_mol(m->n, m->r, m->q);
   double I_t[6]={};
   for(int i=0; i<m->n; i++){
     double tm = amass[m->q[i]];
@@ -36,6 +40,20 @@ void position(mol * m, double d[3]){
   double I_b[9]={1,0,0, 0,1,0, 0,0,1};
   jacobi(I_t, I_b, d, 3, 1e-15, 20, NULL);
 
+#if 1
+#define SWITCH(I,J) { double td, tb[3];\
+                      td = d[I];          d[I] = d[J];            d[J] = td; \
+                      r3cp(tb, I_b+I*3);  r3cp(I_b+I*3, I_b+J*3); r3cp(I_b+J*3, tb); }
+  //sort ev
+  if(d[0]<d[1]) SWITCH(0,1);
+  if(d[1]<d[2]) SWITCH(1,2);
+  if(d[0]<d[1]) SWITCH(0,1);
+  SWITCH(0,2);
+  // rotate the molecule around y-axis by π
+  r3scal(I_b,   -1.0);
+  r3scal(I_b+6, -1.0);
+#endif
+
   for(int i=0; i<m->n; i++){
     double u[3];
     r3mx(u, m->r+i*3, I_b);
@@ -43,4 +61,3 @@ void position(mol * m, double d[3]){
   }
   return;
 }
-

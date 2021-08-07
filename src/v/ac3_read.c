@@ -41,14 +41,14 @@ int zmat2cart(int    n,  txyz * mr,  double r[3],
 
   else if(n == 1){
     r[0] = mr[a1].r[0];
-    r[1] = mr[a1].r[1];
-    r[2] = mr[a1].r[2]+R;
+    r[1] = mr[a1].r[1] + R;
+    r[2] = mr[a1].r[2];
   }
 
   else if(n == 2){
     r[0] = mr[a1].r[0] + R * sqrt( 1 - cos(phi)*cos(phi) );
-    r[1] = mr[a1].r[1] ;
-    r[2] = mr[a1].r[2] + ( (mr[a2].r[2]<mr[a1].r[2])?-1.0:+1.0 ) * R * cos(phi) ;
+    r[1] = mr[a1].r[1] + ( (mr[a2].r[1]<mr[a1].r[1])?-1.0:+1.0 ) * R * cos(phi);
+    r[2] = mr[a1].r[2];
   }
 
   else{
@@ -93,30 +93,7 @@ int zmat2cart(int    n,  txyz * mr,  double r[3],
   return 0;
 }
 
-static void center_mol(int n, double * r){
-  double c[3]={};
-  for(int i=0; i<n; i++){
-    r3add(c, r+i*3);
-  }
-  c[0] /= n;
-  c[1] /= n;
-  c[2] /= n;
-  for(int i=0; i<n; i++){
-    r3min(r+i*3, c);
-  }
-  return;
-}
-
-
-
-
-
-
-
-
-
-
-static txyz * ac3_read_in(int * n_p, FILE * f){
+static txyz * ac3_read_in(int * n_p, int * zmat, FILE * f){
 
   txyz * a = NULL;
 
@@ -208,7 +185,8 @@ static txyz * ac3_read_in(int * n_p, FILE * f){
 
     n++;
   }
-  *n_p = n;
+  *n_p  = n;
+  *zmat = zcf;
   return a;
 hell:
   fseek(f, pos, SEEK_SET);
@@ -277,9 +255,10 @@ static txyz * ac3_read_xyz(int * n_p, FILE * f){
 atcoord * ac3_read(FILE * f, int b, int center, const char * fname){
 
   int n;
+  int zmat=0;
   txyz * a = ac3_read_xyz(&n, f);
   if(!a){
-    a = ac3_read_in(&n, f);
+    a = ac3_read_in(&n, &zmat, f);
   }
   if(!a){
     a = ac3_read_ac(&n, f);
@@ -321,13 +300,17 @@ atcoord * ac3_read(FILE * f, int b, int center, const char * fname){
     m->q[i] = a[i].t;
     r3cp(m->r+i*3, a[i].r);
   }
-
   if(center){
-    center_mol(n, m->r);
+    center_mol(n, m->r, NULL);
+  }
+  if(zmat){
+    double d[3];
+    mol M = {.n=m->n, .q=m->q, .r=m->r};
+    position(&M, d);
   }
   m->fname = fname;
 
-#if 1
+#if 0
   for(int i=0; i<n; i++){
     printf("%d\t%lf\t%lf\t%lf\n", m->q[i], m->r[i*3  ], m->r[i*3+1], m->r[i*3+2]);
   }

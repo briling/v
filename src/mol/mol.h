@@ -10,6 +10,7 @@ typedef struct {
 } mol;
 
 void   position(mol * m, double d[3]);
+void   center_mol(int n, double * r, int * q);
 
 int    intcoord_check(int n, int z[5]);
 double intcoord_calc (int r_units_a, int check_n, int z[5], double * r);

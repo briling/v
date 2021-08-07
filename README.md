@@ -31,12 +31,14 @@ make v
 ```
 ./v file [file2 ... fileN] [options]
 ```
-show this reference:
+Show the reference:
 ```
 ./v
 ```
 
 ### Command-line options
+<details><summary></summary>
+
 |                          |                                                               |
 | ------------------------ | ------------------------------------------------------------- |
 | `vib:%d`                 |     force to show geometries (`0`) / vibrations (`1`)         |
@@ -53,8 +55,12 @@ show this reference:
 | `shell:b%lf,%lf`                            | spheres radii in a.u.                                    |
 | `shell:%lf,%lf`                             | spheres radii in Å                                       |
 
+</details>
+
 
 ### Keyboard reference
+<details><summary></summary>
+
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |
 | `←`/`↑`/`→`/`↓`/`pgup`/`pgdn`  |  rotate (slower with `ctrl` or `shift`)
@@ -86,6 +92,8 @@ show this reference:
 | `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)
 |                                |
 | `q`                            |  quit
+
+</details>
 
 
 ## File examples [↑](#contents)

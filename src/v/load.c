@@ -89,6 +89,7 @@ static void * ent_read(task_t * task, char * fname, drawpars * dp){
     free(acs);
     return NULL;
   }
+  dp->fname = fname;
 
   if(*task==UNKNOWN || *task==VIBRO){
     vibrstr * vib = mode_read_try(f, acs->m[acs->n-1]);
@@ -110,7 +111,6 @@ static void * ent_read(task_t * task, char * fname, drawpars * dp){
 
   *task = AT3COORDS;
   dp->f = f;
-  dp->fname = fname;
   return acs;
 }
 

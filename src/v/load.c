@@ -26,9 +26,9 @@ void newmol_prep(atcoords * acs, drawpars * dp){
   return;
 }
 
-void acs_readmore(FILE * f, int b, int center, int xyz, atcoords * acs, const char * fname){
+void acs_readmore(FILE * f, int b, int center, atcoords * acs, const char * fname){
   atcoord * m;
-  while((m = ac3_read(f, b, center, xyz, fname))!=NULL){
+  while((m = ac3_read(f, b, center, fname))!=NULL){
     if(acs->n==acs->Nmem){
       int N = acs->Nmem ? acs->Nmem*2 : N_MIN;
       atcoord ** ms = realloc(acs->m, N*sizeof(atcoord *));
@@ -73,7 +73,7 @@ static FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   if(!f){
     return NULL;
   }
-  acs_readmore(f, dp->b, dp->center, dp->xyz, acs, fname);
+  acs_readmore(f, dp->b, dp->center, acs, fname);
   return f;
 }
 

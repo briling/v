@@ -1,6 +1,7 @@
 #include "v.h"
 #include "x.h"
 #include "evr.h"
+#define CENTER_MOLECULES
 
 Display * dis;
 int       screen;
@@ -74,12 +75,10 @@ static drawpars dp_init(void){
   dp.r   = 1.0;
   dp.xy0[0] = dp.xy0[1] = 0.0;
   mx_id(3, dp.ac3rmx);
-#ifdef USE_XYZ
+#ifdef CENTER_MOLECULES
   dp.center = 1;
-  dp.xyz    = 1;
 #else
   dp.center = 0;
-  dp.xyz    = 0;
 #endif
   // from command-line
   dp.b = 1;

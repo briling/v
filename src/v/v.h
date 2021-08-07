@@ -70,15 +70,14 @@ typedef struct {
   int    num;           // 0: do not show; 1: show numbers;  -1: show atom types
   int    vert;          // 0: nothing;     1: show cell;      2: show shell
   // compiled:
-  int    center;  // 0: nothing;        1: center each molecule upon reading
-  int    xyz;     // 0: priroda format; 1: xyz format
+  int    center;        // 0: nothing;        1: center each molecule upon reading
 
 } drawpars;
 
 void newmol_prep(atcoords * acs, drawpars * dp);
-void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs, const char * fname);
+void acs_readmore  (FILE * f, int b, int center, atcoords * acs, const char * fname);
 void * read_files(int fn, char ** flist, task_t * task, drawpars * dp);
-atcoord * ac3_read (FILE * f, int b, int center, int xyz, const char * fname);
+atcoord * ac3_read (FILE * f, int b, int center, const char * fname);
 modestr * mode_read(FILE * f, int na);
 
 double ac3_scale(atcoord * ac);

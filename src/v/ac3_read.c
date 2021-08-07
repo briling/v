@@ -43,12 +43,19 @@ static txyz * ac3_read_in(int * n_p, FILE * f){
   double tf; char tc; char ts[256]; int ti1, ti2;
   long pos = ftell(f);
 
-  do{
-    while (fscanf(f, " %255[^$ ]", s) == 1);
-    if (fscanf(f, "%255[$A-z]", s) != 1){
+  while(1){
+    memset(s, '\0', sizeof(s));
+    if(!fgets(s, sizeof(s), f)){
       goto hell;
     }
-  } while(strcmp(s, "$molecule"));
+    char * s0 = s;
+    while(s0[0] && (s0[0]==' ' || s[0]=='\t')){
+      s0++;
+    }
+    if(!strcmp(s0, "$molecule\n")){
+      break;
+    }
+  }
   while (fscanf(f, " %255[^$ \n]", s) == 1) {
     if (s[0] == 'u' ){
       if ((*(strchr(s, '=')+1))=='b'){

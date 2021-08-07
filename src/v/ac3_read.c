@@ -1,10 +1,12 @@
 #include "v.h"
 #include "vec3.h"
+#include "3d.h"
 
 #define END(S,X) ( (S)->X + (X##_size)/sizeof(*((S)->X)) )
 
 #define NATOMS  102
 #define NAMELEN 3
+#define EPS 1e-15
 
 static const char aname[NATOMS+1][NAMELEN]={
   #include "elements.h"
@@ -26,15 +28,99 @@ static inline int get_element(const char * s){
 
 typedef struct {
   int    t;
-  double x;
-  double y;
-  double z;
+  double r[3];
 } txyz;
+
+int zmat2cart(int    n,  txyz * mr,  double r[3],
+              int    a1, int    a2,  int    a3,
+              double R,  double phi, double theta){
+
+  if(n == 0){
+    r[0] = r[1] = r[2] = 0.0;
+  }
+
+  else if(n == 1){
+    r[0] = mr[a1].r[0];
+    r[1] = mr[a1].r[1];
+    r[2] = mr[a1].r[2]+R;
+  }
+
+  else if(n == 2){
+    r[0] = mr[a1].r[0] + R * sqrt( 1 - cos(phi)*cos(phi) );
+    r[1] = mr[a1].r[1] ;
+    r[2] = mr[a1].r[2] + ( (mr[a2].r[2]<mr[a1].r[2])?-1.0:+1.0 ) * R * cos(phi) ;
+  }
+
+  else{
+
+    double ab[3], bc[3];
+    double r1[3], r2[3];
+    double perp[3];
+    double rot[9];
+    double t;
+
+    double * a = mr[a1].r;
+    double * b = mr[a2].r;
+    double * c = mr[a3].r;
+
+    r3diff(ab, b, a);
+    t = r3dot(ab,ab);
+    if(t<EPS){
+      return 1;
+    }
+    r3scal(ab, 1.0/sqrt(t));
+
+    r3cp   (r1, a);
+    r3adds (r1, ab, R);
+
+    r3diff(bc, b, c);
+    r3x(perp, ab, bc);
+    t = r3dot(perp,perp);
+    if(t<EPS){
+      return 1;
+    }
+    r3scal(perp, 1.0/sqrt(t));
+
+    r3min (r1, a);
+    rotmx (rot, perp, -phi);
+    r3mx  (r2, r1, rot);
+    rotmx (rot, ab, theta);
+    r3mx  (r, r2, rot);
+    r3add (r, a);
+
+  }
+
+  return 0;
+}
+
+static void center_mol(int n, double * r){
+  double c[3]={};
+  for(int i=0; i<n; i++){
+    r3add(c, r+i*3);
+  }
+  c[0] /= n;
+  c[1] /= n;
+  c[2] /= n;
+  for(int i=0; i<n; i++){
+    r3min(r+i*3, c);
+  }
+  return;
+}
+
+
+
+
+
+
+
+
+
 
 static txyz * ac3_read_in(int * n_p, FILE * f){
 
   txyz * a = NULL;
 
+  const double rd = M_PI/180.0;
   int bohr = 0;
   int zcf  = 0;
   char s[256];
@@ -83,8 +169,26 @@ static txyz * ac3_read_in(int * n_p, FILE * f){
       }
     }
     else if (zcf == 1){
-      PRINT_WARN("sorry, z-matrix has not been implemented yet\n"); //TODO
-      goto hell;
+      int    sc;
+      int    a1, a2, a3;
+      double ab, ac, az;
+      switch(n){
+        case 0:
+          sc = (fscanf(f, "%d", &q) != 1);
+          break;
+        case 1:
+          sc = (fscanf(f, "%d%d%lf", &q, &a1, &ab) != 3);
+          break;
+        case 2:
+          sc = (fscanf(f, "%d%d%lf%d%lf", &q, &a1, &ab, &a2, &ac) != 5);
+          break;
+        default:
+          sc = (fscanf(f, "%d%d%lf%d%lf%d%lf", &q, &a1, &ab, &a2, &ac, &a3, &az) != 7);
+          break;
+      }
+      if(sc || zmat2cart(n, a, r, a1-1, a2-1, a3-1, ab, ac*rd, az*rd)){
+        goto hell;
+      }
     }
     if(bohr == 1){
       r3scal(r, BA);
@@ -92,9 +196,7 @@ static txyz * ac3_read_in(int * n_p, FILE * f){
 
     a = realloc(a, sizeof(txyz)*(n+1));
     a[n].t = q;
-    a[n].x = r[0];
-    a[n].y = r[1];
-    a[n].z = r[2];
+    r3cp(a[n].r, r);
 
     fscanf(f, " mass = %lf", &tf);
     fscanf(f, " type = %7s", ts);
@@ -132,8 +234,7 @@ static txyz * ac3_read_ac(int * n_p, FILE * f){
   while(1) {
     a = realloc(a, sizeof(txyz)*(n+1));
     if (fscanf (f, "%d%lf%lf%lf",
-          &(a[n].t), &(a[n].x),
-          &(a[n].y), &(a[n].z)) != 4) {
+          &(a[n].t), a[n].r, a[n].r+1, a[n].r+2) != 4) {
       break;
     }
     n++;
@@ -162,8 +263,7 @@ static txyz * ac3_read_xyz(int * n_p, FILE * f){
   for(int i=0; i<n; i++){
     char type[16];
     if (fscanf (f, "%s%lf%lf%lf",
-          type, &(a[i].x),
-          &(a[i].y), &(a[i].z)) != 4) {
+          type, a[i].r, a[i].r+1, a[i].r+2) != 4) {
       free(a);
       return NULL;
     }
@@ -218,27 +318,16 @@ atcoord * ac3_read(FILE * f, int b, int center, const char * fname){
 
   memset(m->sym, 0, sizeof(m->sym));
   for(int i=0; i<n; i++){
-    m->q[i    ] = a[i].t;
-    m->r[i*3  ] = a[i].x;
-    m->r[i*3+1] = a[i].y;
-    m->r[i*3+2] = a[i].z;
+    m->q[i] = a[i].t;
+    r3cp(m->r+i*3, a[i].r);
   }
 
   if(center){
-    double c[3]={};
-    for(int i=0; i<n; i++){
-      r3add(c, m->r+i*3);
-    }
-    c[0] /= n;
-    c[1] /= n;
-    c[2] /= n;
-    for(int i=0; i<n; i++){
-      r3min(m->r+i*3, c);
-    }
+    center_mol(n, m->r);
   }
   m->fname = fname;
 
-#if 0
+#if 1
   for(int i=0; i<n; i++){
     printf("%d\t%lf\t%lf\t%lf\n", m->q[i], m->r[i*3  ], m->r[i*3+1], m->r[i*3+2]);
   }

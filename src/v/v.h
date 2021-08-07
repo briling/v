@@ -13,6 +13,13 @@ typedef enum {
   VIBRO,
 } task_t;
 
+typedef enum {
+  UNKNOWN_FORMAT,
+  XYZ,
+  IN,
+  OUT,
+} format_t;
+
 typedef struct {
   int      n;            // number of atoms
   int      bond_flag;    // whether bonds are up-to-date. 0: no, 1: yes, -1: disabled
@@ -77,7 +84,7 @@ typedef struct {
 void newmol_prep(atcoords * acs, drawpars * dp);
 void acs_readmore  (FILE * f, int b, int center, atcoords * acs, const char * fname);
 void * read_files(int fn, char ** flist, task_t * task, drawpars * dp);
-atcoord * ac3_read (FILE * f, int b, int center, const char * fname);
+atcoord * ac3_read (FILE * f, int b, int center, const char * fname, format_t * format);
 modestr * mode_read(FILE * f, int na);
 
 double ac3_scale(atcoord * ac);

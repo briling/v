@@ -252,16 +252,43 @@ static txyz * ac3_read_xyz(int * n_p, FILE * f){
   return a;
 }
 
-atcoord * ac3_read(FILE * f, int b, int center, const char * fname){
+atcoord * ac3_read(FILE * f, int b, int center, const char * fname, format_t * format){
 
   int n;
   int zmat=0;
-  txyz * a = ac3_read_xyz(&n, f);
-  if(!a){
-    a = ac3_read_in(&n, &zmat, f);
-  }
-  if(!a){
-    a = ac3_read_ac(&n, f);
+  txyz * a;
+
+  switch(*format){
+    case XYZ:
+      if((a=ac3_read_xyz(&n, f))){
+        *format = XYZ;
+      }
+      break;
+    case IN:
+      if((a=ac3_read_in(&n, &zmat, f))){
+        *format = IN;
+      }
+      break;
+    case OUT:
+      if((a=ac3_read_ac(&n, f))){
+        *format = OUT;
+      }
+      break;
+    default:
+      if((a=ac3_read_xyz(&n, f))){
+        *format = XYZ;
+      }
+      if(!a){
+        if((a=ac3_read_in(&n, &zmat, f))){
+          *format = IN;
+        }
+      }
+      if(!a){
+        if((a=ac3_read_ac(&n, f))){
+          *format = OUT;
+        }
+      }
+      break;
   }
   if(!a){
     return NULL;

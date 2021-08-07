@@ -5,9 +5,9 @@ A simple viewer for [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) file
 and beyond.
 
 ## Contents
-* [Build](#build)
-* [Usage](#usage)
-* [File examples](#file-examples)
+* [Build](#build-)
+* [Usage](#usage-)
+* [File examples](#file-examples-)
 
 ---
 

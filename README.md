@@ -36,7 +36,7 @@ Show the reference:
 ./v
 ```
 
-<details><summary><strong>Command-line options</strong></summary>
+<details open><summary><strong>Command-line options</strong></summary>
 
 |                          |                                                               |
 | ------------------------ | ------------------------------------------------------------- |
@@ -56,7 +56,7 @@ Show the reference:
 
 </details>
 
-<details><summary><strong>Keyboard reference</strong></summary>
+<details open><summary><strong>Keyboard reference</strong></summary>
 
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |

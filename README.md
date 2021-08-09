@@ -1,16 +1,16 @@
 # v
 
-A simple viewer for [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files,
+A simple viewer for
 [Priroda](http://rad.chem.msu.ru/~laikov) outputs,
+[`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files,
 and beyond.
 
+![Animation of 128 molecules](figures/intro.gif)
+
 ## Contents
-* [Build](#build)
-  * [Requirements](#requirements)
-* [Usage](#usage)
-  * [Command-line options](#command-line-options)
-  * [Keyboard reference](#keyboard-reference)
-* [File examples](#file-examples)
+* [Build](#build-)
+* [Usage](#usage-)
+* [Examples](#examples-)
 
 ---
 
@@ -31,12 +31,13 @@ make v
 ```
 ./v file [file2 ... fileN] [options]
 ```
-show this reference:
+Show the reference:
 ```
 ./v
 ```
 
-### Command-line options
+<details><summary><strong>Command-line options</strong></summary>
+
 |                          |                                                               |
 | ------------------------ | ------------------------------------------------------------- |
 | `vib:%d`                 |     force to show geometries (`0`) / vibrations (`1`)         |
@@ -53,8 +54,10 @@ show this reference:
 | `shell:b%lf,%lf`                            | spheres radii in a.u.                                    |
 | `shell:%lf,%lf`                             | spheres radii in Å                                       |
 
+</details>
 
-### Keyboard reference
+<details><summary><strong>Keyboard reference</strong></summary>
+
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |
 | `←`/`↑`/`→`/`↓`/`pgup`/`pgdn`  |  rotate (slower with `ctrl` or `shift`)
@@ -87,10 +90,38 @@ show this reference:
 |                                |
 | `q`                            |  quit
 
+</details>
 
-## File examples [↑](#contents)
-* `mol/S8.qm.out`     — [output](mol/S8.qm.out) with geometries
-* `mol/C10H16.qm.out` — [output](mol/C10H16.qm.out) with vibrations
-* `mol/C3H6~mCPBA_01x11.qm.out` — [output](mol/C3H6~mCPBA_01x11.qm.out) with geometries + vibrations
+
+## Examples [↑](#contents)
+* `mol/C3H6~mCPBA_01x11.qm.out` — geometries + vibrations
+```
+./v mol/C3H6~mCPBA_01x11.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Transition state mode animation](figures/C3H6~mCPBA_01x11.qm.out.gif)
+```
+./v mol/C3H6~mCPBA_01x11.qm.out vib:0 z:1,23,24,0,0
+```
+![Transition state optimization](figures/C3H6~mCPBA_01x11.qm.out_03.gif)
+* `mol/S8.qm.out`     — geometries
+```
+./v mol/S8.qm.out z:1,1,2,0,0 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![S8 equilibrium structure](figures/S8.qm.out_69.gif)
+* `mol/C10H16.qm.out` — vibrations
+```
+./v mol/C10H16.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Adamantane mode animation](figures/C10H16.qm.out.gif)
+* `mol/1372_D02.340_1.out` — PBC simulation
+```
+./v mol/1372_D02.340_1.out bonds:0 cell:b10.7,10.7,1.07 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Atoms in cell with PBC](figures/1372_D02.340_1.out_1087.gif)
+* `mol/mol0001.xyz`, `mol/mol0002.xyz` — `.xyz` files with atomic numbers and atomic symbols
+```
+./v mol/mol0001.xyz mol/mol0002.xyz symtol:1e-2 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Dimethyl ether structure](figures/mol0002.xyz_3.gif)
 
 ---

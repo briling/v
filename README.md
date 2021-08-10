@@ -124,4 +124,10 @@ Show the reference:
 ```
 ![Dimethyl ether structure](figures/mol0002.xyz_3.gif)
 
+* `mol/MOL_3525.xyz` — organic crystal with non-orthogonal cell
+```
+./v mol/MOL_3525.xyz cell:8.929542,0.0,0.0,4.197206,8.892922,0.0,0.480945,2.324788,10.016044 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Organic crystal cell](figures/MOL_3525.xyz_1.gif)
+
 ---

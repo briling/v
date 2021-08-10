@@ -130,25 +130,37 @@ static void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int t
       }
     }
 
-    else if(event.type == ButtonPress){
+    else if(event.type == ButtonPress &&
+      (event.xbutton.button==Button1 ||
+       event.xbutton.button==Button2 ||
+       event.xbutton.button==Button3)){
       mouse_click = 1;
       mouse_x0 = event.xbutton.x;
       mouse_y0 = event.xbutton.y;
     }
-    else if(event.type == ButtonRelease){
+    else if(event.type == ButtonRelease &&
+      (event.xbutton.button==Button1 ||
+       event.xbutton.button==Button2 ||
+       event.xbutton.button==Button3)){
       mouse_click = 0;
     }
+    else if(event.type == ButtonPress && event.xbutton.button==Button4){
+      kp_zoom_in(ent, task, dp);
+    }
+    else if(event.type == ButtonPress && event.xbutton.button==Button5){
+      kp_zoom_out(ent, task, dp);
+    }
+
     else if(event.type == MotionNotify){
       if(mouse_click){
         int x = event.xmotion.x;
         int y = event.xmotion.y;
-        rot_ent_pointer(ent, task, &dp, x-mouse_x0, y-mouse_y0, POINTER_SPEED/MIN(W,H));
-        exp_redraw(ent, task, &dp);
+        rot_ent_pointer(ent, task, dp, x-mouse_x0, y-mouse_y0, POINTER_SPEED/MIN(W,H));
+        exp_redraw(ent, task, dp);
         mouse_x0 = x;
         mouse_y0 = y;
       }
     }
-
 
     if(dp->fbw){
       if(task == AT3COORDS){

@@ -1,15 +1,16 @@
 # v
 
-A simple viewer for [Priroda](http://rad.chem.msu.ru/~laikov) outputs
+A simple viewer for
+[Priroda](http://rad.chem.msu.ru/~laikov) outputs,
+[`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files,
 and beyond.
 
+![Animation of 128 molecules](figures/intro.gif)
+
 ## Contents
-* [Build](#build)
-  * [Requirements](#requirements)
-* [Usage](#usage)
-  * [Command-line options](#command-line-options)
-  * [Keyboard reference](#keyboard-reference)
-* [File examples](#file-examples)
+* [Build](#build-)
+* [Usage](#usage-)
+* [Examples](#examples-)
 
 ---
 
@@ -18,11 +19,6 @@ and beyond.
 ```
 make v
 ```
->To open [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files
->(with either atomic symbols or atomic numbers), build the special version:
->```
->make vr
->```
 
 ### Requirements:
 * `GNU/Linux` or `Cygwin`
@@ -33,23 +29,24 @@ make v
 
 ## Usage [↑](#contents)
 ```
-./v file [options]
+./v file [file2 ... fileN] [options]
 ```
-show this reference:
+Show the reference:
 ```
 ./v
 ```
 
-### Command-line options
+<details open><summary><strong>Command-line options</strong></summary>
+
 |                          |                                                               |
 | ------------------------ | ------------------------------------------------------------- |
-| `a`/`v`                 |      force to show geometries / vibrations                     |
-| `bonds:0`               |      disable bonds                                             |
-| `to:%d`                 |      delay between frames in μs (default 20000)                |
-| `symtol:%lf`            |      tolerance for symmetry determination in Å (default 0.001) |
-| `z:%d,%d,%d,%d,%d`      |      show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
+| `vib:%d`                 |     force to show geometries (`0`) / vibrations (`1`)         |
+| `bonds:0`                |     disable bonds                                             |
+| `to:%d`                  |     delay between frames in μs (default 20000)                |
+| `symtol:%lf`             |     tolerance for symmetry determination in Å (default 0.001) |
+| `z:%d,%d,%d,%d,%d`       |     show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
 | `rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`   | rotation matrix to start with (default identity matrix)  |
-| `font:%s`               |      font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
+| `font:%s`                |     font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
 | `cell:b%lf,%lf,%lf`                         | cuboid size in a.u. (for periodical boundary conditions) |
 | `cell:%lf,%lf,%lf`                          | cuboid size in Å                                         |
 | `cell:b%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf` | cell parameters in a.u.                                  |
@@ -57,8 +54,10 @@ show this reference:
 | `shell:b%lf,%lf`                            | spheres radii in a.u.                                    |
 | `shell:%lf,%lf`                             | spheres radii in Å                                       |
 
+</details>
 
-### Keyboard reference
+<details open><summary><strong>Keyboard reference</strong></summary>
+
 |                                |                                                           |
 | ------------------------------ |---------------------------------------------------------- |
 | `←`/`↑`/`→`/`↓`/`pgup`/`pgdn`  |  rotate (slower with `ctrl` or `shift`)
@@ -91,10 +90,44 @@ show this reference:
 |                                |
 | `q`                            |  quit
 
+</details>
 
-## File examples [↑](#contents)
-* `mol/S8.qm.out`     — [output](mol/S8.qm.out) with geometries
-* `mol/C10H16.qm.out` — [output](mol/C10H16.qm.out) with vibrations
-* `mol/C3H6~mCPBA_01x11.qm.out` — [output](mol/C3H6~mCPBA_01x11.qm.out) with geometries + vibrations
+
+## Examples [↑](#contents)
+* `mol/C3H6~mCPBA_01x11.qm.out` — geometries + vibrations
+```
+./v mol/C3H6~mCPBA_01x11.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Transition state mode animation](figures/C3H6~mCPBA_01x11.qm.out.gif)
+```
+./v mol/C3H6~mCPBA_01x11.qm.out vib:0 z:1,23,24,0,0
+```
+![Transition state optimization](figures/C3H6~mCPBA_01x11.qm.out_03.gif)
+* `mol/S8.qm.out`     — geometries
+```
+./v mol/S8.qm.out z:1,1,2,0,0 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![S8 equilibrium structure](figures/S8.qm.out_69.gif)
+* `mol/C10H16.qm.out` — vibrations
+```
+./v mol/C10H16.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Adamantane mode animation](figures/C10H16.qm.out.gif)
+* `mol/1372_D02.340_1.out` — PBC simulation
+```
+./v mol/1372_D02.340_1.out bonds:0 cell:b10.7,10.7,1.07 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Atoms in cell with PBC](figures/1372_D02.340_1.out_1087.gif)
+* `mol/mol0001.xyz`, `mol/mol0002.xyz` — `.xyz` files with atomic numbers and atomic symbols
+```
+./v mol/mol0001.xyz mol/mol0002.xyz symtol:1e-2 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Dimethyl ether structure](figures/mol0002.xyz_3.gif)
+
+* `mol/MOL_3525.xyz` — organic crystal with non-orthogonal cell
+```
+./v mol/MOL_3525.xyz cell:8.929542,0.0,0.0,4.197206,8.892922,0.0,0.480945,2.324788,10.016044 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+```
+![Organic crystal cell](figures/MOL_3525.xyz_1.gif)
 
 ---

@@ -1,4 +1,6 @@
 *.sw?
 *.o
+.tags
+.types.vim
 /v
 /vr

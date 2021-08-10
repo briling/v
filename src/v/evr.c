@@ -59,27 +59,14 @@ static void redraw_vibro(void * ent, drawpars * dp){
   return;
 }
 
-static void newmol_prep(atcoords * acs, drawpars * dp){
-  for(int j=dp->N; j<acs->n; j++){
-    atcoord * ac = acs->m[j];
-    for(int i=0; i<ac->n; i++){
-      double v[3];
-      r3mx(v, ac->r+3*i, dp->ac3rmx);
-      r3cp(ac->r+3*i, v);
-    }
-  }
-  dp->N = acs->n;
-  return;
-}
-
 void kp_readmore(void * ent, task_t task, drawpars * dp){
   if(task == AT3COORDS){
     atcoords * acs = ent;
     if(!dp->f){
-      PRINT_ERR("cannot read from the file '%s'\n", dp->capt);
+      PRINT_ERR("cannot read from the file '%s'\n", dp->fname);
       return;
     }
-    acs_readmore(dp->f, dp->b, dp->center, dp->xyz, acs);
+    acs_readmore(dp->f, dp->b, dp->center, acs, dp->fname);
     newmol_prep(acs, dp);
     redraw_ac3 (acs, dp);
   }
@@ -94,12 +81,12 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
     }
     acs->n = dp->N = dp->n = 0;
 
-    if(!dp->f || !(fclose(dp->f), dp->f = fopen(dp->capt, "r"))){
-      PRINT_ERR("cannot reload the file '%s'\n", dp->capt);
+    if(!dp->f || !(fclose(dp->f), dp->f = fopen(dp->fname, "r"))){
+      PRINT_ERR("cannot reload the file '%s'\n", dp->fname);
       return;
     }
 
-    acs_readmore(dp->f, dp->b, dp->center, dp->xyz, acs);
+    acs_readmore(dp->f, dp->b, dp->center, acs, dp->fname);
     newmol_prep(acs, dp);
     redraw_ac3 (acs, dp);
   }
@@ -455,7 +442,7 @@ void time_gone(void * ent, task_t task, drawpars * dp){
 static void savevib(drawpars * dp, int c){
   char s[256];
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
-  snprintf(s, sizeof(s), "%s_%0*d_%02d.xpm", dp->capt, l, dp->n+1, c);
+  snprintf(s, sizeof(s), "%s_%0*d_%02d.xpm", dp->fname, l, dp->n+1, c);
   if (savepic(s) != XpmSuccess){
     PRINT_ERR("cannot save '%s'\n", s);
   }
@@ -467,8 +454,9 @@ static void savevib(drawpars * dp, int c){
 
 void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
   char s[256];
-  int  l = (int)(log10( dp->N + 0.5 )) + 1;
-  snprintf(s, sizeof(s), "%s_%0*d.xpm", dp->capt, l, dp->n + 1);
+  int  l = (int)(log10(dp->N+0.5))+1;
+  atcoord * ac = ((atcoords *)ent)->m[dp->n];
+  snprintf(s, sizeof(s), "%s_%0*d.xpm", ac->fname, l, dp->n+1);
   if (savepic(s) != XpmSuccess){
     PRINT_ERR("cannot save '%s'\n", s);
   }
@@ -480,11 +468,11 @@ void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ (
 
 void kp_film(void * ent, task_t task, drawpars * dp){
   if(task != VIBRO){
-    int n=0;
-    do {
-      kp_savepic  (ent, task, dp);
+    kp_savepic    (ent, task, dp);
+    while(dp->n<dp->N-1){
       kp_frame_inc(ent, task, dp);
-    } while (n++ < dp->N);
+      kp_savepic  (ent, task, dp);
+    }
   }
   else{
     int c = 0;

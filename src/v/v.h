@@ -14,6 +14,13 @@ typedef enum {
   VIBRO,
 } task_t;
 
+typedef enum {
+  UNKNOWN_FORMAT,
+  XYZ,
+  IN,
+  OUT,
+} format_t;
+
 typedef struct {
   int      n;            // number of atoms
   int      bond_flag;    // whether bonds are up-to-date. 0: no, 1: yes, -1: disabled
@@ -23,6 +30,8 @@ typedef struct {
   styp   sym;            // point group
   int    * bond_a;       // lists of bounded atoms
   double * bond_r;       // distances to the bonded atoms
+  const char * fname;    // file name
+  int nf[2];             // number of molecule in file, file size
 } atcoord;
 
 typedef struct {
@@ -52,7 +61,7 @@ typedef struct {
   double rl;            // bond length scale factor
 
   FILE * f;             // opened file for kp_readmore()
-  char   capt[256];     // file name
+  const char * fname;   // file name
   double vertices[3*8]; // parameters of cell/shell
   double rot_to_lab_basis[3*3];   // "rotation" matrix for PBC
   double rot_to_cell_basis[3*3];  // "rotation" matrix for PBC
@@ -69,14 +78,14 @@ typedef struct {
   int    num;           // 0: do not show; 1: show numbers;  -1: show atom types
   int    vert;          // 0: nothing;     1: show cell;      2: show shell
   // compiled:
-  int    center;  // 0: nothing;        1: center each molecule upon reading
-  int    xyz;     // 0: priroda format; 1: xyz format
+  int    center;        // 0: nothing;        1: center each molecule upon reading
 
 } drawpars;
 
-void * ent_read    (task_t * task, char * fname, drawpars * dp);
-void acs_readmore  (FILE * f, int b, int center, int xyz, atcoords * acs);
-atcoord * ac3_read (FILE * f, int b, int center, int xyz);
+void newmol_prep(atcoords * acs, drawpars * dp);
+void acs_readmore  (FILE * f, int b, int center, atcoords * acs, const char * fname);
+void * read_files(int fn, char ** flist, task_t * task, drawpars * dp);
+atcoord * ac3_read (FILE * f, int b, int center, const char * fname, format_t * format);
 modestr * mode_read(FILE * f, int na);
 
 double ac3_scale(atcoord * ac);
@@ -101,13 +110,15 @@ const char * getname(int q);
 
 void pg(atcoord * a, styp s, double symtol);
 
-void close_x      (void) ;
-void init_x       (char   capt[256]) ;
+void close_x      (void);
+void init_x       (const char * const capt);
 void init_font    (char * fontname);
-void textincorner (char * text);
+void textincorner (const char * const text1, const char * const text2);
+void setcaption   (const char * const capt);
 void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
 void printman(char * exename);
+int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
 

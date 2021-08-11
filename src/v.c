@@ -108,7 +108,6 @@ int main (int argc, char * argv[]) {
   /*= Input ==================================================================*/
 
   drawpars dp   = dp_init();
-
   int fn = 0;
   char ** flist = malloc(argc*sizeof(char*));
   for(int i=1; i<argc; i++){

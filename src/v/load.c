@@ -106,7 +106,7 @@ void * read_files(int fn, char ** flist, drawpars * dp){
 
   void * ent;
   int i=0;
-  while(!(ent = ent_read(flist[i], dp)) && i<fn){
+  while(i<fn && !(ent = ent_read(flist[i], dp))){
     PRINT_WARN("cannot read file '%s'\n", flist[i]);
     i++;
   }

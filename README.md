@@ -99,7 +99,7 @@ One can also use the mouse to rotate the molecule and zoom in/out (in developmen
 ## Examples [↑](#contents)
 * `mol/C3H6~mCPBA_01x11.qm.out` — geometries + vibrations
 ```
-./v mol/C3H6~mCPBA_01x11.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+./v mol/C3H6~mCPBA_01x11.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-1
 ```
 ![Transition state mode animation](figures/C3H6~mCPBA_01x11.qm.out.gif)
 ```
@@ -108,28 +108,28 @@ One can also use the mouse to rotate the molecule and zoom in/out (in developmen
 ![Transition state optimization](figures/C3H6~mCPBA_01x11.qm.out_03.gif)
 * `mol/S8.qm.out`     — geometries
 ```
-./v mol/S8.qm.out z:1,1,2,0,0 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+./v mol/S8.qm.out z:1,1,2,0,0 font:-*-*-medium-*-*--15-*-*-*-*-*-*-1
 ```
 ![S8 equilibrium structure](figures/S8.qm.out_69.gif)
 * `mol/C10H16.qm.out` — vibrations
 ```
-./v mol/C10H16.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+./v mol/C10H16.qm.out font:-*-*-medium-*-*--15-*-*-*-*-*-*-1
 ```
 ![Adamantane mode animation](figures/C10H16.qm.out.gif)
 * `mol/1372_D02.340_1.out` — PBC simulation
 ```
-./v mol/1372_D02.340_1.out bonds:0 cell:b10.7,10.7,1.07 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+./v mol/1372_D02.340_1.out bonds:0 cell:b10.7,10.7,1.07 font:-*-*-medium-*-*--15-*-*-*-*-*-*-1
 ```
 ![Atoms in cell with PBC](figures/1372_D02.340_1.out_1087.gif)
 * `mol/mol0001.xyz`, `mol/mol0002.xyz` — `.xyz` files with atomic numbers and atomic symbols
 ```
-./v mol/mol0001.xyz mol/mol0002.xyz symtol:1e-2 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+./v mol/mol0001.xyz mol/mol0002.xyz symtol:1e-2 font:-*-*-medium-*-*--15-*-*-*-*-*-*-1
 ```
 ![Dimethyl ether structure](figures/mol0002.xyz_3.gif)
 
 * `mol/MOL_3525.xyz` — organic crystal with non-orthogonal cell
 ```
-./v mol/MOL_3525.xyz cell:8.929542,0.0,0.0,4.197206,8.892922,0.0,0.480945,2.324788,10.016044 font:-*-*-medium-*-*--15-*-*-*-*-*-*-*
+./v mol/MOL_3525.xyz cell:8.929542,0.0,0.0,4.197206,8.892922,0.0,0.480945,2.324788,10.016044 font:-*-*-medium-*-*--15-*-*-*-*-*-*-1
 ```
 ![Organic crystal cell](figures/MOL_3525.xyz_1.gif)
 

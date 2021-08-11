@@ -107,7 +107,7 @@ int main (int argc, char * argv[]) {
   task_t   task = UNKNOWN;
   int      to   = DEFAULT_TIMEOUT;
   drawpars dp   = dp_init();
-  char     fontname[256]={0};
+  char     fontname[STRLEN]={0};
 
   int fn = 0;
   char ** flist = malloc(argc*sizeof(char*));

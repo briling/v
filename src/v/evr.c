@@ -440,7 +440,7 @@ void time_gone(void * ent, task_t task, drawpars * dp){
 }
 
 static void savevib(drawpars * dp, int c){
-  char s[256];
+  char s[STRLEN];
   int  l = (int)(log10( dp->N + 0.5 )) + 1;
   snprintf(s, sizeof(s), "%s_%0*d_%02d.xpm", dp->fname, l, dp->n+1, c);
   if (savepic(s) != XpmSuccess){
@@ -453,7 +453,7 @@ static void savevib(drawpars * dp, int c){
 }
 
 void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
-  char s[256];
+  char s[STRLEN];
   int  l = (int)(log10(dp->N+0.5))+1;
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
   snprintf(s, sizeof(s), "%s_%0*d.xpm", ac->fname, l, dp->n+1);

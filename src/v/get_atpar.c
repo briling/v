@@ -1,6 +1,7 @@
 #include "v.h"
 
 #define NATOMS  102
+#define NAMELEN 3
 
 static const double ra[NATOMS+1] = {
   1.0,
@@ -27,7 +28,7 @@ static const double ra[NATOMS+1] = {
   1.820, 1.820
 };
 
-static const char aname[NATOMS+1][3]={
+static const char aname[NATOMS+1][NAMELEN]={
   #include "elements.h"
 };
 
@@ -47,3 +48,16 @@ const char * getname(int q){
   return abs(q)<=NATOMS ? aname[abs(q)]: NULL;
 }
 
+int get_element(const char * s){
+  char * s_end;
+  long q = strtol(s, &s_end, 10);
+  if(s_end != s) {
+    return (int)q;
+  }
+  for(int q=1; q<=NATOMS; q++){
+    if(!strncmp(s, aname[q], NAMELEN)){
+      return q;
+    }
+  }
+  return 0;
+}

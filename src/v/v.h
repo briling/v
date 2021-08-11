@@ -5,6 +5,7 @@
 #define NKP  256
 #define BONDS_MAX 32
 #define POINTER_SPEED 2.0
+#define STRLEN 256
 
 typedef void (* ptf )();
 
@@ -77,39 +78,55 @@ typedef struct {
   int    fbw;           // 0: nothing;     1: play forwards; -1: play backwards
   int    num;           // 0: do not show; 1: show numbers;  -1: show atom types
   int    vert;          // 0: nothing;     1: show cell;      2: show shell
-  // compiled:
-  int    center;        // 0: nothing;        1: center each molecule upon reading
+
+  int    center;        // 0: nothing;     1: center each molecule upon reading
 
 } drawpars;
 
-void newmol_prep(atcoords * acs, drawpars * dp);
+typedef struct {
+  int    t;
+  double r[3];
+} txyz;
+
+// load.c
 void acs_readmore  (FILE * f, int b, int center, atcoords * acs, const char * fname);
 void * read_files(int fn, char ** flist, task_t * task, drawpars * dp);
-atcoord * ac3_read (FILE * f, int b, int center, const char * fname, format_t * format);
-modestr * mode_read(FILE * f, int na);
-
+// scale.c
 double ac3_scale(atcoord * ac);
 double acs_scale(atcoords * acs);
+// mode_read.c
+modestr * mode_read(FILE * f, int na);
+// ac3_read*.c
+atcoord * ac3_read(FILE * f, int b, int center, const char * fname, format_t * format);
+txyz * ac3_read_in (int * n_p, int * zmat, FILE * f);
+txyz * ac3_read_out(int * n_p, FILE * f);
+txyz * ac3_read_xyz(int * n_p, FILE * f);
 
+// man.c
+void printman(char * exename);
+// cli.c
+int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
+
+// loop.c
+void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int to);
+
+// ac3_draw.c
 void ac3_draw      (atcoord * ac, double r0, double scale, double xy0[2], int b, int num);
 void ac3_print     (atcoord * ac, double xy0[2], int b);
+// ac3_print.c
 void ac3_print2fig (atcoord * ac, double xy0[2], int b, double * v);
 
+// bonds.c
 void bonds_fill(double rl, atcoord * ac);
 void bonds_fill_ent(int reduce, void * ent, task_t task, drawpars * dp);
 
-void acs_free(atcoords * acs);
-void ac3_text(atcoord * ac, drawpars * dp);
-void vibro_text(modestr * ms, drawpars * dp);
-void getshell(double shell[2], drawpars * dp);
-void getcell (double cell[3],  drawpars * dp, int cell_count);
-
+// get_atpar.c
 double getradius(int q);
 double getmaxradius(int n, int * q);
 const char * getname(int q);
+int get_element(const char * s);
 
-void pg(atcoord * a, styp s, double symtol);
-
+// x.c
 void close_x      (void);
 void init_x       (const char * const capt);
 void init_font    (char * fontname);
@@ -119,7 +136,10 @@ void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
-void printman(char * exename);
-int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
+// tools.c
+void acs_free(atcoords * acs);
+void newmol_prep(atcoords * acs, drawpars * dp);
+void ac3_text(atcoord * ac, drawpars * dp);
+void vibro_text(modestr * ms, drawpars * dp);
+void pg(atcoord * a, styp s, double symtol);
 
-void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int to);

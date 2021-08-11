@@ -1,6 +1,5 @@
 #include "v.h"
-#include "matrix.h"
-#include "vec3.h"
+#include "sym.h"
 
 void acs_free(atcoords * acs){
   for(int i=0; i<acs->n; i++){
@@ -11,8 +10,21 @@ void acs_free(atcoords * acs){
   return;
 }
 
+void newmol_prep(atcoords * acs, drawpars * dp){
+  for(int j=dp->N; j<acs->n; j++){
+    atcoord * ac = acs->m[j];
+    for(int i=0; i<ac->n; i++){
+      double v[3];
+      r3mx(v, ac->r+3*i, dp->ac3rmx);
+      r3cp(ac->r+3*i, v);
+    }
+  }
+  dp->N = acs->n;
+  return;
+}
+
 void ac3_text(atcoord * ac, drawpars * dp){
-  char text[256];
+  char text[STRLEN];
   int tp = snprintf(text, sizeof(text),
     "%*d / %d   r = %.1lf   rl = %.1lf",
     1+(int)(log10(dp->N)), dp->n+1, dp->N, dp->r, dp->rl);
@@ -26,7 +38,7 @@ void ac3_text(atcoord * ac, drawpars * dp){
     textincorner(text, ac->fname);
   }
   else{
-    char text2[256];
+    char text2[STRLEN];
     snprintf(text2, sizeof(text2), "%s (%*d / %d)", ac->fname, 1+(int)(log10(ac->nf[1])), ac->nf[0]+1, ac->nf[1]);
     textincorner(text, text2);
   }
@@ -35,7 +47,7 @@ void ac3_text(atcoord * ac, drawpars * dp){
 }
 
 void vibro_text(modestr * ms, drawpars * dp){
-  char text[256];
+  char text[STRLEN];
   double fq = ms->f[dp->n];
   char i = fq > 0.0 ? ' ' : 'i';
   snprintf(text, sizeof(text),
@@ -45,46 +57,20 @@ void vibro_text(modestr * ms, drawpars * dp){
   return;
 }
 
-void getcell(double cell[9], drawpars * dp, int cell_count){
+void pg(atcoord * a, styp s, double symtol){
 
-  double a[3]={};
-  double b[3]={};
-  double c[3]={};
-  if(cell_count==3){
-    a[0] = cell[0];
-    b[1] = cell[1];
-    c[2] = cell[2];
-  }
-  else if(cell_count==9){
-    r3cp(a, cell+0);
-    r3cp(b, cell+3);
-    r3cp(c, cell+6);
-  }
+  int n = a->n;
+  mol m;
+  m.n = n;
+  m.q = a->q;
+  m.r = malloc(sizeof(double )*n*3);
+  veccp  (n*3,  m.r, a->r);
+  vecscal(n*3,  m.r, AB);
 
-  r3sums3(dp->vertices+ 0, a, -0.5, b, -0.5, c, -0.5);
-  r3sums3(dp->vertices+ 3, a, +0.5, b, -0.5, c, -0.5);
-  r3sums3(dp->vertices+ 6, a, -0.5, b, +0.5, c, -0.5);
-  r3sums3(dp->vertices+ 9, a, -0.5, b, -0.5, c, +0.5);
-  r3sums3(dp->vertices+12, a, +0.5, b, +0.5, c, -0.5);
-  r3sums3(dp->vertices+15, a, +0.5, b, -0.5, c, +0.5);
-  r3sums3(dp->vertices+18, a, -0.5, b, +0.5, c, +0.5);
-  r3sums3(dp->vertices+21, a, +0.5, b, +0.5, c, +0.5);
+  molsym * ms = pointgroup(&m, symtol*AB);
+  strcpy(s, ms->s);
 
-  double rot_to_lab_basis[9] = {a[0], b[0], c[0],
-                                a[1], b[1], c[1],
-                                a[2], b[2], c[2]};
-  veccp(9, dp->rot_to_lab_basis, rot_to_lab_basis);
-  mx_id(3, dp->rot_to_cell_basis);
-  mx_inv(3, 3, dp->rot_to_cell_basis, rot_to_lab_basis, 1e-15);
-
-  dp->vert = 1;
+  free(m.r);
+  free(ms);
   return;
 }
-
-void getshell(double shell[2], drawpars * dp){
-  dp->vertices[0] = shell[0];
-  dp->vertices[1] = shell[1];
-  dp->vert = 2;
-  return;
-}
-

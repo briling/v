@@ -13,19 +13,6 @@ static inline int fill_nf(atcoords * acs, int n0){
   return acs->n;
 }
 
-void newmol_prep(atcoords * acs, drawpars * dp){
-  for(int j=dp->N; j<acs->n; j++){
-    atcoord * ac = acs->m[j];
-    for(int i=0; i<ac->n; i++){
-      double v[3];
-      r3mx(v, ac->r+3*i, dp->ac3rmx);
-      r3cp(ac->r+3*i, v);
-    }
-  }
-  dp->N = acs->n;
-  return;
-}
-
 void acs_readmore(FILE * f, int b, int center, atcoords * acs, const char * fname){
   atcoord * m;
   format_t format;

@@ -74,16 +74,16 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 $(OBJDIR)/v.o : $(SRCDIR)/v.c
 	$(CC) $(CFLAGS) $< -o $@ $(INCL) -I$(SRCDIR)/v $(VERSION_FLAGS)
 
-clean :
+clean:
 	rm -f $(OBJDIR)/*/*/*.o $(OBJDIR)/*/*.o $(OBJDIR)/*.o v
 
-cleand :
+cleand:
 	rm -f $(OBJDIR)/*/*/*.d $(OBJDIR)/*/*.d $(OBJDIR)/*.d
 cleantags:
 	rm -f ./.tags ./.types.vim
-
-cleanasm :
+cleanasm:
 	rm -f $(OBJDIR)/*/*/*.s $(OBJDIR)/*/*.s $(OBJDIR)/*.s
+cleanall: clean cleand cleantags cleanasm
 
 include $(wildcard $(OBJDIR)/*/*.d $(OBJDIR)/*.d)
 

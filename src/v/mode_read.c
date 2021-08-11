@@ -2,7 +2,7 @@
 
 static int readb(FILE * f, int i, int Nmax, int N, int na, modestr * m){
   double d;
-  char   s[256];
+  char   s[STRLEN];
   int    t,k,j;
 
   for (j=0; j<3; j++){
@@ -59,7 +59,7 @@ modestr * mode_read (FILE * f, int na){
 
   const int N = 6;
   int  n = 0;
-  char s[256];
+  char s[STRLEN];
 
   while (1){
     if (!fgets(s, sizeof(s), f)) {

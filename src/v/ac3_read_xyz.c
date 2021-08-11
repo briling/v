@@ -17,8 +17,8 @@ txyz * ac3_read_xyz(int * n_p, FILE * f){
   } while(c!='\n');
 
   for(int i=0; i<n; i++){
-    char type[16];
-    if (fscanf (f, "%s%lf%lf%lf",
+    styp type;
+    if (fscanf (f, "%7s%lf%lf%lf",
           type, a[i].r, a[i].r+1, a[i].r+2) != 4) {
       free(a);
       return NULL;

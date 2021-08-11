@@ -48,7 +48,7 @@ const char * getname(int q){
   return abs(q)<=NATOMS ? aname[abs(q)]: NULL;
 }
 
-int get_element(const char * s){
+int get_element(const styp s){
   char * s_end;
   long q = strtol(s, &s_end, 10);
   if(s_end != s) {

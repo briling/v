@@ -67,11 +67,10 @@ static inline int isc2(mol * m, double u[3], double eps2){
 
 static void issigma(mol * m, molsym * ms, double a[3], int S, double eps2){
   double r[3];
-  double t;
   int j;
   for(j=0; j<m->n; j++){
     r3cp(r, m->r+j*3);
-    t = r3dot(r, a);
+    double t = r3dot(r, a);
     if(fabs(t)<eps2){
       continue;
     }
@@ -183,13 +182,12 @@ static void findc2(mol * m, molsym * ms, int Cn, int C2, double eps2){
   double sector = M_PI    / ms->o[Cn];
   double dphi   = sector/(stesp+1);
 
-  int i,p;
-  for(i=0; i<stesp; i++){
+  for(int i=0; i<stesp; i++){
     double rot[9];
     double newtestaxis[3];
     rotmx(rot, mainaxis,  dphi*i);
     r3mx(newtestaxis, testaxis, rot);
-    p = isc2(m, newtestaxis, eps2);
+    int p = isc2(m, newtestaxis, eps2);
     if(p){
       ms->o[C2] = 2;
       r3cp(ms->r+C2*3, newtestaxis);
@@ -227,12 +225,11 @@ static void issn(mol * m, molsym * ms, int n, double eps2){
   double * u  = ms->r+n*3;
   double R[9];
   double r[3];
-  double t;
   int    j;
   rotmx(R, u, M_PI/ms->o[n]);
   for(j=0; j<m->n; j++){
     r3mx (r, m->r+j*3, R);
-    t = r3dot(r, u);
+    double t = r3dot(r, u);
     r3adds(r, u, -2.0*t);
     if(isnew(m->n, m->r, r, eps2)){
       break;

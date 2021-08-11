@@ -75,7 +75,7 @@ txyz * ac3_read_in(int * n_p, int * zmat, FILE * f){
   char s[STRLEN];
   int    q;
   double r[3];
-  double tf; char tc; char ts[STRLEN]; int ti1, ti2;
+  double tf; char tc; styp ts; int ti1, ti2;
   long pos = ftell(f);
 
   while(1){

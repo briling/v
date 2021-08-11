@@ -94,68 +94,6 @@ static drawpars dp_init(void){
   return dp;
 }
 
-static void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int to){
-  int tr = 0;
-  while(1) {
-    XEvent event, event1;
-    int zh = 0;
-    do{
-      XNextEvent(dis, &event1);
-      if(event1.type != NoExpose){
-        event=event1;
-        zh = 1;
-      }
-    } while(XEventsQueued(dis, QueuedAlready));
-    if(!zh){
-      event=event1;
-    }
-    if(event.type == Expose && event.xexpose.count == 0) {
-      exp_redraw(ent, task, dp);
-    }
-    else if(event.type == ConfigureNotify){
-      W = event.xconfigure.width;
-      H = event.xconfigure.height;
-      dp->xy0[0] = dp->xy0[1] = 0.0;
-      exp_redraw(ent, task, dp);
-    }
-    else if(event.type == KeyPress) {
-      if(kp[event.xkey.keycode]){
-        dp->modkey = event.xkey.state & (ShiftMask | ControlMask);
-        kp[event.xkey.keycode](ent, task, dp);
-      }
-    }
-
-    if(dp->fbw){
-
-      if(task == AT3COORDS){
-        if(dp->fbw > 0){
-          kp_frame_inc(ent, task, dp);
-        }
-        else{
-          kp_frame_dec(ent, task, dp);
-        }
-        usleep(to);
-      }
-
-      else if(task == VIBRO){
-        /* We draw 5 times for each dp->t,
-         * because 'to' is too small to look good
-         * and 5*to is too big to behave well (keyboard control).
-         * Also we cannot draw only when tr==4,
-         * because we need an XEvent to reiterate the main loop.
-         * Alternatively, we can send an event manually.
-         */
-        if(++tr == 4){
-          tr = 0;
-          dp->t++;
-        }
-        usleep(to);
-        time_gone(ent, task, dp);
-      }
-    }
-  }
-}
-
 int main (int argc, char * argv[]) {
 
   if(argc == 1){

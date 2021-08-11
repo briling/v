@@ -4,6 +4,7 @@
 #define DEFAULT_SYMTOL   1e-3
 #define NKP  256
 #define BONDS_MAX 32
+#define POINTER_SPEED 2.0
 
 typedef void (* ptf )();
 
@@ -121,3 +122,4 @@ int  savepic      (char * s);
 void printman(char * exename);
 int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
 
+void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int to);

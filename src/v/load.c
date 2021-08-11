@@ -15,7 +15,7 @@ static inline int fill_nf(atcoords * acs, int n0){
 
 void acs_readmore(FILE * f, int b, int center, atcoords * acs, const char * fname){
   atcoord * m;
-  format_t format;
+  format_t format = UNKNOWN_FORMAT;
   while((m = ac3_read(f, b, center, fname, &format))!=NULL){
     if(acs->n==acs->Nmem){
       int N = acs->Nmem ? acs->Nmem*2 : N_MIN;

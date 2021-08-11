@@ -65,7 +65,7 @@ static FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   return f;
 }
 
-static void * ent_read(task_t * task, char * fname, drawpars * dp){
+static void * ent_read(char * fname, drawpars * dp){
 
   atcoords * acs = malloc(sizeof(atcoords));
   acs->Nmem = 0;
@@ -79,7 +79,7 @@ static void * ent_read(task_t * task, char * fname, drawpars * dp){
   }
   dp->fname = fname;
 
-  if(*task==UNKNOWN || *task==VIBRO){
+  if(dp->task==UNKNOWN || dp->task==VIBRO){
     vibrstr * vib = mode_read_try(f, acs->m[acs->n-1]);
     if(vib){
       acs->n--;
@@ -87,26 +87,26 @@ static void * ent_read(task_t * task, char * fname, drawpars * dp){
       fclose(f);
       dp->scale = ac3_scale(vib->ac);
       dp->N = vib->modes->n;
-      *task = VIBRO;
+      dp->task = VIBRO;
       return vib;
     }
     else{
-      if(*task==VIBRO){
+      if(dp->task==VIBRO){
         PRINT_WARN("the file '%s' does not contain vibrations\n", fname);
       }
     }
   }
 
-  *task = AT3COORDS;
+  dp->task = AT3COORDS;
   dp->f = f;
   return acs;
 }
 
-void * read_files(int fn, char ** flist, task_t * task, drawpars * dp){
+void * read_files(int fn, char ** flist, drawpars * dp){
 
   void * ent;
   int i=0;
-  while(!(ent = ent_read(task, flist[i], dp)) && i<fn){
+  while(!(ent = ent_read(flist[i], dp)) && i<fn){
     PRINT_WARN("cannot read file '%s'\n", flist[i]);
     i++;
   }
@@ -114,7 +114,7 @@ void * read_files(int fn, char ** flist, task_t * task, drawpars * dp){
     return NULL;
   }
 
-  if(*task == AT3COORDS){
+  if(dp->task == AT3COORDS){
     atcoords * acs = ent;
     int n0 = fill_nf(acs, 0);
     for(i++; i<fn; i++){

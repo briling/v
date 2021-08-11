@@ -67,6 +67,9 @@ static void version(FILE * f){
 
 static drawpars dp_init(void){
   drawpars dp;
+  dp.task = UNKNOWN;
+  dp.dt   = DEFAULT_TIMEOUT;
+  memset(dp.fontname, 0, STRLEN);
   dp.n   = 0;
   dp.fbw = 0;
   dp.num = 0;
@@ -104,15 +107,12 @@ int main (int argc, char * argv[]) {
 
   /*= Input ==================================================================*/
 
-  task_t   task = UNKNOWN;
-  int      to   = DEFAULT_TIMEOUT;
   drawpars dp   = dp_init();
-  char     fontname[STRLEN]={0};
 
   int fn = 0;
   char ** flist = malloc(argc*sizeof(char*));
   for(int i=1; i<argc; i++){
-    if(!cli_parse(argv[i], fontname, &to, &dp, &task)){
+    if(!cli_parse(argv[i], &dp)){
       flist[fn++] = argv[i];
     }
   }
@@ -121,7 +121,7 @@ int main (int argc, char * argv[]) {
     exit(1);
   }
 
-  void * ent = read_files(fn, flist, &task, &dp);
+  void * ent = read_files(fn, flist, &dp);
   free(flist);
   if(!ent){
     PRINT_ERR("no files to read\n");
@@ -132,7 +132,7 @@ int main (int argc, char * argv[]) {
   ptf kp[NKP];
   init_x(dp.fname);
   init_keys(kp);
-  init_font(fontname);
+  init_font(dp.fontname);
 #if 0
   myDrawString = &XDrawString;
 #else
@@ -145,7 +145,7 @@ int main (int argc, char * argv[]) {
 #endif
 
   /*= Main loop ==============================================================*/
-  main_loop(ent, &dp, kp, task, to);
+  main_loop(ent, &dp, kp);
 
   return 0;
 }

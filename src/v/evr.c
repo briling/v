@@ -59,8 +59,8 @@ static void redraw_vibro(void * ent, drawpars * dp){
   return;
 }
 
-void kp_readmore(void * ent, task_t task, drawpars * dp){
-  if(task == AT3COORDS){
+void kp_readmore(void * ent, drawpars * dp){
+  if(dp->task == AT3COORDS){
     atcoords * acs = ent;
     if(!dp->f){
       PRINT_ERR("cannot read from the file '%s'\n", dp->fname);
@@ -73,8 +73,8 @@ void kp_readmore(void * ent, task_t task, drawpars * dp){
   return;
 }
 
-void kp_readagain(void * ent, task_t task, drawpars * dp){
-  if(task == AT3COORDS){
+void kp_readagain(void * ent, drawpars * dp){
+  if(dp->task == AT3COORDS){
     atcoords * acs = ent;
     for(int i=0; i<acs->n; i++){
       free(acs->m[i]);
@@ -93,15 +93,15 @@ void kp_readagain(void * ent, task_t task, drawpars * dp){
   return;
 }
 
-void kp_print(void * ent, task_t task, drawpars * dp){
-  if (task == AT3COORDS){
+void kp_print(void * ent, drawpars * dp){
+  if (dp->task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
     ac3_print(ac, dp->xy0, dp->b);
   }
   return;
 }
 
-void kp_printrot(void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
+void kp_printrot(void * ent __attribute__ ((unused)), drawpars * dp){
   double * U = dp->ac3rmx;
   for(int i=0; i<3; i++){
     printf("rotation> % 20.15lf % 20.15lf % 20.15lf\n", U[i*3], U[i*3+1], U[i*3+2]);
@@ -111,8 +111,8 @@ void kp_printrot(void * ent __attribute__ ((unused)), task_t task __attribute__ 
   return;
 }
 
-void kp_print2fig(void * ent, task_t task, drawpars * dp){
-  if (task == AT3COORDS){
+void kp_print2fig(void * ent, drawpars * dp){
+  if (dp->task == AT3COORDS){
     double v[3*8];
     if(dp->vert == 1){
       for(int i=0; i<8; i++){
@@ -125,8 +125,8 @@ void kp_print2fig(void * ent, task_t task, drawpars * dp){
   return;
 }
 
-static void rl_changed(void * ent, task_t task, drawpars * dp){
-  if(task==AT3COORDS){
+static void rl_changed(void * ent, drawpars * dp){
+  if(dp->task==AT3COORDS){
     for(int i=0; i<dp->N; i++){
       ((atcoords *)ent)->m[i]->bond_flag = 0;
     }
@@ -139,69 +139,69 @@ static void rl_changed(void * ent, task_t task, drawpars * dp){
   return;
 }
 
-void kp_rl_dec(void * ent, task_t task, drawpars * dp){
+void kp_rl_dec(void * ent, drawpars * dp){
   if(dp->b>0){
     dp->rl /= step_r;
-    rl_changed(ent, task, dp);
+    rl_changed(ent, dp);
   }
   return;
 }
 
-void kp_rl_inc(void * ent, task_t task, drawpars * dp){
+void kp_rl_inc(void * ent, drawpars * dp){
   if(dp->b>0){
     dp->rl *= step_r;
-    rl_changed(ent, task, dp);
+    rl_changed(ent, dp);
   }
   return;
 }
 
-void kp_r_dec(void * ent, task_t task, drawpars * dp){
+void kp_r_dec(void * ent, drawpars * dp){
   dp->r /= step_r;
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_r_inc(void * ent, task_t task, drawpars * dp){
+void kp_r_inc(void * ent, drawpars * dp){
   dp->r *= step_r;
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_zoom_out(void * ent, task_t task, drawpars * dp){
+void kp_zoom_out(void * ent, drawpars * dp){
   dp->scale /= step_zoom;
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_zoom_in(void * ent, task_t task, drawpars * dp){
+void kp_zoom_in(void * ent, drawpars * dp){
   dp->scale *= step_zoom;
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_frame_inc(void * ent, task_t task, drawpars * dp){
+void kp_frame_inc(void * ent, drawpars * dp){
   if (dp->n < dp->N-1){
     dp->n++;
-    exp_redraw(ent, task, dp);
+    exp_redraw(ent, dp);
   }
-  if (dp->n == dp->N-1 && task == AT3COORDS){
+  if (dp->n == dp->N-1 && dp->task == AT3COORDS){
     dp->fbw = 0;
   }
   return;
 }
 
-void kp_frame_dec(void * ent, task_t task, drawpars * dp){
+void kp_frame_dec(void * ent, drawpars * dp){
   if (dp->n > 0){
     dp->n--;
-    exp_redraw(ent, task, dp);
+    exp_redraw(ent, dp);
   }
-  if (dp->n == 0 && task == AT3COORDS){
+  if (dp->n == 0 && dp->task == AT3COORDS){
     dp->fbw = 0;
   }
   return;
 }
 
-void rot_ent_pointer(void * ent, task_t task, drawpars * dp, int dx, int dy, double speed){
+void rot_ent_pointer(void * ent, drawpars * dp, int dx, int dy, double speed){
 
   double rotation_matrix[9];
   rot_around_perp(rotation_matrix, (double)dx, (double)dy, speed);
@@ -209,7 +209,7 @@ void rot_ent_pointer(void * ent, task_t task, drawpars * dp, int dx, int dy, dou
   double mx0[9];
   veccp(9, mx0, dp->ac3rmx);
   mx_multmx(3,3,3, dp->ac3rmx, rotation_matrix, mx0);
-  if(task == AT3COORDS){
+  if(dp->task == AT3COORDS){
     atcoords * acs = ent;
     for(int i=0; i<dp->N; i++){
       rot3d(acs->m[i]->n, acs->m[i]->r, rotation_matrix);
@@ -218,7 +218,7 @@ void rot_ent_pointer(void * ent, task_t task, drawpars * dp, int dx, int dy, dou
   return;
 }
 
-static void rot_ent(void * ent, task_t task, drawpars * dp, int axis, double angle){
+static void rot_ent(void * ent, drawpars * dp, int axis, double angle){
   if(dp->modkey){
     angle *= step_mod;
   }
@@ -226,7 +226,7 @@ static void rot_ent(void * ent, task_t task, drawpars * dp, int axis, double ang
   double m[9];
   rotmx0_update(dp->ac3rmx, m, angle, axis);
 
-  if(task == AT3COORDS){
+  if(dp->task == AT3COORDS){
     atcoords * acs = ent;
     for(int i=0; i<dp->N; i++){
       rot3d(acs->m[i]->n, acs->m[i]->r, m);
@@ -235,39 +235,39 @@ static void rot_ent(void * ent, task_t task, drawpars * dp, int axis, double ang
   return;
 }
 
-void kp_rotx_l(void * ent, task_t task, drawpars * dp){
-  rot_ent(ent, task, dp, 0, +step_rot);
-  exp_redraw(ent, task, dp);
+void kp_rotx_l(void * ent, drawpars * dp){
+  rot_ent(ent, dp, 0, +step_rot);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_rotx_r(void * ent, task_t task, drawpars * dp){
-  rot_ent(ent, task, dp, 0, -step_rot);
-  exp_redraw(ent, task, dp);
+void kp_rotx_r(void * ent, drawpars * dp){
+  rot_ent(ent, dp, 0, -step_rot);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_roty_l(void * ent, task_t task, drawpars * dp){
-  rot_ent(ent, task, dp, 1, +step_rot);
-  exp_redraw(ent, task, dp);
+void kp_roty_l(void * ent, drawpars * dp){
+  rot_ent(ent, dp, 1, +step_rot);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_roty_r(void * ent, task_t task, drawpars * dp){
-  rot_ent(ent, task, dp, 1, -step_rot);
-  exp_redraw(ent, task, dp);
+void kp_roty_r(void * ent, drawpars * dp){
+  rot_ent(ent, dp, 1, -step_rot);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_rotz_l(void * ent, task_t task, drawpars * dp){
-  rot_ent(ent, task, dp, 2, +step_rot);
-  exp_redraw(ent, task, dp);
+void kp_rotz_l(void * ent, drawpars * dp){
+  rot_ent(ent, dp, 2, +step_rot);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_rotz_r(void * ent, task_t task, drawpars * dp){
-  rot_ent(ent, task, dp, 2, -step_rot);
-  exp_redraw(ent, task, dp);
+void kp_rotz_r(void * ent, drawpars * dp){
+  rot_ent(ent, dp, 2, -step_rot);
+  exp_redraw(ent, dp);
   return;
 }
 
@@ -319,37 +319,37 @@ static void move_ent(void * ent, drawpars * dp, int dir, double step){
   return;
 }
 
-void kp_move_l(void * ent, task_t task, drawpars * dp){
+void kp_move_l(void * ent, drawpars * dp){
   move_ent(ent, dp, 0, -step_move);
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_move_r(void * ent, task_t task, drawpars * dp){
+void kp_move_r(void * ent, drawpars * dp){
   move_ent(ent, dp, 0, +step_move);
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_move_u(void * ent, task_t task, drawpars * dp){
+void kp_move_u(void * ent, drawpars * dp){
   move_ent(ent, dp, 1, +step_move);
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_move_d(void * ent, task_t task, drawpars * dp){
+void kp_move_d(void * ent, drawpars * dp){
   move_ent(ent, dp, 1, -step_move);
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_exit(void * ent, task_t task, drawpars * dp){
-  if (task == VIBRO){
+void kp_exit(void * ent, drawpars * dp){
+  if (dp->task == VIBRO){
     free(((vibrstr *)ent)->ac);
     free(((vibrstr *)ent)->modes);
     free(ent);
   }
-  else if (task == AT3COORDS){
+  else if (dp->task == AT3COORDS){
     if(dp->f){
       fclose(dp->f);
     }
@@ -359,64 +359,64 @@ void kp_exit(void * ent, task_t task, drawpars * dp){
   exit(0);
 }
 
-void kp_fw_toggle(void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
+void kp_fw_toggle(void * ent __attribute__ ((unused)), drawpars * dp){
   dp->fbw = (dp->fbw == 1) ? 0 : 1;
   return;
 }
 
-void kp_bw_toggle(void * ent __attribute__ ((unused)), task_t task, drawpars * dp){
-  if (task == AT3COORDS){
+void kp_bw_toggle(void * ent __attribute__ ((unused)), drawpars * dp){
+  if (dp->task == AT3COORDS){
     dp->fbw = (dp->fbw == -1) ? 0 : -1;
   }
   return;
 }
 
-void kp_l_toggle(void * ent, task_t task, drawpars * dp){
+void kp_l_toggle(void * ent, drawpars * dp){
   if(dp->b>0){
     dp->b = 1+!(dp->b-1);
-    exp_redraw(ent, task, dp);
+    exp_redraw(ent, dp);
   }
   return;
 }
 
-void kp_b_toggle(void * ent, task_t task, drawpars * dp){
+void kp_b_toggle(void * ent, drawpars * dp){
   if(dp->b>-1){
     dp->b = !dp->b;
   }
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_n_toggle(void * ent, task_t task, drawpars * dp){
+void kp_n_toggle(void * ent, drawpars * dp){
   dp->num = (dp->num ==  1) ? 0 :  1;
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_t_toggle(void * ent, task_t task, drawpars * dp){
+void kp_t_toggle(void * ent, drawpars * dp){
   dp->num = (dp->num == -1) ? 0 : -1;
-  exp_redraw(ent, task, dp);
+  exp_redraw(ent, dp);
   return;
 }
 
-void kp_goto_last(void * ent, task_t task, drawpars * dp){
+void kp_goto_last(void * ent, drawpars * dp){
   if (dp->n < dp->N-1){
     dp->n=dp->N-1;
-    exp_redraw(ent, task, dp);
+    exp_redraw(ent, dp);
   }
   return;
 }
 
-void kp_goto_1st(void * ent, task_t task, drawpars * dp){
+void kp_goto_1st(void * ent, drawpars * dp){
   if (dp->n > 0){
     dp->n = 0;
-    exp_redraw(ent, task, dp);
+    exp_redraw(ent, dp);
   }
   return;
 }
 
-void exp_redraw(void * ent, task_t task, drawpars * dp){
-  switch (task){
+void exp_redraw(void * ent, drawpars * dp){
+  switch (dp->task){
     case AT3COORDS:
       redraw_ac3(ent, dp);
       break;
@@ -429,8 +429,8 @@ void exp_redraw(void * ent, task_t task, drawpars * dp){
   return;
 }
 
-void time_gone(void * ent, task_t task, drawpars * dp){
-  if(task == VIBRO){
+void time_gone(void * ent, drawpars * dp){
+  if(dp->task == VIBRO){
     if(dp->t >= TMAX){
       dp->t = dp->t-TMAX;
     }
@@ -452,7 +452,7 @@ static void savevib(drawpars * dp, int c){
   return;
 }
 
-void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ ((unused)), drawpars * dp){
+void kp_savepic(void * ent __attribute__ ((unused)), drawpars * dp){
   char s[STRLEN];
   int  l = (int)(log10(dp->N+0.5))+1;
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
@@ -466,12 +466,12 @@ void kp_savepic(void * ent __attribute__ ((unused)), task_t task __attribute__ (
   return;
 }
 
-void kp_film(void * ent, task_t task, drawpars * dp){
-  if(task != VIBRO){
-    kp_savepic    (ent, task, dp);
+void kp_film(void * ent, drawpars * dp){
+  if(dp->task != VIBRO){
+    kp_savepic    (ent, dp);
     while(dp->n<dp->N-1){
-      kp_frame_inc(ent, task, dp);
-      kp_savepic  (ent, task, dp);
+      kp_frame_inc(ent, dp);
+      kp_savepic  (ent, dp);
     }
   }
   else{
@@ -480,14 +480,14 @@ void kp_film(void * ent, task_t task, drawpars * dp){
     do{
       savevib(dp, c);
       dp->t++;
-      time_gone(ent, task, dp);
+      time_gone(ent, dp);
     } while(++c<TMAX);
   }
   return;
 }
 
-void kp_pg(void * ent, task_t task, drawpars * dp){
-  if(task == AT3COORDS){
+void kp_pg(void * ent, drawpars * dp){
+  if(dp->task == AT3COORDS){
     atcoord * ac = ((atcoords *)ent)->m[dp->n];
     if(!ac->sym[0]){
       pg(ac, ac->sym, dp->symtol);

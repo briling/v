@@ -11,7 +11,7 @@ printf("\
   \n\
   vib:%%d                                       force to show geometries (0) / vibrations (1) \n\
   bonds:0                                      disable bonds\n\
-  to:%%d                                        delay between frames in μs (default %d)\n\
+  dt:%%lf                                       delay between frames in seconds (default %g)\n\
   symtol:%%lf                                   tolerance for symmetry determination in Å (default %g) \n\
   z:%%d,%%d,%%d,%%d,%%d                             show an internal coordinate: \n\
                                                      1,i,j,0,0 - distance i-j\n\
@@ -59,7 +59,7 @@ printf("\
   \n\
   q                        quit                  \n\
   \n\
-", exename, DEFAULT_TIMEOUT, DEFAULT_SYMTOL);
+", exename, DEFAULT_TIMEOUT*1e-6, DEFAULT_SYMTOL);
   return;
 }
 

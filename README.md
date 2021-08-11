@@ -42,7 +42,7 @@ Show the reference:
 | ------------------------ | ------------------------------------------------------------- |
 | `vib:%d`                 |     force to show geometries (`0`) / vibrations (`1`)         |
 | `bonds:0`                |     disable bonds                                             |
-| `to:%d`                  |     delay between frames in μs (default 20000)                |
+| `dt:%lf`                 |     delay between frames in seconds (default 0.02)            |
 | `symtol:%lf`             |     tolerance for symmetry determination in Å (default 0.001) |
 | `z:%d,%d,%d,%d,%d`       |     show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
 | `rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`   | rotation matrix to start with (default identity matrix)  |

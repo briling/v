@@ -54,6 +54,10 @@ typedef struct {
 
 typedef struct {
 
+  task_t task;          // data type
+  unsigned int dt;      // animation timeout
+  char fontname[STRLEN];// font
+
   double xy0[2];        // translation vector
   double ac3rmx[9];     // rotational matrix
 
@@ -90,7 +94,7 @@ typedef struct {
 
 // load.c
 void acs_readmore  (FILE * f, int b, int center, atcoords * acs, const char * fname);
-void * read_files(int fn, char ** flist, task_t * task, drawpars * dp);
+void * read_files(int fn, char ** flist, drawpars * dp);
 // scale.c
 double ac3_scale(atcoord * ac);
 double acs_scale(atcoords * acs);
@@ -105,20 +109,18 @@ txyz * ac3_read_xyz(int * n_p, FILE * f);
 // man.c
 void printman(char * exename);
 // cli.c
-int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
+int cli_parse(char * arg, drawpars * dp);
 
 // loop.c
-void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int to);
+void main_loop(void * ent, drawpars * dp, ptf kp[NKP]);
 
 // ac3_draw.c
 void ac3_draw      (atcoord * ac, double r0, double scale, double xy0[2], int b, int num);
 void ac3_print     (atcoord * ac, double xy0[2], int b);
 // ac3_print.c
 void ac3_print2fig (atcoord * ac, double xy0[2], int b, double * v);
-
 // bonds.c
 void bonds_fill(double rl, atcoord * ac);
-void bonds_fill_ent(int reduce, void * ent, task_t task, drawpars * dp);
 
 // get_atpar.c
 double getradius(int q);

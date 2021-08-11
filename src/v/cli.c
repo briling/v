@@ -70,19 +70,20 @@ static void getshell(double shell[2], drawpars * dp){
   return;
 }
 
-int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task){
+int cli_parse(char * arg, drawpars * dp){
   int vib   = -1;
   int bonds = 1;
   double rot  [9]={0};
   double cell [9]={0};
   double shell[2]={0};
+  double tf = 0.0;
 
   int a0 = sscanf (arg, "vib:%d", &vib);
-  int a1 = sscanf (arg, "to:%d", to);
+  int a1 = sscanf (arg, "dt:%lf", &tf);
   int a2 = sscanf (arg, "symtol:%lf", &(dp->symtol));
   int a3 = sscanf (arg, "bonds:%d", &bonds);
   int a4 = sscanf (arg, "z:%d,%d,%d,%d,%d", dp->z, dp->z+1, dp->z+2, dp->z+3, dp->z+4);
-  int a5 = sscanf (arg, "font:%255s", fontname);
+  int a5 = sscanf (arg, "font:%255s", dp->fontname);
   int rot_count   = sscan_rot  (arg, rot);
   int cell_count  = sscan_cell (arg, cell);
   int shell_count = sscan_shell(arg, shell);
@@ -90,14 +91,18 @@ int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * ta
   int cli = a0||a1||a2||a3||a4||a5 || rot_count||cell_count||shell_count;
 
   if(vib==0){
-    *task = AT3COORDS;
+    dp->task = AT3COORDS;
   }
   else if(vib==1){
-    *task = VIBRO;
+    dp->task = VIBRO;
   }
 
   if(!bonds){
     dp->b = -1;
+  }
+
+  if(tf>0.0){
+    dp->dt = ceil(tf*1e6);
   }
 
   if(rot_count==9){

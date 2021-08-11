@@ -92,6 +92,9 @@ Show the reference:
 
 </details>
 
+<details open><summary><strong>Mouse</strong></summary>
+One can also use the mouse to rotate the molecule and zoom in/out (in development).
+</details>
 
 ## Examples [↑](#contents)
 * `mol/C3H6~mCPBA_01x11.qm.out` — geometries + vibrations

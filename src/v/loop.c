@@ -11,62 +11,62 @@ void main_loop(void * ent, drawpars * dp, ptf kp[NKP]){
   int mouse_y0 = 0;
   int tr = 0;
   while(1) {
-    XEvent event, event1;
-    int zh = 0;
+    XEvent event_rec;
+    XEvent * event = NULL;
     do{
-      XNextEvent(dis, &event1);
+      XNextEvent(dis, &event_rec);
 #if 0
-      printf("%d\n", event1.type);
+      printf("%d\n", event_rec.type);
 #endif
-      if(event1.type != NoExpose){
-        event=event1;
-        zh = 1;
+      if(event_rec.type != NoExpose || !event){
+        event=&event_rec;
+      }
+      if(event->type == ButtonPress || event->type == ButtonRelease){
+        break;
       }
     } while(XEventsQueued(dis, QueuedAlready));
-    if(!zh){
-      event=event1;
-    }
-    if(event.type == Expose && event.xexpose.count == 0) {
+
+    if(event->type == Expose && event->xexpose.count == 0) {
       exp_redraw(ent, dp);
     }
-    else if(event.type == ConfigureNotify){
-      W = event.xconfigure.width;
-      H = event.xconfigure.height;
+    else if(event->type == ConfigureNotify){
+      W = event->xconfigure.width;
+      H = event->xconfigure.height;
       dp->xy0[0] = dp->xy0[1] = 0.0;
       exp_redraw(ent, dp);
     }
-    else if(event.type == KeyPress) {
-      if(kp[event.xkey.keycode]){
-        dp->modkey = event.xkey.state & (ShiftMask | ControlMask);
-        kp[event.xkey.keycode](ent, dp);
+    else if(event->type == KeyPress) {
+      if(kp[event->xkey.keycode]){
+        dp->modkey = event->xkey.state & (ShiftMask | ControlMask);
+        kp[event->xkey.keycode](ent, dp);
       }
     }
 
-    else if(event.type == ButtonPress &&
-      (event.xbutton.button==Button1 ||
-       event.xbutton.button==Button2 ||
-       event.xbutton.button==Button3)){
+    else if(event->type == ButtonPress &&
+      (event->xbutton.button==Button1 ||
+       event->xbutton.button==Button2 ||
+       event->xbutton.button==Button3)){
       mouse_click = 1;
-      mouse_x0 = event.xbutton.x;
-      mouse_y0 = event.xbutton.y;
+      mouse_x0 = event->xbutton.x;
+      mouse_y0 = event->xbutton.y;
     }
-    else if(event.type == ButtonRelease &&
-      (event.xbutton.button==Button1 ||
-       event.xbutton.button==Button2 ||
-       event.xbutton.button==Button3)){
+    else if(event->type == ButtonRelease &&
+      (event->xbutton.button==Button1 ||
+       event->xbutton.button==Button2 ||
+       event->xbutton.button==Button3)){
       mouse_click = 0;
     }
-    else if(event.type == ButtonPress && event.xbutton.button==Button4){
+    else if(event->type == ButtonPress && event->xbutton.button==Button4){
       kp_zoom_in(ent, dp);
     }
-    else if(event.type == ButtonPress && event.xbutton.button==Button5){
+    else if(event->type == ButtonPress && event->xbutton.button==Button5){
       kp_zoom_out(ent, dp);
     }
 
-    else if(event.type == MotionNotify){
+    else if(event->type == MotionNotify){
       if(mouse_click){
-        int x = event.xmotion.x;
-        int y = event.xmotion.y;
+        int x = event->xmotion.x;
+        int y = event->xmotion.y;
         rot_ent_pointer(ent, dp, x-mouse_x0, y-mouse_y0, POINTER_SPEED/MIN(W,H));
         exp_redraw(ent, dp);
         mouse_x0 = x;

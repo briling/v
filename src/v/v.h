@@ -122,3 +122,4 @@ int  savepic      (char * s);
 void printman(char * exename);
 int cli_parse(char * arg, char * fontname, int  * to, drawpars * dp, task_t * task);
 
+void main_loop(void * ent, drawpars * dp, ptf kp[NKP], task_t task, int to);

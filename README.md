@@ -8,14 +8,20 @@ and beyond.
 ![Animation of 128 molecules](figures/intro.gif)
 
 ## Contents
+* [Download](#download-)
 * [Build](#build-)
 * [Usage](#usage-)
 * [Examples](#examples-)
 
 ---
 
-## Build [↑](#contents)
+## Download [↑](#download)
+```
+wget https://github.com/briling/v/releases/download/v1.0/v.executable -O v
+chmod +x ./v
+```
 
+## Build [↑](#contents)
 ```
 make v
 ```

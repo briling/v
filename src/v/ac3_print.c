@@ -29,10 +29,10 @@ void ac3_print_xyz(atcoord * ac, double xy0[2]){
     const char * s = getname(ac->q[k]);
     int ok = s && s[0];
     if(ok){
-      printf("%3s", s);
+      printf(" %-3s", s);
     }
     else{
-      printf("%3d", ac->q[k]);
+      printf(" %3d", ac->q[k]);
     }
     printf("   % lf   % lf   % lf\n",
         xy0[0] + ac->r[k*3  ],

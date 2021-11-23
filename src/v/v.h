@@ -57,6 +57,7 @@ typedef struct {
   task_t task;          // data type
   unsigned int dt;      // animation timeout
   char fontname[STRLEN];// font
+  int gui;              //
 
   double xy0[2];        // translation vector
   double ac3rmx[9];     // rotational matrix

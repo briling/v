@@ -69,6 +69,7 @@ static void version(FILE * f){
 static drawpars dp_init(void){
   drawpars dp;
   dp.task = UNKNOWN;
+  dp.gui  = 1;
   dp.dt   = DEFAULT_TIMEOUT;
   memset(dp.fontname, 0, STRLEN);
   dp.n   = 0;
@@ -143,6 +144,11 @@ int main (int argc, char * argv[]) {
 #else
   canv = px;
 #endif
+
+  if(!dp.gui){
+    kp_print_xyz(ent, &dp);
+    kp_exit(ent, &dp);
+  }
 
   /*= Main loop ==============================================================*/
   main_loop(ent, &dp, kp);

@@ -136,6 +136,9 @@ txyz * ac3_read_in(int * n_p, int * zmat, FILE * f){
           break;
       }
       if(sc || zmat2cart(n, a, r, a1-1, a2-1, a3-1, ab, ac*rd, az*rd)){
+        if ( fscanf(f, " %255[^\n]", s) && strstr(s, "set")){
+          continue;
+        }
         goto hell;
       }
     }

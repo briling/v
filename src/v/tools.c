@@ -1,6 +1,21 @@
 #include "v.h"
 #include "sym.h"
 
+void ent_free(void * ent, drawpars * dp){
+  if (dp->task == VIBRO){
+    free(((vibrstr *)ent)->ac);
+    free(((vibrstr *)ent)->modes);
+    free(ent);
+  }
+  else if (dp->task == AT3COORDS){
+    if(dp->f){
+      fclose(dp->f);
+    }
+    acs_free(ent);
+  }
+  return;
+}
+
 void acs_free(atcoords * acs){
   for(int i=0; i<acs->n; i++){
     free(acs->m[i]);

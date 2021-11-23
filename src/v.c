@@ -129,6 +129,12 @@ int main (int argc, char * argv[]) {
     exit(1);
   }
 
+  if(!dp.gui){
+    kp_print_xyz(ent, &dp);
+    ent_free(ent, &dp);
+    exit(0);
+  }
+
   /*= X11 init ===============================================================*/
   ptf kp[NKP];
   init_x(dp.fname);
@@ -144,11 +150,6 @@ int main (int argc, char * argv[]) {
 #else
   canv = px;
 #endif
-
-  if(!dp.gui){
-    kp_print_xyz(ent, &dp);
-    kp_exit(ent, &dp);
-  }
 
   /*= Main loop ==============================================================*/
   main_loop(ent, &dp, kp);

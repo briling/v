@@ -88,8 +88,9 @@ Show the reference:
 |                                |
 | `tab`                          |  read new points
 | `r`                            |  reread file
-| `x`                            |  print molecule (1)
-| `p`                            |  print molecule (2)
+| `x`                            |  print molecule (Priroda input + bonds)
+| `z`                            |  print molecule (`.xyz`) 
+| `p`                            |  print molecule (input for an `.svg` generator)
 | `u`                            |  print current rotation matrix
 | `m`                            |  save the current frame ([`.xpm`](https://en.wikipedia.org/wiki/X_PixMap) format)
 | `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)

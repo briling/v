@@ -4,6 +4,7 @@
 void kp_readmore (void * ent, drawpars * dp);
 void kp_readagain(void * ent, drawpars * dp);
 void kp_print    (void * ent, drawpars * dp);
+void kp_print_xyz(void * ent, drawpars * dp);
 void kp_print2fig(void * ent, drawpars * dp);
 void kp_printrot (void * ent, drawpars * dp);
 void kp_rl_inc   (void * ent, drawpars * dp);

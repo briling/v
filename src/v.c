@@ -36,6 +36,7 @@ static void init_keys(ptf kp[NKP]){
   kp[ XKeysymToKeycode(dis, XK_d         ) ] = kp_move_r    ;
   kp[ XKeysymToKeycode(dis, XK_f         ) ] = kp_film      ;
   kp[ XKeysymToKeycode(dis, XK_l         ) ] = kp_l_toggle  ;
+  kp[ XKeysymToKeycode(dis, XK_z         ) ] = kp_print_xyz ;
   kp[ XKeysymToKeycode(dis, XK_x         ) ] = kp_print     ;
   kp[ XKeysymToKeycode(dis, XK_b         ) ] = kp_b_toggle  ;
   kp[ XKeysymToKeycode(dis, XK_n         ) ] = kp_n_toggle  ;

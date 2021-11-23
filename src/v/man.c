@@ -51,8 +51,9 @@ printf("\
   \n\
   tab                      read new points       \n\
   r                        reread file           \n\
-  x                        print molecule (1)    \n\
-  p                        print molecule (2)    \n\
+  x                        print molecule (Priroda input + bonds)    \n\
+  z                        print molecule (.xyz)    \n\
+  p                        print molecule (input for an .svg generator)    \n\
   u                        print current rotation matrix       \n\
   m                        save the current frame (.xpm format)\n\
   f                        save all frames (vibration mode: save all frames to animate the selected normal mode)\n\

@@ -3,7 +3,7 @@
 void ac3_print(atcoord * ac, double xy0[2], int b){
   printf("$molecule\ncart\n");
   for(int k=0; k<ac->n; k++){
-    printf(" %d\t%lf\t%lf\t%lf",
+    printf("%3d   % lf   % lf   % lf",
         ac->q[k],
         xy0[0] + ac->r[k*3  ],
         xy0[1] + ac->r[k*3+1],
@@ -14,12 +14,31 @@ void ac3_print(atcoord * ac, double xy0[2], int b){
         if(k1 == -1 ){
           break;
         }
-        printf("%s%d", j?",":"\tk=", k1+1);
+        printf("%s%d", j?",":"    k=", k1+1);
       }
     }
     printf("\n");
   }
   printf("$end\n");
+  return;
+}
+
+void ac3_print_xyz(atcoord * ac, double xy0[2]){
+  printf("%d\n\n", ac->n);
+  for(int k=0; k<ac->n; k++){
+    const char * s = getname(ac->q[k]);
+    int ok = s && s[0];
+    if(ok){
+      printf("%3s", s);
+    }
+    else{
+      printf("%3d", ac->q[k]);
+    }
+    printf("   % lf   % lf   % lf\n",
+        xy0[0] + ac->r[k*3  ],
+        xy0[1] + ac->r[k*3+1],
+                 ac->r[k*3+2]);
+  }
   return;
 }
 

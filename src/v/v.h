@@ -116,9 +116,10 @@ void main_loop(void * ent, drawpars * dp, ptf kp[NKP]);
 
 // ac3_draw.c
 void ac3_draw      (atcoord * ac, double r0, double scale, double xy0[2], int b, int num);
-void ac3_print     (atcoord * ac, double xy0[2], int b);
 // ac3_print.c
-void ac3_print2fig (atcoord * ac, double xy0[2], int b, double * v);
+void ac3_print    (atcoord * ac, double xy0[2], int b);
+void ac3_print_xyz(atcoord * ac, double xy0[2]);
+void ac3_print2fig(atcoord * ac, double xy0[2], int b, double * v);
 // bonds.c
 void bonds_fill(double rl, atcoord * ac);
 

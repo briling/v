@@ -101,6 +101,14 @@ void kp_print(void * ent, drawpars * dp){
   return;
 }
 
+void kp_print_xyz(void * ent, drawpars * dp){
+  if (dp->task == AT3COORDS){
+    atcoord * ac = ((atcoords *)ent)->m[dp->n];
+    ac3_print_xyz(ac, dp->xy0);
+  }
+  return;
+}
+
 void kp_printrot(void * ent __attribute__ ((unused)), drawpars * dp){
   double * U = dp->ac3rmx;
   for(int i=0; i<3; i++){

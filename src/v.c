@@ -130,7 +130,13 @@ int main (int argc, char * argv[]) {
   }
 
   if(!dp.gui){
-    kp_print_xyz(ent, &dp);
+
+    atcoord * ac = ((atcoords *)ent)->m[dp.n];
+    if(dp.b>0 && !ac->bond_flag){
+      bonds_fill(dp.rl, ac);
+    }
+
+    kp_print(ent, &dp);
     ent_free(ent, &dp);
     exit(0);
   }

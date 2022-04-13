@@ -136,7 +136,7 @@ int main (int argc, char * argv[]) {
       bonds_fill(dp.rl, ac);
     }
 
-    kp_print(ent, &dp);
+    kp_print2fig(ent, &dp);
     ent_free(ent, &dp);
     exit(0);
   }

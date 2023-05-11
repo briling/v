@@ -29,26 +29,31 @@ void close_x(void) {
 
 static void setcolors(){
   XColor col[NCOLORS]={
-    [   0] .red = 0xFFFF, [   0] .green = 0xCCCC, [   0] .blue = 0x9999,
+    [   0] .red = 0x9999, [   0] .green = 0x9999, [   0] .blue = 0x9999,
     [   1] .red = 0xBFFF, [   1] .green = 0xBFFF, [   1] .blue = 0xBFFF, /* H  */
-    [   2] .red = 0xFFFF, [   2] .green = 0xCCCC, [   2] .blue = 0x9999,
-    [   3] .red = 0xFFFF, [   3] .green = 0xCCCC, [   3] .blue = 0x9999,
-    [   4] .red = 0xFFFF, [   4] .green = 0xCCCC, [   4] .blue = 0x9999,
+    [   2] .red = 0xAAAA, [   2] .green = 0xFFFF, [   2] .blue = 0xFFFF, /* He */
     [   5] .red = 0xFFFF, [   5] .green = 0xCCCC, [   5] .blue = 0x9999,
     [   6] .red = 0x5FFF, [   6] .green = 0x5FFF, [   6] .blue = 0x5FFF, /* C  */
     [   7] .red = 0x1FFF, [   7] .green = 0x1FFF, [   7] .blue = 0xBFFF, /* N  */
     [   8] .red = 0xBFFF, [   8] .green = 0x1FFF, [   8] .blue = 0x1FFF, /* O  */
-    [   9] .red = 0xF500, [   9] .green = 0xFFFF, [   9] .blue = 0x8500, /* F  */ //f5ff85
-    [  10] .red = 0xFFFF, [  10] .green = 0xCCCC, [  10] .blue = 0x9999,
-    [  11] .red = 0xFFFF, [  11] .green = 0xCCCC, [  11] .blue = 0x9999,
-    [  12] .red = 0xFFFF, [  12] .green = 0xCCCC, [  12] .blue = 0x9999,
-    [  13] .red = 0xFFFF, [  13] .green = 0xCCCC, [  13] .blue = 0x9999, /* Al */
-    [  14] .red = 0xFFFF, [  14] .green = 0xCCCC, [  14] .blue = 0x9999,
-    [  15] .red = 0xFFFF, [  15] .green = 0xCCCC, [  15] .blue = 0x9999,
+    [   9] .red = 0xF500, [   9] .green = 0xFFFF, [   9] .blue = 0x8500, /* F  */
+    [  10] .red = 0xAAAA, [  10] .green = 0xFFFF, [  10] .blue = 0xFFFF, /* Ne */
+    [  14] .red = 0x5FFF, [  14] .green = 0x5FFF, [  14] .blue = 0x5FFF, /* Si */
+    [  15] .red = 0xFFFF, [  15] .green = 0xDDDD, [  15] .blue = 0xFFFF, /* P  */
     [  16] .red = 0xFFFF, [  16] .green = 0xEEEE, [  16] .blue = 0x1111, /* S  */
     [  17] .red = 0xCCCC, [  17] .green = 0xFFFF, [  17] .blue = 0x9999, /* Cl */
-    [  18] .red = 0xAAAA, [  18] .green = 0x0000, [  18] .blue = 0xFFFF  /* Ar */
+    [  18] .red = 0xAAAA, [  18] .green = 0xFFFF, [  18] .blue = 0xFFFF, /* Ar */
+    [  35] .red = 0xAAAA, [  35] .green = 0x4444, [  35] .blue = 0x0000, /* Br */
+    [  36] .red = 0xAAAA, [  36] .green = 0xFFFF, [  36] .blue = 0xFFFF, /* Kr */
+    [  53] .red = 0xAAAA, [  53] .green = 0x0000, [  53] .blue = 0xFFFF, /* I  */
+    [  54] .red = 0xAAAA, [  54] .green = 0xFFFF, [  54] .blue = 0xFFFF, /* Xe */
   };
+
+  for(int i=3;  i<5;  i++){ col[i] = col[0]; }
+  for(int i=11; i<14; i++){ col[i] = col[0]; }
+  for(int i=19; i<35; i++){ col[i] = col[0]; }
+  for(int i=37; i<53; i++){ col[i] = col[0]; }
+
   Colormap colmap = DefaultColormap(dis, DefaultScreen(dis));
   for(int i=0; i<NCOLORS; i++){
     gcc[i] = XCreateGC (dis, win, 0, 0);

@@ -141,3 +141,4 @@ One can also use the mouse to rotate the molecule and zoom in/out (in developmen
 ![Organic crystal cell](figures/MOL_3525.xyz_1.gif)
 
 ---
+![Periodic table of elements](figures/periodic.png)

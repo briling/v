@@ -4,7 +4,7 @@
 #include <X11/xpm.h>
 #include <X11/keysymdef.h>
 
-#define NCOLORS 19
+#define NCOLORS 55
 
 #define CLEARCANV \
   if(canv == px){\

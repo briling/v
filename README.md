@@ -59,6 +59,7 @@ Show the reference:
 | `cell:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`  | cell parameters in Å                                     |
 | `shell:b%lf,%lf`                            | spheres radii in a.u.                                    |
 | `shell:%lf,%lf`                             | spheres radii in Å                                       |
+| `gui:%d`                                    | normal (default `1`) / headless (`0`) mode               |
 
 </details>
 
@@ -99,8 +100,17 @@ Show the reference:
 
 </details>
 
-<details open><summary><strong>Mouse</strong></summary>
-One can also use the mouse to rotate the molecule and zoom in/out (in development).
+<details open><summary><strong>Mouse (in development)</strong></summary>
+One can also use the mouse to rotate the molecule and zoom in/out.
+</details>
+
+<details open><summary><strong>Headless mode (in development)</strong></summary>
+If run in the headless mode with `gui:0`, `v` processes the symbols from stdio as if they were pressed in the normal mode.
+Right now, only `p`, `x`, `z`, and `.` are available. For example,
+```
+> echo . | ./v mol/mol0001.xyz gui:0
+D*h
+```
 </details>
 
 ## Examples [↑](#contents)

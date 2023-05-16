@@ -105,12 +105,15 @@ One can also use the mouse to rotate the molecule and zoom in/out.
 </details>
 
 <details open><summary><strong>Headless mode (in development)</strong></summary>
-If run in the headless mode with `gui:0`, `v` processes the symbols from stdio as if they were pressed in the normal mode.
+
+If run in the headless mode with `gui:0`, the symbols from stdio are processed 
+as if the corresponding keys were pressed in the normal mode.
 Right now, only `p`, `x`, `z`, and `.` are available. For example,
 ```
 > echo . | ./v mol/mol0001.xyz gui:0
 D*h
 ```
+
 </details>
 
 ## Examples [↑](#contents)

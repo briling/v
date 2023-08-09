@@ -69,6 +69,7 @@ static void version(FILE * f){
 static drawpars dp_init(void){
   drawpars dp;
   dp.task = UNKNOWN;
+  dp.gui  = 1;
   dp.dt   = DEFAULT_TIMEOUT;
   memset(dp.fontname, 0, STRLEN);
   dp.n   = 0;
@@ -127,6 +128,34 @@ int main (int argc, char * argv[]) {
   if(!ent){
     PRINT_ERR("no files to read\n");
     exit(1);
+  }
+
+  if(!dp.gui){
+
+    atcoord * ac = ((atcoords *)ent)->m[dp.n];
+    if(dp.b>0 && !ac->bond_flag){
+      bonds_fill(dp.rl, ac);
+    }
+
+    int c;
+    while((c = getc(stdin))!=EOF){
+      switch(c){
+        case('p'):
+          kp_print2fig(ent, &dp); break;
+        case('z'):
+          kp_print_xyz(ent, &dp); break;
+        case('x'):
+          kp_print(ent, &dp); break;
+        case('.'):
+          {
+            styp sym;
+            pg(ac, sym, dp.symtol);
+            printf("%s\n", sym);
+          }; break;
+      }
+    }
+    ent_free(ent, &dp);
+    exit(0);
   }
 
   /*= X11 init ===============================================================*/

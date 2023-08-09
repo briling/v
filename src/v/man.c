@@ -26,6 +26,7 @@ printf("\
   cell:%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf     cell parameters in Å \n\
   shell:b%%lf,%%lf                               spheres radii in a.u. \n\
   shell:%%lf,%%lf                                spheres radii in Å \n\
+  gui:%%d`                                      normal (1) / headless (0) mode\n\
   \n\
  KEYBOARD REFERENCE:\n\
   \n\

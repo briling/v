@@ -57,6 +57,7 @@ typedef struct {
   task_t task;          // data type
   unsigned int dt;      // animation timeout
   char fontname[STRLEN];// font
+  int gui;              //
 
   double xy0[2];        // translation vector
   double ac3rmx[9];     // rotational matrix
@@ -140,6 +141,7 @@ void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
 
 // tools.c
+void ent_free(void * ent, drawpars * dp);
 void acs_free(atcoords * acs);
 void newmol_prep(atcoords * acs, drawpars * dp);
 void ac3_text(atcoord * ac, drawpars * dp);

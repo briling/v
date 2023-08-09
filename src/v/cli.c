@@ -84,12 +84,13 @@ int cli_parse(char * arg, drawpars * dp){
   int a3 = sscanf (arg, "bonds:%d", &bonds);
   int a4 = sscanf (arg, "z:%d,%d,%d,%d,%d", dp->z, dp->z+1, dp->z+2, dp->z+3, dp->z+4);
   int a5 = sscanf (arg, "font:%255s", dp->fontname);
+  int a6 = sscanf (arg, "gui:%d", &(dp->gui));
   int a7 = sscanf (arg, "bohr:%d", &(dp->bohr));
   int rot_count   = sscan_rot  (arg, rot);
   int cell_count  = sscan_cell (arg, cell);
   int shell_count = sscan_shell(arg, shell);
 
-  int cli = a0||a1||a2||a3||a4||a5||a7 || rot_count||cell_count||shell_count;
+  int cli = a0||a1||a2||a3||a4||a5||a6||a7 || rot_count||cell_count||shell_count;
 
   if(vib==0){
     dp->task = AT3COORDS;

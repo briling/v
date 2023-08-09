@@ -352,17 +352,7 @@ void kp_move_d(void * ent, drawpars * dp){
 }
 
 void kp_exit(void * ent, drawpars * dp){
-  if (dp->task == VIBRO){
-    free(((vibrstr *)ent)->ac);
-    free(((vibrstr *)ent)->modes);
-    free(ent);
-  }
-  else if (dp->task == AT3COORDS){
-    if(dp->f){
-      fclose(dp->f);
-    }
-    acs_free(ent);
-  }
+  ent_free(ent, dp);
   close_x();
   exit(0);
 }

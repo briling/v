@@ -17,7 +17,7 @@ and beyond.
 
 ## Download [↑](#download)
 ```
-wget https://github.com/briling/v/releases/download/v1.0/v.executable -O v
+wget https://github.com/briling/v/releases/download/v2.0/v.2.0 -O v
 chmod +x ./v
 ```
 

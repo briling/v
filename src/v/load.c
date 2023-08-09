@@ -13,10 +13,10 @@ static inline int fill_nf(atcoords * acs, int n0){
   return acs->n;
 }
 
-void acs_readmore(FILE * f, int b, int center, atcoords * acs, const char * fname){
+void acs_readmore(FILE * f, int b, int center, int bohr, atcoords * acs, const char * fname){
   atcoord * m;
   format_t format = UNKNOWN_FORMAT;
-  while((m = ac3_read(f, b, center, fname, &format))!=NULL){
+  while((m = ac3_read(f, b, center, bohr, fname, &format))!=NULL){
     if(acs->n==acs->Nmem){
       int N = acs->Nmem ? acs->Nmem*2 : N_MIN;
       atcoord ** ms = realloc(acs->m, N*sizeof(atcoord *));
@@ -61,7 +61,7 @@ static FILE * acs_read_newfile(atcoords * acs, char * fname, drawpars * dp){
   if(!f){
     return NULL;
   }
-  acs_readmore(f, dp->b, dp->center, acs, fname);
+  acs_readmore(f, dp->b, dp->center, dp->bohr, acs, fname);
   return f;
 }
 

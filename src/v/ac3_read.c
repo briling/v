@@ -4,7 +4,7 @@
 
 #define END(S,X) ( (S)->X + (X##_size)/sizeof(*((S)->X)) )
 
-atcoord * ac3_read(FILE * f, int b, int center, const char * fname, format_t * format){
+atcoord * ac3_read(FILE * f, int b, int center, int bohr, const char * fname, format_t * format){
 
   int n;
   int zmat=0;
@@ -77,6 +77,9 @@ atcoord * ac3_read(FILE * f, int b, int center, const char * fname, format_t * f
   memset(m->sym, 0, sizeof(m->sym));
   for(int i=0; i<n; i++){
     m->q[i] = a[i].t;
+    if(bohr){
+      r3scal(a[i].r, BA);
+    }
     r3cp(m->r+i*3, a[i].r);
   }
   if(center){

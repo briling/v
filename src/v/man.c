@@ -11,6 +11,7 @@ printf("\
   \n\
   vib:%%d                                       force to show geometries (0) / vibrations (1) \n\
   bonds:0                                      disable bonds\n\
+  bohr:1                                       assume input files are in Bohr (default is Å)\n\
   dt:%%lf                                       delay between frames in seconds (default %g)\n\
   symtol:%%lf                                   tolerance for symmetry determination in Å (default %g) \n\
   z:%%d,%%d,%%d,%%d,%%d                             show an internal coordinate: \n\

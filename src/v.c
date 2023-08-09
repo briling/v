@@ -95,6 +95,7 @@ static drawpars dp_init(void){
   dp.N = 0.0;
   dp.f = NULL;
   dp.fname = NULL;
+  dp.bohr = 0;
   return dp;
 }
 

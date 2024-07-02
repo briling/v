@@ -87,6 +87,7 @@ static drawpars dp_init(void){
 #endif
   // from command-line
   dp.b = 1;
+  dp.bmax = 0.0;
   dp.symtol = DEFAULT_SYMTOL;
   dp.vert = -1;
   dp.z[0] = dp.z[1] = dp.z[2] = dp.z[3] = dp.z[4] = 0;
@@ -134,7 +135,7 @@ int main (int argc, char * argv[]) {
 
     atcoord * ac = ((atcoords *)ent)->m[dp.n];
     if(dp.b>0 && !ac->bond_flag){
-      bonds_fill(dp.rl, ac);
+      bonds_fill(dp.rl, dp.bmax, ac);
     }
 
     int c;

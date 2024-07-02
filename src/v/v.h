@@ -72,6 +72,7 @@ typedef struct {
   double rot_to_lab_basis[3*3];   // "rotation" matrix for PBC
   double rot_to_cell_basis[3*3];  // "rotation" matrix for PBC
   double symtol;        // tolerance for symmetry determination
+  double bmax;          // max. bond length to show
   int    z[5];          // internal coordinate to show
   int    modkey;        // whether ctrl of shift are pressed
 
@@ -122,7 +123,7 @@ void ac3_print    (atcoord * ac, double xy0[2], int b);
 void ac3_print_xyz(atcoord * ac, double xy0[2]);
 void ac3_print2fig(atcoord * ac, double xy0[2], int b, double * v);
 // bonds.c
-void bonds_fill(double rl, atcoord * ac);
+void bonds_fill(double rl, double bmax, atcoord * ac);
 
 // get_atpar.c
 double getradius(int q);

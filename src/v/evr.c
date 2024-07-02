@@ -13,7 +13,7 @@ static void redraw_ac3(void * ent, drawpars * dp){
   atcoord * ac = ((atcoords *)ent)->m[dp->n];
 
   if(dp->b>0 && !ac->bond_flag){
-    bonds_fill(dp->rl, ac);
+    bonds_fill(dp->rl, dp->bmax, ac);
     ac->bond_flag = 1;
   }
 
@@ -42,7 +42,7 @@ static void redraw_vibro(void * ent, drawpars * dp){
   double  * m   = ms->d + dp->n * ac->n*3;
 
   if(dp->b>0 && !ac->bond_flag){
-    bonds_fill(dp->rl, ac);
+    bonds_fill(dp->rl, dp->bmax, ac);
     ac->bond_flag = 1;
   }
 

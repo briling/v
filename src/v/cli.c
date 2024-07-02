@@ -77,6 +77,7 @@ int cli_parse(char * arg, drawpars * dp){
   double cell [9]={0};
   double shell[2]={0};
   double tf = 0.0;
+  double bmax = 0.0;
 
   int a0 = sscanf (arg, "vib:%d", &vib);
   int a1 = sscanf (arg, "dt:%lf", &tf);
@@ -86,11 +87,12 @@ int cli_parse(char * arg, drawpars * dp){
   int a5 = sscanf (arg, "font:%255s", dp->fontname);
   int a6 = sscanf (arg, "gui:%d", &(dp->gui));
   int a7 = sscanf (arg, "bohr:%d", &(dp->bohr));
+  int a8 = sscanf (arg, "bmax:%lf", &bmax);
   int rot_count   = sscan_rot  (arg, rot);
   int cell_count  = sscan_cell (arg, cell);
   int shell_count = sscan_shell(arg, shell);
 
-  int cli = a0||a1||a2||a3||a4||a5||a6||a7 || rot_count||cell_count||shell_count;
+  int cli = a0||a1||a2||a3||a4||a5||a6||a7||a8 || rot_count||cell_count||shell_count;
 
   if(vib==0){
     dp->task = AT3COORDS;
@@ -105,6 +107,10 @@ int cli_parse(char * arg, drawpars * dp){
 
   if(tf>0.0){
     dp->dt = ceil(tf*1e6);
+  }
+
+  if(bmax>0.0){
+    dp->bmax = bmax;
   }
 
   if(rot_count==9){

@@ -32,9 +32,9 @@ static void makelist(int bsize_max, int * bsize, int * list,
   return;
 }
 
-static void bonds_add(double rl, atcoord * ac){
+static void bonds_add(double rl, double bmax, atcoord * ac){
 
-  double dmax = 2.01 * rl * getmaxradius(ac->n, ac->q);
+  double dmax = (bmax > 0.0) ? bmax : (2.01 * rl * getmaxradius(ac->n, ac->q));
 
   double rmin[3], rmax[3];
   r3cp(rmin, ac->r);
@@ -114,6 +114,9 @@ static void bonds_add(double rl, atcoord * ac){
 
                   double r2 = getradius(ac->q[k2]);
                   double s0  = rl * (r1 + r2);
+                  if(bmax > 0.0){
+                    s0 = MIN(s0, bmax);
+                  }
                   double s2  = r3d2(ac->r+k1*3, ac->r+k2*3);
                   if(s2 > s0*s0){
                     continue;
@@ -172,9 +175,9 @@ static void bonds_reduce(double rl, atcoord * ac){
   return;
 }
 
-void bonds_fill(double rl, atcoord * ac){
+void bonds_fill(double rl, double bmax, atcoord * ac){
   if(rl > ac->bond_rl){
-    bonds_add   (rl, ac);
+    bonds_add   (rl, bmax, ac);
   }
   else{
     bonds_reduce(rl, ac);

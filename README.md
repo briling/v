@@ -54,6 +54,7 @@ Show the reference:
 | `bmax:%lf`               |     max. length of a bond to display                          |
 | `z:%d,%d,%d,%d,%d`       |     show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
 | `rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`   | rotation matrix to start with (default identity matrix)  |
+| `frame:%d`               |     frame to start with (default 1)                                         |
 | `font:%s`                |     font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
 | `cell:b%lf,%lf,%lf`                         | cuboid size in a.u. (for periodical boundary conditions) |
 | `cell:%lf,%lf,%lf`                          | cuboid size in Å                                         |

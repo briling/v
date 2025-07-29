@@ -73,6 +73,7 @@ static void getshell(double shell[2], drawpars * dp){
 int cli_parse(char * arg, drawpars * dp){
   int vib   = -1;
   int bonds = 1;
+  int frame = 1;
   double rot  [9]={0};
   double cell [9]={0};
   double shell[2]={0};
@@ -88,11 +89,12 @@ int cli_parse(char * arg, drawpars * dp){
   int a6 = sscanf (arg, "gui:%d", &(dp->gui));
   int a7 = sscanf (arg, "bohr:%d", &(dp->bohr));
   int a8 = sscanf (arg, "bmax:%lf", &bmax);
+  int a9 = sscanf (arg, "frame:%d", &frame);
   int rot_count   = sscan_rot  (arg, rot);
   int cell_count  = sscan_cell (arg, cell);
   int shell_count = sscan_shell(arg, shell);
 
-  int cli = a0||a1||a2||a3||a4||a5||a6||a7||a8 || rot_count||cell_count||shell_count;
+  int cli = a0||a1||a2||a3||a4||a5||a6||a7||a8||a9 || rot_count||cell_count||shell_count;
 
   if(vib==0){
     dp->task = AT3COORDS;
@@ -122,6 +124,7 @@ int cli_parse(char * arg, drawpars * dp){
   if(shell_count==2){
     getshell(shell, dp);
   }
+  dp->n = frame-1;
 
   return cli;
 }

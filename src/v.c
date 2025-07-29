@@ -131,6 +131,13 @@ int main (int argc, char * argv[]) {
     exit(1);
   }
 
+  if(dp.n >= dp.N){
+    dp.n = dp.n%dp.N;
+  }
+  else if(dp.n<0){
+    dp.n = dp.N-(-dp.n)%dp.N;
+  }
+
   if(!dp.gui){
 
     atcoord * ac = ((atcoords *)ent)->m[dp.n];

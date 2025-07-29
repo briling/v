@@ -15,6 +15,7 @@ int (*myDrawString)();
 
 static void init_keys(ptf kp[NKP]){
   memset(kp, 0, sizeof(ptf)*NKP);
+  kp[ XKeysymToKeycode(dis, XK_Escape    ) ] = kp_exit      ;
   kp[ XKeysymToKeycode(dis, XK_period    ) ] = kp_pg        ;
   kp[ XKeysymToKeycode(dis, XK_1         ) ] = kp_rl_dec    ;
   kp[ XKeysymToKeycode(dis, XK_2         ) ] = kp_rl_inc    ;

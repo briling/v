@@ -99,7 +99,9 @@ Show the reference:
 | `m`                            |  save the current frame ([`.xpm`](https://en.wikipedia.org/wiki/X_PixMap) format)
 | `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)
 |                                |
-| `q`                            |  quit
+| `j`                            |  jump to a frame (will be prompted): `enter` to confirm, `esc` to cancel
+|                                |
+| `q` / `esc`                    |  quit
 
 </details>
 

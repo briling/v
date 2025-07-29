@@ -62,7 +62,9 @@ printf("\
   m                        save the current frame (.xpm format)\n\
   f                        save all frames (vibration mode: save all frames to animate the selected normal mode)\n\
   \n\
-  q                        quit                  \n\
+  j                        jump to a frame (will be prompted)\n\
+  \n\
+  q / esc                  quit                  \n\
   \n\
 ", exename, DEFAULT_TIMEOUT*1e-6, DEFAULT_SYMTOL);
   return;

@@ -495,3 +495,10 @@ void kp_pg(void * ent, drawpars * dp){
   return;
 }
 
+void kp_jump(void * ent, drawpars * dp){
+  if(!dp->input){
+    dp->input = 1;
+    exp_redraw(ent, dp);
+  }
+  return;
+}

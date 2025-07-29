@@ -59,6 +59,9 @@ typedef struct {
   char fontname[STRLEN];// font
   int gui;              //
 
+  int input;            // 0=no input regime, 1=jump, ...
+  char input_text[STRLEN];
+
   double xy0[2];        // translation vector
   double ac3rmx[9];     // rotational matrix
 
@@ -136,10 +139,13 @@ void close_x      (void);
 void init_x       (const char * const capt);
 void init_font    (char * fontname);
 void textincorner (const char * const text1, const char * const text2);
+void textincorner2(const char * const text1);
 void setcaption   (const char * const capt);
 void drawvertices (double * v, double scale, double xy0[2]);
 void drawshell    (double rmin, double rmax, double scale, double * xy0);
 int  savepic      (char * s);
+// xinput.c
+int process_x_input(drawpars * dp, void * event);
 
 // tools.c
 void ent_free(void * ent, drawpars * dp);

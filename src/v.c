@@ -6,7 +6,7 @@
 Display * dis;
 int       screen;
 Window    win;
-GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
+GC        gc_white, gc_black, gc_red, gc_dot[2], gcc[NCOLORS];
 Pixmap    px;
 Drawable  canv;
 XFontStruct * fontInfo;
@@ -35,6 +35,7 @@ static void init_keys(ptf kp[NKP]){
   kp[ XKeysymToKeycode(dis, XK_s         ) ] = kp_move_d    ;
   kp[ XKeysymToKeycode(dis, XK_d         ) ] = kp_move_r    ;
   kp[ XKeysymToKeycode(dis, XK_f         ) ] = kp_film      ;
+  kp[ XKeysymToKeycode(dis, XK_j         ) ] = kp_jump      ;
   kp[ XKeysymToKeycode(dis, XK_l         ) ] = kp_l_toggle  ;
   kp[ XKeysymToKeycode(dis, XK_z         ) ] = kp_print_xyz ;
   kp[ XKeysymToKeycode(dis, XK_x         ) ] = kp_print     ;
@@ -70,6 +71,8 @@ static drawpars dp_init(void){
   drawpars dp;
   dp.task = UNKNOWN;
   dp.gui  = 1;
+  dp.input = 0;
+  memset(dp.input_text, 0, STRLEN);
   dp.dt   = DEFAULT_TIMEOUT;
   memset(dp.fontname, 0, STRLEN);
   dp.n   = 0;

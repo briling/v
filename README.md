@@ -54,6 +54,7 @@ Show the reference:
 | `bmax:%lf`               |     max. length of a bond to display                          |
 | `z:%d,%d,%d,%d,%d`       |     show an internal coordinate (`1,i,j,0,0` — distance i-j; `2,i,j,k,0` — angle i-j-k; `3,i,j,k,l` — torsion i-j-k-l) |
 | `rot:%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf`   | rotation matrix to start with (default identity matrix)  |
+| `frame:%d`               |     frame to start with (default 1)                                         |
 | `font:%s`                |     font ([xlfd](https://en.wikipedia.org/wiki/X_logical_font_description)) |
 | `cell:b%lf,%lf,%lf`                         | cuboid size in a.u. (for periodical boundary conditions) |
 | `cell:%lf,%lf,%lf`                          | cuboid size in Å                                         |
@@ -98,7 +99,9 @@ Show the reference:
 | `m`                            |  save the current frame ([`.xpm`](https://en.wikipedia.org/wiki/X_PixMap) format)
 | `f`                            |  save all frames (vibration mode: save all frames to animate the selected normal mode)
 |                                |
-| `q`                            |  quit
+| `j`                            |  jump to a frame (will be prompted): `enter` to confirm, `esc` to cancel
+|                                |
+| `q` / `esc`                    |  quit
 
 </details>
 

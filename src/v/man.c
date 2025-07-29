@@ -20,6 +20,7 @@ printf("\
                                                      2,i,j,k,0 - angle    i-j-k\n\
                                                      3,i,j,k,l - torsion  i-j-k-l\n\
   rot:%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf      rotation matrix to start with (default identity matrix)\n\
+  frame:%%d                                     frame to start with (default 1)\n\
   font:%%s                                      font (xlfd) \n\n\
   cell:b%%lf,%%lf,%%lf                            cuboid size in a.u. \n\
   cell:%%lf,%%lf,%%lf                             cuboid size in Å \n\
@@ -61,7 +62,9 @@ printf("\
   m                        save the current frame (.xpm format)\n\
   f                        save all frames (vibration mode: save all frames to animate the selected normal mode)\n\
   \n\
-  q                        quit                  \n\
+  j                        jump to a frame (will be prompted)\n\
+  \n\
+  q / esc                  quit                  \n\
   \n\
 ", exename, DEFAULT_TIMEOUT*1e-6, DEFAULT_SYMTOL);
   return;

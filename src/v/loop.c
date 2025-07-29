@@ -36,9 +36,30 @@ void main_loop(void * ent, drawpars * dp, ptf kp[NKP]){
       exp_redraw(ent, dp);
     }
     else if(event->type == KeyPress) {
-      if(kp[event->xkey.keycode]){
-        dp->modkey = event->xkey.state & (ShiftMask | ControlMask);
-        kp[event->xkey.keycode](ent, dp);
+      if(dp->input){
+        int stop_input = process_x_input(dp, event);
+        if(stop_input==1){
+          switch(dp->input){
+            case(1):
+              {
+                int frame = atoi(dp->input_text);
+                if(frame>0 && frame<dp->N-1){
+                  dp->n = frame-1;
+                }
+              }; break;
+          }
+        }
+        if(stop_input){
+          memset(dp->input_text, 0, STRLEN);
+          dp->input=0;
+        }
+        exp_redraw(ent, dp);
+      }
+      else{
+        if(kp[event->xkey.keycode]){
+          dp->modkey = event->xkey.state & (ShiftMask | ControlMask);
+          kp[event->xkey.keycode](ent, dp);
+        }
       }
     }
 

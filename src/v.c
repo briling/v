@@ -6,7 +6,7 @@
 Display * dis;
 int       screen;
 Window    win;
-GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
+GC        gc_white, gc_black, gc_red, gc_dot[2], gcc[NCOLORS];
 Pixmap    px;
 Drawable  canv;
 XFontStruct * fontInfo;
@@ -15,6 +15,7 @@ int (*myDrawString)();
 
 static void init_keys(ptf kp[NKP]){
   memset(kp, 0, sizeof(ptf)*NKP);
+  kp[ XKeysymToKeycode(dis, XK_Escape    ) ] = kp_exit      ;
   kp[ XKeysymToKeycode(dis, XK_period    ) ] = kp_pg        ;
   kp[ XKeysymToKeycode(dis, XK_1         ) ] = kp_rl_dec    ;
   kp[ XKeysymToKeycode(dis, XK_2         ) ] = kp_rl_inc    ;
@@ -35,6 +36,7 @@ static void init_keys(ptf kp[NKP]){
   kp[ XKeysymToKeycode(dis, XK_s         ) ] = kp_move_d    ;
   kp[ XKeysymToKeycode(dis, XK_d         ) ] = kp_move_r    ;
   kp[ XKeysymToKeycode(dis, XK_f         ) ] = kp_film      ;
+  kp[ XKeysymToKeycode(dis, XK_j         ) ] = kp_jump      ;
   kp[ XKeysymToKeycode(dis, XK_l         ) ] = kp_l_toggle  ;
   kp[ XKeysymToKeycode(dis, XK_z         ) ] = kp_print_xyz ;
   kp[ XKeysymToKeycode(dis, XK_x         ) ] = kp_print     ;
@@ -70,6 +72,8 @@ static drawpars dp_init(void){
   drawpars dp;
   dp.task = UNKNOWN;
   dp.gui  = 1;
+  dp.input = 0;
+  memset(dp.input_text, 0, STRLEN);
   dp.dt   = DEFAULT_TIMEOUT;
   memset(dp.fontname, 0, STRLEN);
   dp.n   = 0;
@@ -129,6 +133,13 @@ int main (int argc, char * argv[]) {
   if(!ent){
     PRINT_ERR("no files to read\n");
     exit(1);
+  }
+
+  if(dp.n >= dp.N){
+    dp.n = dp.n%dp.N;
+  }
+  else if(dp.n<0){
+    dp.n = dp.N-(-dp.n)%dp.N;
   }
 
   if(!dp.gui){

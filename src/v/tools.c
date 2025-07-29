@@ -57,6 +57,13 @@ void ac3_text(atcoord * ac, drawpars * dp){
     snprintf(text2, sizeof(text2), "%s (%*d / %d)", ac->fname, 1+(int)(log10(ac->nf[1])), ac->nf[0]+1, ac->nf[1]);
     textincorner(text, text2);
   }
+
+  if(dp->input==1){
+    char text3[STRLEN];
+    snprintf(text3, sizeof(text3), "JUMP TO >>> %s", dp->input_text);
+    textincorner2(text3);
+  }
+
   setcaption(ac->fname);
   return;
 }
@@ -69,6 +76,11 @@ void vibro_text(modestr * ms, drawpars * dp){
            "%*d / %d   %.1lf%c   r = %.1lf   rl = %.1lf",
            1+(int)(log10(ms->n)), dp->n+1, ms->n, fabs(fq), i, dp->r, dp->rl);
   textincorner(text, dp->fname);
+  if(dp->input==1){
+    char text3[STRLEN];
+    snprintf(text3, sizeof(text3), "JUMP TO >>> %s", dp->input_text);
+    textincorner2(text3);
+  }
   return;
 }
 

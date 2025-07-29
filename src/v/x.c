@@ -4,7 +4,7 @@
 extern Display * dis;
 extern int       screen;
 extern Window    win;
-extern GC        gc_white, gc_black, gc_dot[2], gcc[NCOLORS];
+extern GC        gc_white, gc_black, gc_red, gc_dot[2], gcc[NCOLORS];
 extern Pixmap    px;
 extern Drawable  canv;
 extern XFontStruct * fontInfo;
@@ -12,6 +12,7 @@ extern XFontStruct * fontInfo;
 extern int W,H;
 
 void close_x(void) {
+  XFreeGC(dis, gc_red);
   XFreeGC(dis, gc_black);
   XFreeGC(dis, gc_white);
   XFreeGC(dis, gc_dot[0]);
@@ -28,7 +29,7 @@ void close_x(void) {
 };
 
 static void setcolors(){
-  XColor 
+  XColor
   col[NCOLORS]={
     [   0] .red = 0x9999, [   0] .green = 0x9999, [   0] .blue = 0x9999,
     [   1] .red = 0xBFFF, [   1] .green = 0xBFFF, [   1] .blue = 0xBFFF, /* H  */
@@ -80,6 +81,7 @@ void init_x(const char * const capt){
 
   unsigned long bp = BlackPixel (dis, screen);
   unsigned long wp = WhitePixel (dis, screen);
+  unsigned long red_pixel = 0xff0000;
 
   win = XCreateSimpleWindow(dis, DefaultRootWindow(dis),
       0, 0, W, H, 0, bp, wp);
@@ -95,6 +97,10 @@ void init_x(const char * const capt){
   XSetBackground (dis, gc_black, wp);
   XSetForeground (dis, gc_black, bp);
   XSetLineAttributes(dis, gc_black, 2, 0, 0, 0);
+
+  gc_red = XCreateGC (dis, win, 0, 0);
+  XSetBackground (dis, gc_red, wp);
+  XSetForeground (dis, gc_red, red_pixel);
 
   gc_dot[0] = XCreateGC (dis, win, 0, 0);
   XSetBackground (dis, gc_black, wp);
@@ -150,6 +156,12 @@ void textincorner(const char * const text1, const char * const text2){
   if(text2){
     XDrawString(dis, win, gc_black, 10, voffset*2, text2, strlen(text2));
   }
+  return;
+}
+
+void textincorner2(const char * const text1){
+  int voffset = fontInfo ? (fontInfo->ascent + fontInfo->descent + 5) : 20;
+  XDrawString(dis, win, gc_red, 10, voffset*3, text1, strlen(text1));
   return;
 }
 

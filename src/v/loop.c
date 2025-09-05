@@ -4,8 +4,14 @@
 
 extern int W,H;
 extern Display * dis;
+extern Window    win;
 
 void main_loop(void * ent, drawpars * dp, ptf kp[NKP]){
+
+  // To handle window closing. Thanks to https://stackoverflow.com/a/1186544
+  Atom wm_delete_window = XInternAtom(dis, "WM_DELETE_WINDOW", False);
+  XSetWMProtocols(dis, win, &wm_delete_window, 1);
+
   int mouse_click = 0;
   int mouse_x0 = 0;
   int mouse_y0 = 0;
@@ -25,6 +31,12 @@ void main_loop(void * ent, drawpars * dp, ptf kp[NKP]){
         break;
       }
     } while(XEventsQueued(dis, QueuedAlready));
+
+    if (event->type == ClientMessage) {
+        if ((Atom)event->xclient.data.l[0] == wm_delete_window) {
+          kp_exit(ent, dp);
+        }
+    }
 
     if(event->type == Expose && event->xexpose.count == 0) {
       exp_redraw(ent, dp);

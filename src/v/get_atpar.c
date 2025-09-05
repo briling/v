@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include "v.h"
 
 #define NATOMS  102
@@ -48,12 +49,18 @@ const char * getname(int q){
   return abs(q)<=NATOMS ? aname[abs(q)]: NULL;
 }
 
-int get_element(const styp s){
+int get_element(styp s){
   char * s_end;
   long q = strtol(s, &s_end, 10);
   if(s_end != s) {
     return (int)q;
   }
+
+  s[0] = toupper(s[0]);
+  for(int i=1; s[i]; i++){
+    s[i] = tolower(s[i]);
+  }
+
   for(int q=1; q<=NATOMS; q++){
     if(!strncmp(s, aname[q], NAMELEN)){
       return q;

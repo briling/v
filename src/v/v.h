@@ -132,7 +132,7 @@ void bonds_fill(double rl, double bmax, atcoord * ac);
 double getradius(int q);
 double getmaxradius(int n, int * q);
 const char * getname(int q);
-int get_element(const char * s);
+int get_element(char * s);
 
 // x.c
 void close_x      (void);

@@ -75,7 +75,9 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          path: ./v ./v.so
+          path: |
+            ./v
+            ./v.so
           name: ${{ matrix.os }}.exe
 
 

@@ -23,6 +23,14 @@ jobs:
 
     steps:
 
+      - name: Show runner and glibc
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        uname -a
+        cat /etc/os-release
+        ldd --version | head -n 1
+
+
       - name: install X11 dependencies
         if: ${{ runner.os == 'Linux' }}
         run: |

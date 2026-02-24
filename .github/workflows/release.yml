@@ -40,13 +40,15 @@ jobs:
         run: pip install setuptools
 
       - name: build wheels
-        run: python setup.py bdist_wheel | grep "creating 'dist" | sed -n "s/^creating 'dist\//WHEEL_NAME='/;s/\s.*$//p" >> "$GITHUB_ENV"
         working-directory: ./python
+        run: python setup.py bdist_wheel
+        ## we don't need the wheel name actually, the artifact name just has to be unique
+        #run: python setup.py bdist_wheel | grep "creating 'dist" | sed -n "s/^creating 'dist\//WHEEL_NAME='/;s/\s.*$//p" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v6
         with:
           path: ./python/dist/*.whl
-          name: ${{ env.WHEEL_NAME }}
+          name: ${{ matrix.os }}.${{ matrix.py }}
 
 
   release:

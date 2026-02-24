@@ -44,12 +44,15 @@ jobs:
 
 
       - name: build wheels
-        run: python setup.py bdist_wheel
+        run: python setup.py bdist_wheel | grep "creating 'dist" | sed 's/creating /WHEEL_NAME=/' | cut -f1 -d' ' >> "$GITHUB_ENV"
         working-directory: python
+        id: wheels
+
+      - run: echo "$WHEEL_NAME"
 
       - uses: actions/upload-artifact@v6
         with:
-          name: vmol-3.0rc2+dirty-cp313-cp313-linux_x86_64.whl
+          name: "$WHEEL_NAME"
           path: ./python/dist/*.whl
 
 

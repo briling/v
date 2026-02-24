@@ -61,7 +61,7 @@ if __name__ == '__main__':
         GIT_BRANCH = "unknown"
     VERSION_FLAGS = [f'-DGIT_HASH="{GIT_HASH}"',
                      f'-DGIT_BRANCH="{GIT_BRANCH}"',
-                     f'-DBUILD_USER="{os.getenv('USER')}@{os.getenv('HOSTNAME')}"',
+                     f'-DBUILD_USER="{os.getenv("USER")}@{os.getenv("HOSTNAME")}"',
                      f'-DBUILD_DIRECTORY="{os.getcwd()}"']
 
     setup(

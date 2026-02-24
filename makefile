@@ -69,7 +69,7 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	$(CC) $(CFLAGS)       $< -o $@ $(INCL) $(VERSION_FLAGS) -MMD -MT "$@ $(patsubst $(OBJDIR)%,$(PICDIR)%,$@)"
 
 $(PICDIR)/%.o : $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -fPIC $< -o $@ $(INCL) $(VERSION_FLAGS)  -MM -MF $(patsubst $(PICDIR)/%.o,$(OBJDIR)/%.d,$@) -MT "$(patsubst $(PICDIR)%,$(OBJDIR)%,$@) $@"
+	$(CC) $(CFLAGS) -fPIC $< -o $@ $(INCL) $(VERSION_FLAGS) -MMD -MT "$(patsubst $(PICDIR)%,$(OBJDIR)%,$@) $@" -MF $(patsubst $(PICDIR)/%.o,$(OBJDIR)/%.d,$@)
 
 clean:
 	rm -f $(allobj) $(allpic) v v.so

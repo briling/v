@@ -99,7 +99,11 @@ jobs:
       - name: create release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./wheelhouse/**/*.whl
+          files: |
+            ./wheelhouse/**/*.whl
+            ./wheelhouse/**/v
+            ./wheelhouse/**/v.so
+
           body_path: .github/CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

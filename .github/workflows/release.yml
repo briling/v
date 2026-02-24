@@ -7,7 +7,7 @@ on: # triggered by push tagged commits to main
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
 
@@ -17,15 +17,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        # ubuntu-latest (24.04) need at least GLIBC_2.38
+        os: [ubuntu-22.04]
         py: ['3.11', '3.12', '3.13']
-
 
     steps:
 
       - name: install X11 dependencies
-        if: ${{ matrix.os }} == 'ubuntu-latest'
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
+          sudo apt-get update
           sudo apt install -y libx11-dev libxpm-dev x11proto-dev
 
       - uses: actions/checkout@v6
@@ -52,11 +53,15 @@ jobs:
 
 
   release:
+
     needs: build_wheels
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -64,10 +69,10 @@ jobs:
         with:
           path: ./wheelhouse
 
-      - name: Create Release
+      - name: create release
         uses: softprops/action-gh-release@v2
         with:
           files: ./wheelhouse/**/*.whl
           body_path: .github/CHANGELOG.md
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

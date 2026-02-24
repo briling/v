@@ -17,11 +17,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        py: ['3.11', '3.12', '3.13']
+
 
     steps:
 
       - name: install X11 dependencies
-        #if: runner.os == 'ubuntu-latest'
+        if: ${{ matrix.os }} == 'ubuntu-latest'
         run: |
           sudo apt install -y libx11-dev libxpm-dev x11proto-dev
 
@@ -30,6 +32,8 @@ jobs:
           persist-credentials: false
 
       - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.py }}
 
       - name: Build wheels
         run: python setup.py bdist_wheel

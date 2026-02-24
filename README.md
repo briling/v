@@ -33,7 +33,7 @@ make v
 * `GNU/Linux` or `Cygwin`
 * `X11`
 * `gcc >= 4.7`
-* `libX11-devel`, `libXpm-devel`, `xproto-devel`
+* `libX11-devel libXpm-devel xproto-devel (`libx11-dev libxpm-dev x11proto-dev` on Ubuntu)
 * `make`
 
 ## Usage [↑](#contents)

@@ -49,10 +49,11 @@ jobs:
         id: wheels
 
       - run: echo "$WHEEL_NAME"
+      - run: echo ${{ env.WHEEL_NAME }}
 
       - uses: actions/upload-artifact@v6
         with:
-          name: ${WHEEL_NAME}
+          name: ${{ env.WHEEL_NAME }}
           path: ./python/dist/*.whl
 
 

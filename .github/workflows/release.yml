@@ -20,8 +20,8 @@ jobs:
 
     steps:
 
-      - name: Install X11 dependencies on MacOS
-        if: runner.os == 'macOS'
+      - name: install X11 dependencies
+        if: runner.os == 'ubuntu-latest'
         run: |
           sudo apt install -y libX11-devel libXpm-devel xproto-devel
 

@@ -98,6 +98,7 @@ static drawpars dp_init(void){
   dp.f = NULL;
   dp.fname = NULL;
   dp.bohr = 0;
+  dp.closed = 0;
   return dp;
 }
 
@@ -121,14 +122,14 @@ int main (int argc, char * argv[]) {
   }
   if(!fn){
     PRINT_ERR("no files to read\n");
-    exit(1);
+    return 1;
   }
 
   void * ent = read_files(fn, flist, &dp);
   free(flist);
   if(!ent){
     PRINT_ERR("no files to read\n");
-    exit(1);
+    return 1;
   }
 
   if(dp.n >= dp.N){
@@ -163,7 +164,7 @@ int main (int argc, char * argv[]) {
       }
     }
     ent_free(ent, &dp);
-    exit(0);
+    return 0;
   }
 
   /*= X11 init ===============================================================*/

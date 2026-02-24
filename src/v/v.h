@@ -92,6 +92,8 @@ typedef struct {
   int    center;        // 0: nothing;     1: center each molecule upon reading ; 2: center wrt center of mass
   int    inertia;       // 0: nothing;     1: rotate each molecule upon reading wrt axis of inertia
   int    bohr;          // 0: Å            1: Bohr
+                        //
+  int    closed;        // 1: time to go
 } drawpars;
 
 typedef struct {

@@ -3,4 +3,9 @@
 .tags
 .types.vim
 /v
-/vr
+*.so
+
+*.pyc
+vmol.egg-info/
+python/build
+python/dist

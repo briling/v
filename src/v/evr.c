@@ -354,7 +354,7 @@ void kp_move_d(void * ent, drawpars * dp){
 void kp_exit(void * ent, drawpars * dp){
   ent_free(ent, dp);
   close_x();
-  exit(0);
+  dp->closed = 1;
 }
 
 void kp_fw_toggle(void * ent __attribute__ ((unused)), drawpars * dp){

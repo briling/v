@@ -1,0 +1,38 @@
+[build-system]
+requires = [
+    "setuptools",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vmol"
+dynamic = ["version"]
+description = "v -- A simple X11 molecular viewer"
+readme = "README.md"
+license = {file = "LICENSE"}
+
+authors = [
+    {name = "Ksenia Briling", email = "ksenia.briling@alumni.epfl.ch"},
+]
+maintainers = [
+    {name = "Ksenia Briling", email = "ksenia.briling@alumni.epfl.ch"},
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+]
+
+requires-python = ">=3.10"
+
+[project.urls]
+Repository = "https://github.com/briling/v.git"
+"Bug Tracker" = "https://github.com/briling/v/issues"
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+namespaces = false

@@ -38,7 +38,7 @@ void main_loop(void * ent, drawpars * dp, ptf kp[NKP]){
         }
     }
 
-    if(event->type == Expose && event->xexpose.count == 0) {
+    else if(event->type == Expose && event->xexpose.count == 0) {
       exp_redraw(ent, dp);
     }
     else if(event->type == ConfigureNotify){
@@ -105,6 +105,10 @@ void main_loop(void * ent, drawpars * dp, ptf kp[NKP]){
         mouse_x0 = x;
         mouse_y0 = y;
       }
+    }
+
+    if(dp->closed){
+      return;
     }
 
     if(dp->fbw){

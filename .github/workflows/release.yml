@@ -17,19 +17,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # ubuntu-latest (24.04) need at least GLIBC_2.38
-        os: [ubuntu-22.04]
+        os: [ubuntu-latest]
         py: ['3.11', '3.12', '3.13']
 
     steps:
-
-      - name: Show runner and glibc
-        if: ${{ runner.os == 'Linux' }}
-        run: |
-          uname -a
-          cat /etc/os-release
-          ldd --version | head -n 1
-
 
       - name: install X11 dependencies
         if: ${{ runner.os == 'Linux' }}
@@ -60,9 +51,39 @@ jobs:
           name: ${{ matrix.os }}.${{ matrix.py }}
 
 
+  build_exe:
+    name: Build the executable file and shared library for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+
+      - name: install X11 dependencies
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get update
+          sudo apt install -y libx11-dev libxpm-dev x11proto-dev
+
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - run: make v
+
+      - run: make v.so
+
+      - uses: actions/upload-artifact@v6
+        with:
+          path: ./v.o ./v.so
+          name: ${{ matrix.os }}.exe
+
+
   release:
 
-    needs: build_wheels
+    needs: [build_wheels, build_exe]
     runs-on: ubuntu-latest
     permissions:
       contents: write

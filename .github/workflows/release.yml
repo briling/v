@@ -39,22 +39,14 @@ jobs:
       - name: install python
         run: pip install setuptools
 
-      - run: echo "$USER"
-      - run: echo "$HOSTNAME"
-
-
       - name: build wheels
-        run: python setup.py bdist_wheel | grep "creating 'dist" | sed 's/creating /WHEEL_NAME=/' | cut -f1 -d' ' >> "$GITHUB_ENV"
-        working-directory: python
-        id: wheels
-
-      - run: echo "$WHEEL_NAME"
-      - run: echo ${{ env.WHEEL_NAME }}
+        run: python setup.py bdist_wheel | grep "creating 'dist" | sed -n "s/^creating 'dist\//WHEEL_NAME='/;s/\s.*$//p" >> "$GITHUB_ENV"
+        working-directory: ./python
 
       - uses: actions/upload-artifact@v6
         with:
-          name: ${{ env.WHEEL_NAME }}
           path: ./python/dist/*.whl
+          name: ${{ env.WHEEL_NAME }}
 
 
   release:

@@ -19,7 +19,7 @@ def get_git_version_hash():
     if not version.strip():
         return VERSION + "+unknown"
     print(version)
-    return version.strip().decode().replace('-', '+', 1)
+    return version.strip().decode().replace('+', '-').replace('-', '+', 1)
 
 
 def check_compilation():
@@ -45,9 +45,14 @@ if __name__ == '__main__':
     # TODO
     #check_compilation()
 
-    all_c_files = [os.path.join(root, file) for root, dirs, files in os.walk('../src') for file in files if file.endswith('.c')]
+    all_c_files = [os.path.join(root, file) for root, dirs, files in os.walk('./src') for file in files if file.endswith('.c')]
 
-    INCL=['-I../src/'+i for i in ['mol', 'math', 'v', 'sym']]
+    INCL=['-I./src/'+i for i in ['mol', 'math', 'v', 'sym']]
+    print(INCL)
+    print()
+    print()
+    print()
+    print()
     try:
         GIT_HASH = subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode()
         GIT_BRANCH = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip().decode()

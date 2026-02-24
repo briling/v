@@ -12,7 +12,7 @@ permissions:
 jobs:
 
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build wheels on ${{ matrix.os }} for python ${{ matrix.py }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -35,7 +35,10 @@ jobs:
         with:
           python-version: ${{ matrix.py }}
 
-      - name: Build wheels
+      - name: install python
+        run: pip install setuptools
+
+      - name: build wheels
         run: python setup.py bdist_wheel
         working-directory: python
 

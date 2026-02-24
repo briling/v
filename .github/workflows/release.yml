@@ -23,7 +23,7 @@ jobs:
       - name: install X11 dependencies
         #if: runner.os == 'ubuntu-latest'
         run: |
-          sudo apt install -y libx11-dev libxpm-dev xproto-dev
+          sudo apt install -y libx11-dev libxpm-dev x11proto-dev
 
       - uses: actions/checkout@v6
         with:

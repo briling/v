@@ -15,6 +15,7 @@ jobs:
     name: Build wheels on ${{ matrix.os }} for python ${{ matrix.py }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
         py: ['3.11', '3.12', '3.13']
@@ -37,6 +38,10 @@ jobs:
 
       - name: install python
         run: pip install setuptools
+
+      - run: echo "$USER"
+      - run: echo "$HOSTNAME"
+
 
       - name: build wheels
         run: python setup.py bdist_wheel

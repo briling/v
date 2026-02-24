@@ -71,9 +71,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - run: make v
-
-      - run: make v.so
+      - run: make v v.so
 
       - uses: actions/upload-artifact@v6
         with:

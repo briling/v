@@ -23,19 +23,16 @@ jobs:
         with:
           persist-credentials: false
 
-      # Used to host cibuildwheel
       - uses: actions/setup-python@v6
 
-      - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==3.3.1
-
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse ./python/
+        run: python setup.py bdist_wheel
+        working-directory: python
 
       - uses: actions/upload-artifact@v6
         with:
-          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
-          path: ./wheelhouse/*.whl
+          name: vmol-3.0rc2+dirty-cp313-cp313-linux_x86_64.whl
+          path: ./python/dist/*.whl
 
 
   release:
@@ -46,9 +43,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
 
       - uses: actions/download-artifact@v4
         with:

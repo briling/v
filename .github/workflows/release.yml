@@ -19,6 +19,12 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
+
+      - name: Install X11 dependencies on MacOS
+        if: runner.os == 'macOS'
+        run: |
+          sudo apt install -y libX11-devel libXpm-devel xproto-devel
+
       - uses: actions/checkout@v6
         with:
           persist-credentials: false

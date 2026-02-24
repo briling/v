@@ -1,2 +1,2 @@
-obj/mol/intcoord.o: src/mol/intcoord.c src/mol/mol.h src/mol/common.h \
- src/math/vec3.h
+obj/mol/intcoord.o obj-pic/mol/intcoord.o: src/mol/intcoord.c \
+ src/mol/mol.h src/mol/common.h src/math/vec3.h

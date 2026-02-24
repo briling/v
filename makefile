@@ -2,7 +2,6 @@ CC=gcc
 OPT=-O2
 GPROF=#-pg
 GDB=#-g
-ASM=#-g -Wa,-adhln=$@.s
 W= \
    -Warray-bounds\
    -Wfloat-equal\
@@ -32,69 +31,52 @@ W= \
    -Wjump-misses-init\
    #-Werror\
 
-GIT_HASH=`git rev-parse HEAD 2> /dev/null || echo --`
-GIT_BRANCH=`git rev-parse --abbrev-ref HEAD 2> /dev/null || echo --`
-export VERSION_FLAGS=-DGIT_HASH="\"$(GIT_HASH)\""\
-                     -DGIT_BRANCH="\"$(GIT_BRANCH)\""\
-		     -DBUILD_USER="\"$(USER)@$(shell hostname)\""\
-		     -DBUILD_DIRECTORY="\"$(PWD)\""
+export VERSION_FLAGS=-DGIT_HASH="\"$(shell git rev-parse HEAD 2> /dev/null || echo --)\""\
+                     -DGIT_BRANCH="\"$(shell git rev-parse --abbrev-ref HEAD 2> /dev/null || echo --)\""\
+                     -DBUILD_USER="\"$(USER)@$(HOSTNAME)\""\
+                     -DBUILD_DIRECTORY="\"$(PWD)\""
 
-CFLAGS= -c -std=gnu11 -MMD $(OPT) $(GPROF) $(W) $(GDB) $(ASM)
+CFLAGS= -c -std=gnu11 $(OPT) $(GPROF) $(W) $(GDB)
 OFLAGS= -lm $(GPROF) -lX11 -lXpm
 
-INCL=\
--I$(SRCDIR)/mol  -I$(SRCDIR)/math \
--I$(SRCDIR)/v    -I$(SRCDIR)/sym
+SRCDIR=src
+OBJDIR=obj
+PICDIR=obj-pic
 
-OBJDIR=./obj
-SRCDIR=./src
-src=$(wildcard $(SRCDIR)/*/*.c)
-obj=$(src:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-allobj=$(obj) $(OBJDIR)/v.o
+SRCDIRS=$(shell find $(SRCDIR) -type d)
+INCL=$(SRCDIRS:%=-I./%)
 
+allsrc=$(shell find $(SRCDIR) -type f -name '*.c')
+allobj=$(allsrc:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+allpic=$(allsrc:$(SRCDIR)/%.c=$(PICDIR)/%.o)
+allmmd=$(allsrc:$(SRCDIR)/%.c=$(OBJDIR)/%.d)
+
+OBJDIRS=$(SRCDIRS:$(SRCDIR)%=$(OBJDIR)%)
+PICDIRS=$(SRCDIRS:$(SRCDIR)%=$(PICDIR)%)
+_=$(shell for i in $(OBJDIRS) $(PICDIRS); do mkdir -p $$i ; done)
 
 default : v
 
-all : v
+all : v v.so
 
 v  : $(allobj)
 	$(CC) $^ -o $@ $(OFLAGS)
 
+v.so: $(allpic)
+	$(CC) $^ -shared -Wl,-soname,$@ $(OFLAGS) -o $@
+
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) $< -o $@ $(INCL)
+	$(CC) $(CFLAGS)       $< -o $@ $(INCL) $(VERSION_FLAGS) -MMD -MT "$@ $(patsubst $(OBJDIR)%,$(PICDIR)%,$@)"
 
-$(OBJDIR)/v.o : $(SRCDIR)/v.c
-	$(CC) $(CFLAGS) $< -o $@ $(INCL) $(VERSION_FLAGS)
-
-# clean object files that can cause trouble if built without -fPIC
-clean_no_fpic_o:
-	@for o in $(allobj) ; do \
-		if [[ -f $$o ]] ; then \
-		dump=$$(objdump --reloc $$o); \
-		if echo "$${dump}" | egrep -q '\.rodata\.|\.rodata$$' ; then \
-		rm -vf $$o ; \
-		fi ; \
-		if echo "$${dump}" | grep 'dis-' | grep -q 'R_X86_64_PC32' ; then \
-		rm -vf $$o ; \
-		fi ; \
-		fi ; \
-		done
-v.so : clean_no_fpic_o v.so_inner
-v.so_inner: CFLAGS += -fPIC
-v.so_inner: $(allobj)
-	$(CC) $^ -shared -Wl,-soname,$@ $(OFLAGS) -o v.so
-
+$(PICDIR)/%.o : $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -fPIC $< -o $@ $(INCL) $(VERSION_FLAGS) -MM -MT "$(patsubst $(PICDIR)%,$(OBJDIR)%,$@) $@" -MF $(patsubst $(PICDIR)/%.o,$(OBJDIR)/%.d,$@)
 
 clean:
-	rm -f $(OBJDIR)/*/*/*.o $(OBJDIR)/*/*.o $(OBJDIR)/*.o v v.so
-
+	rm -f $(allobj) $(allpic) v v.so
 cleand:
-	rm -f $(OBJDIR)/*/*/*.d $(OBJDIR)/*/*.d $(OBJDIR)/*.d
+	rm -f $(allmmd)
 cleantags:
 	rm -f ./.tags ./.types.vim
-cleanasm:
-	rm -f $(OBJDIR)/*/*/*.s $(OBJDIR)/*/*.s $(OBJDIR)/*.s
-cleanall: clean cleand cleantags cleanasm
+cleanall: clean cleand cleantags
 
-include $(wildcard $(OBJDIR)/*/*.d $(OBJDIR)/*.d)
-
+include $(allmmd)

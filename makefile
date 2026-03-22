@@ -1,5 +1,6 @@
 CC=gcc
 OPT=-O2
+UNAME_S:=$(shell uname -s)
 GPROF=#-pg
 GDB=#-g
 W= \
@@ -38,7 +39,30 @@ export VERSION_FLAGS=-DGIT_HASH="\"$(shell git rev-parse HEAD 2> /dev/null || ec
                      -DBUILD_DIRECTORY="\"$(PWD)\""
 
 CFLAGS= -c -std=gnu11 $(OPT) $(GPROF) $(W) $(GDB)
-OFLAGS= -lm $(GPROF) -lX11 -lXpm
+OFLAGS= -lm $(GPROF)
+
+USE_X11 ?= auto
+
+X11_CPPFLAGS=
+X11_LDFLAGS=
+ifeq ($(UNAME_S),Darwin)
+  ifneq ($(wildcard /opt/X11/include/X11/Xlib.h),)
+    X11_CPPFLAGS += -I/opt/X11/include
+  endif
+  ifneq ($(wildcard /opt/X11/lib),)
+    X11_LDFLAGS += -L/opt/X11/lib
+  endif
+endif
+
+ifeq ($(USE_X11),auto)
+  HAVE_X11_HEADERS:=$(shell sh -c "echo | $(CC) $(X11_CPPFLAGS) -E -include X11/Xlib.h -include X11/xpm.h - >/dev/null 2>&1 && echo 1 || echo 0")
+  HAVE_X11_LIBS:=$(shell sh -c "$(CC) -shared -x c /dev/null $(X11_LDFLAGS) -lX11 -lXpm -o /tmp/v_x11_libprobe.so >/dev/null 2>&1 && rm -f /tmp/v_x11_libprobe.so && echo 1 || echo 0")
+  HAVE_X11:=$(shell [ "$(HAVE_X11_HEADERS)" = "1" ] && [ "$(HAVE_X11_LIBS)" = "1" ] && echo 1 || echo 0)
+else ifeq ($(USE_X11),1)
+  HAVE_X11:=1
+else
+  HAVE_X11:=0
+endif
 
 SRCDIR=src
 OBJDIR=obj
@@ -47,7 +71,22 @@ PICDIR=obj-pic
 SRCDIRS=$(shell find $(SRCDIR) -type d)
 INCL=$(SRCDIRS:%=-I./%)
 
-allsrc=$(shell find $(SRCDIR) -type f -name '*.c')
+allsrc_raw=$(shell find $(SRCDIR) -type f -name '*.c')
+src_x11_only=$(SRCDIR)/v/x.c $(SRCDIR)/v/ac3_draw.c $(SRCDIR)/v/loop.c $(SRCDIR)/v/xinput.c
+src_no_x11=$(SRCDIR)/v/x_no_x11.c $(SRCDIR)/v/ac3_draw_no_x11.c
+ifeq ($(HAVE_X11),1)
+  allsrc=$(filter-out $(src_no_x11),$(allsrc_raw))
+  CFLAGS += $(X11_CPPFLAGS)
+  OFLAGS += $(X11_LDFLAGS) -lX11 -lXpm
+else
+  allsrc=$(filter-out $(src_x11_only),$(allsrc_raw))
+  CFLAGS += -DNO_X11
+endif
+ifeq ($(HAVE_X11),1)
+  $(info Building with X11 support (set USE_X11=0 to force headless build))
+else
+  $(info X11 not detected; building in headless mode (set USE_X11=1 to require X11))
+endif
 allobj=$(allsrc:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 allpic=$(allsrc:$(SRCDIR)/%.c=$(PICDIR)/%.o)
 allmmd=$(shell find $(OBJDIR) -type f -name '*.d')

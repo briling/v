@@ -34,7 +34,10 @@ See build [instructions](BUILD.md).
 ### Requirements:
 
 * `GNU/Linux` / `Cygwin` / `macOS`
-* `X11` / `XQuartz`
+* `X11` / `XQuartz` for GUI mode
+
+Builds now auto-fallback to headless mode if X11 is not detected.
+Use `make USE_X11=1` to require X11 or `make USE_X11=0` to force headless mode.
 
 ## Usage [↑](#contents)
 ```

@@ -8,9 +8,11 @@ Inspired by @aligfellow's [xyzrender](https://github.com/aligfellow/xyzrender).
 
 ## Requirements
 
-* X11
+* X11 (optional; required for GUI mode)
 * numpy
 * cclib (optional, to read formats without native support)
+
+If X11 is unavailable, building falls back to headless mode automatically.
 
 ## Installation
 PyPI has the wheels for CPython 10 through 14 @ manylinux.
@@ -23,7 +25,7 @@ pip install vmol            #  base version
 pip install --no-deps vmol  #  vmol script and "capture the output" will work, 
                             #  but "pass a structure" feature won't work without numpy
 ```
-For macOS, an X11 server like XQuartz is required:
+For macOS GUI mode, an X11 server like XQuartz is required:
 ```
 brew install --cask xquartz
 ```
@@ -164,4 +166,3 @@ vmol.run(mols=CO2, vib=sym_stretch)
 ```
 Press insert to play the animation.
 (See [example](examples/ex3.py) and [vmol2 source](vmol/vmol2.py) for more details).
-

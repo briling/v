@@ -1,8 +1,10 @@
 ## Other installation options
 
 ### Requirements
-* `libX11-devel libXpm-devel xproto-devel` (`libx11-dev libxpm-dev x11proto-dev` on Ubuntu) for C compilation
+* `libX11-devel libXpm-devel xproto-devel` (`libx11-dev libxpm-dev x11proto-dev` on Ubuntu) for GUI builds
 * `setuptools` for Python
+
+If X11 is unavailable, the extension can still be compiled in headless mode.
 
 ```
 VV="3.0rc6"   # v version

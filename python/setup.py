@@ -30,9 +30,23 @@ def rel_posix(path):
     return os.path.relpath(path, start=setup_dir).replace(os.sep, "/")
 
 
+def have_x11():
+    cc = os.getenv("CC", "cc")
+    code = b"#include <X11/Xlib.h>\n#include <X11/xpm.h>\nint main(void){return 0;}\n"
+    inc, lib = get_x11_config()
+    cmd = [cc, "-x", "c", "-", "-o", os.devnull, "-lX11", "-lXpm"]
+    cmd += [f"-I{d}" for d in inc]
+    cmd += [f"-L{d}" for d in lib]
+    try:
+        subprocess.run(cmd, input=code, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except Exception:
+        return False
+
+
 def get_x11_config():
     # On Linux, X11 headers/libs are in standard system paths — nothing extra needed.
-    # On macOS, Homebrew installs them to non-default locations, so we probe for them.
+    # On macOS, we additionally probe common non-default install prefixes.
     if sys.platform != 'darwin':
         return [], []
     try:
@@ -48,12 +62,10 @@ def get_x11_config():
                [f[2:] for f in lib if f.startswith('-L')]
     except Exception:
         pass
-    for prefix in ['/opt/homebrew', '/usr/local']:
+    for prefix in ['/opt/X11', '/opt/homebrew', '/usr/local']:
         if Path(f'{prefix}/include/X11/Xlib.h').exists():
             return [f'{prefix}/include'], [f'{prefix}/lib']
-    raise RuntimeError(
-        'X11 headers not found. Install with: brew install libx11 libxpm pkg-config'
-    )
+    return [], []
 
 
 setup_dir = Path(__file__).parent
@@ -73,6 +85,28 @@ version_flags = [f'-DGIT_HASH="{GIT_HASH}"',
                  f'-DBUILD_DIRECTORY="{os.getcwd()}"']
 
 x11_inc, x11_lib = get_x11_config()
+build_with_x11 = have_x11()
+
+x11_only_sources = {
+    rel_posix(src_dir / "v" / "x.c"),
+    rel_posix(src_dir / "v" / "ac3_draw.c"),
+    rel_posix(src_dir / "v" / "loop.c"),
+    rel_posix(src_dir / "v" / "xinput.c"),
+}
+headless_only_sources = {
+    rel_posix(src_dir / "v" / "x_no_x11.c"),
+    rel_posix(src_dir / "v" / "ac3_draw_no_x11.c"),
+}
+
+if build_with_x11:
+    c_files = [f for f in c_files if f not in headless_only_sources]
+    libraries = ['X11', 'Xpm']
+    define_macros = []
+else:
+    c_files = [f for f in c_files if f not in x11_only_sources]
+    libraries = []
+    define_macros = [('NO_X11', '1')]
+    print("X11 not detected; building vmol in headless mode (NO_X11=1).", file=sys.stderr)
 
 ignore_warnings = ['-Wno-sign-compare', '-Wno-format-truncation', '-Wno-format']
 
@@ -83,7 +117,8 @@ setup(
                            sources=c_files,
                            include_dirs=include_dirs + x11_inc,
                            library_dirs=x11_lib,
-                           libraries = ['X11', 'Xpm'],
+                           define_macros=define_macros,
+                           libraries = libraries,
                            extra_compile_args=['-std=gnu11', '-O2'] + ignore_warnings + version_flags,
                            extra_link_args=[]),
                 ],

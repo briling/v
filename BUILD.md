@@ -16,6 +16,12 @@
 make
 ```
 
+If X11 is unavailable, you can force a headless build:
+
+```
+make USE_X11=0
+```
+
 ## macOS
 
 thanks to [@aligfellow](https://github.com/aligfellow)
@@ -24,4 +30,12 @@ thanks to [@aligfellow](https://github.com/aligfellow)
 brew install --cask xquartz # runtime display
 brew install libx11 libxpm pkg-config
 make
+```
+
+`make` now auto-falls back to a headless build when X11 is not detected.
+You can force behavior explicitly:
+
+```
+make USE_X11=1   # require X11
+make USE_X11=0   # force headless mode
 ```

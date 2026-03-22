@@ -2,8 +2,11 @@
 #include "x.h"
 #include "evr.h"
 
+#ifndef NO_X11
 draw_world_t world;
+#endif
 
+#ifndef NO_X11
 static void init_keys(ptf kp[NKP]){
   memset(kp, 0, sizeof(ptf)*NKP);
 #define ASSIGN_KEY(KEY, ACTION)  { kp[XKeysymToKeycode(world.dis, (KEY))] = (ACTION); }
@@ -52,6 +55,7 @@ static void init_keys(ptf kp[NKP]){
 #undef ASSIGN_KEY
   return;
 }
+#endif
 
 static void version(FILE * f){
   PRINTOUT(f, "built on "__TIMESTAMP__"\n"
@@ -88,10 +92,18 @@ int main (int argc, char * argv[]) {
     dp->n = dp->N-((-dp->n-1)%dp->N);
   }
 
+#ifdef NO_X11
+  if(dp->ui.gui == GUI_ENABLED){
+    PRINT_WARN("compiled without X11 support; switching to headless mode (gui:0)\n");
+    dp->ui.gui = GUI_DISABLED;
+  }
+#endif
+
   if(dp->ui.gui==GUI_DISABLED){
     return headless(dp, ent);
   }
 
+#ifndef NO_X11
   /*= X11 init ===============================================================*/
   ptf kp[NKP];
   init_x(dp->read.fname, ap.ip.colors);
@@ -105,6 +117,7 @@ int main (int argc, char * argv[]) {
 
   /*= Main loop ==============================================================*/
   main_loop(ent, dp, kp);
+#endif
 
   return 0;
 }

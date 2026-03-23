@@ -72,8 +72,8 @@ SRCDIRS=$(shell find $(SRCDIR) -type d)
 INCL=$(SRCDIRS:%=-I./%)
 
 allsrc_raw=$(shell find $(SRCDIR) -type f -name '*.c')
-src_x11_only=$(SRCDIR)/v/x.c $(SRCDIR)/v/ac3_draw.c $(SRCDIR)/v/loop.c $(SRCDIR)/v/xinput.c
-src_no_x11=$(SRCDIR)/v/x_no_x11.c $(SRCDIR)/v/ac3_draw_no_x11.c
+src_x11_only=$(SRCDIR)/x/x.c $(SRCDIR)/x/ac3_draw.c $(SRCDIR)/x/loop.c $(SRCDIR)/x/xinput.c
+src_no_x11=$(SRCDIR)/no-x/x.c $(SRCDIR)/no-x/ac3_draw.c
 ifeq ($(HAVE_X11),1)
   allsrc=$(filter-out $(src_no_x11),$(allsrc_raw))
   CFLAGS += $(X11_CPPFLAGS)

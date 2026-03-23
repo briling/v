@@ -88,14 +88,14 @@ x11_inc, x11_lib = get_x11_config()
 build_with_x11 = have_x11()
 
 x11_only_sources = {
-    rel_posix(src_dir / "v" / "x.c"),
-    rel_posix(src_dir / "v" / "ac3_draw.c"),
-    rel_posix(src_dir / "v" / "loop.c"),
-    rel_posix(src_dir / "v" / "xinput.c"),
+    rel_posix(src_dir / "x" / "x.c"),
+    rel_posix(src_dir / "x" / "ac3_draw.c"),
+    rel_posix(src_dir / "x" / "loop.c"),
+    rel_posix(src_dir / "x" / "xinput.c"),
 }
 headless_only_sources = {
-    rel_posix(src_dir / "v" / "x_no_x11.c"),
-    rel_posix(src_dir / "v" / "ac3_draw_no_x11.c"),
+    rel_posix(src_dir / "no-x" / "x.c"),
+    rel_posix(src_dir / "no-x" / "ac3_draw.c"),
 }
 
 if build_with_x11:

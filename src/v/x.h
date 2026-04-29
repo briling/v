@@ -1,3 +1,4 @@
+#include <X11/Xft/Xft.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
@@ -16,7 +17,8 @@ typedef struct {
   GC        gc_white, gc_black, gc_red, gc_dot[2], gcc[NCOLORS];
   Pixmap    px;
   Drawable  canv;
-  XFontStruct * fontInfo;
-  int       font_height;
+  XftFont * font_info;
+  XftDraw * xft_draw;
+  XftColor  xft_color;
   int       W, H, size;
 } draw_world_t;

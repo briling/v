@@ -45,8 +45,10 @@ else
 endif
 
 X11DIR= $(shell pkg-config --libs-only-L x11 xpm)  # for macOS
-CFLAGS= -c -std=gnu11 $(OPT) $(GPROF) $(W) $(GDB)
-OFLAGS= -lm $(GPROF) -lX11 -lXpm $(X11DIR)
+XFTLIB= $(shell pkg-config --libs xft)
+XFTCFLAGS= $(shell pkg-config --cflags xft)
+CFLAGS= -c -std=gnu11 $(OPT) $(GPROF) $(W) $(GDB) $(XFTCFLAGS)
+OFLAGS= -lm $(GPROF) -lX11 -lXpm $(X11DIR) $(XFTLIB)
 
 SRCDIR=src
 OBJDIR=obj

@@ -10,13 +10,11 @@ A simple X11 molecular viewer.
 - [Priroda](http://rad.chem.msu.ru/~laikov) input and output files
 - [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files
 - [extended `.xyz`](https://github.com/libAtoms/extxyz) files (currently the extra columns are ignored)
-- various quantum-chemical outputs with [`cclib`](https://github.com/cclib/cclib), see the Python wrapper [page](python/README.md).
-
+- various quantum-chemical outputs with [cclib](https://github.com/cclib/cclib), see the Python wrapper [page](python/README.md).
 
 ## Python package (wrapper / API) available
 
-See python package page
-[here.](python/README.md)
+See python package page [here](python/README.md).
 
 Provides wrapper scripts with a simple installation and
 allows to open unsupported file formats with `cclib`.
@@ -43,7 +41,7 @@ See build [instructions](BUILD.md).
 ```
 ./v file [file2 ... fileN] [options]
 ```
-A filename `-` stands for the standard input (xyz files only).
+A filename '-' stands for the standard input (xyz files only).
 
 Show the reference:
 ```
@@ -75,15 +73,14 @@ Show the reference:
 | `cell:0`                                    | disable PBC from the extended xyz file header            |
 | `cell:b%%lf[,%%lf,%%lf[,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf]]` | cubic / orthogonal / non-orhogonal cell parameters in a.u. |
 | `cell:%%lf[,%%lf,%%lf[,%%lf,%%lf,%%lf,%%lf,%%lf,%%lf]]`  | cubic / orthogonal / non-orhogonal cell parameters in Å |
-| `shell:b%%lf[,%%lf]                         | sphere(s) radii in a.u.                                  |
-| `shell:%%lf[,%%lf]                          | sphere(s) radii in Å                                     |
+| `shell:b%%lf[,%%lf]`                         | sphere(s) radii in a.u.                                  |
+| `shell:%%lf[,%%lf]`                          | sphere(s) radii in Å                                     |
 | `center:%d`                                 | origin is geometric center (`1`, default) / center of mass (`2`) / as is (`0`) |
 | `inertia:%d`                                | if rotate molecules wrt axis of inertia (`1`) or not (`0`, default) |
 | `gui:%d`                                    | gui (default `1`) / headless (`0`) mode               |
 | `com:%s`                                    | command sequence for `gui:0`                             |
 | `exitcom:%s`                                | command sequence to run on exit (same as for `gui:0`)    |
 | `startcom:%s`                               | command sequence to run on startup                       |
-
 
 </details>
 
@@ -152,6 +149,9 @@ D*h
 ```
 
 #### GUI mode
+> [!WARNING]
+> Currently this option is unstable. Please let me know if you encounter any problems.
+>
 In the GUI mode, the symbols from the CLI option `exitcom:` are executed immediately before closing.
 For example,
 ```
@@ -171,9 +171,7 @@ moves the molecule to the left, and
 opens the file, computes the point group, save a picture to `mol/mol0001.xyz_1.xpm` and closes the window.
 For other examples, see [fig/regenerate.bash](fig/regenerate.bash) for the commands used to generate the figures on this page.
 
-
 <details><summary><strong>Click to see currently available commands</strong></summary>
-
 
 | CLI regime symbol  | GUI keyboard command  |                   | GUI (`exitcom:`/`startcom:`) | headless (`com`) |
 | ------------------ | --------------------- | ----------------- | ---------------------------- | ---------------- |
@@ -189,15 +187,10 @@ For other examples, see [fig/regenerate.bash](fig/regenerate.bash) for the comma
 | `.`                | `.`                   | point group       | +                            | +                |
 | `x`,`z`,`p`,`u`    | `x`,`z`,`p`,`u`       | printing          | +                            | +                |
 
-
 </details>
-
 
 > [!NOTE]
 > The size depends on my screen and window layout, you might need to adjust the number of move/zoom in commands or the window size.
-
-> [!WARNING]
-> Currently this option is unstable. Please let me know if you encounter any problems.
 
 ### Boundary conditions
 Two types of boundary conditions are recognized:
@@ -245,7 +238,6 @@ Spherical confinement can be specified from the command-line by the following:
 ```
 
 </details>
-
 
 ## Examples
 * `mol/C3H6~mCPBA_01x11.qm.out` — geometries + vibrations

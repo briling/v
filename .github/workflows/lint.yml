@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Install Ruff
-        run: pip install ruff
+        run: pip install ruff==0.16
       - name: Run Ruff
         run: ruff check vmol/ examples/
         working-directory: ./python

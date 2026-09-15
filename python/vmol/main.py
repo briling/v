@@ -15,7 +15,7 @@ c_double_p = ctypes.POINTER(c_double)
 c_int_p = ctypes.POINTER(c_int)
 
 
-class mol_t(ctypes.Structure):  # noqa: N801
+class mol_t(ctypes.Structure):  # ruff: ignore[invalid-class-name]
     """C structure for the input molecule data, containing the number of atoms, charge array, coordinate array, and name.
 
     Declared in src/mol/mol.h as
@@ -37,7 +37,7 @@ class mol_t(ctypes.Structure):  # noqa: N801
             )
 
 
-class vibr_t(ctypes.Structure):  # noqa: N801
+class vibr_t(ctypes.Structure):  # ruff: ignore[invalid-class-name]
     """C structure for the input molecule data, containing the number of atoms, charge array, coordinate array, and name.
 
     Declared in src/v/v.h as
@@ -91,7 +91,7 @@ def mol2struct(get_element, mol):
         TypeError: If mol is neither a dictionary nor an ase.atoms.Atoms-like.
         ValueError: If the required keys are missing or their values have wrong shapes.
     """
-    import numpy as np  # noqa: PLC0415
+    import numpy as np  # ruff: ignore[import-outside-top-level]
 
     if isinstance(mol, dict):
         q = mol.get('q')
@@ -409,7 +409,7 @@ def vib2struct(nat, vib=None):
         msg = f"vib must be None or a dictionary, but got {type(vib)}"
         raise TypeError(msg)
 
-    import numpy as np  # noqa: PLC0415
+    import numpy as np  # ruff: ignore[import-outside-top-level]
 
     def check_array(key, required=True, shape=None, ndim=None, dtype=c_double):
         if not required and shape is None:

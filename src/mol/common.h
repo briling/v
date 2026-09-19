@@ -25,11 +25,11 @@
 #define printalive {printf("alive @ %s:%d\n", __FILE__, __LINE__); fflush(stdout);}
 
 #define PRINT_ERR(...) {\
-  fprintf(stderr, "\e[1;31m" "error: " "\e[0m" "\e[1;30m" "[%s:%d]" "\e[0m ", __FILE__, __LINE__);\
+  fprintf(stderr, "\e[1;31m" "error: " "\e[0m" "\e[1;37m" "[%s:%d]" "\e[0m ", __FILE__, __LINE__);\
   fprintf(stderr, __VA_ARGS__ );\
 }
 #define PRINT_WARN(...) {\
-  fprintf(stderr, "\e[1;35m" "warning: " "\e[0m" "\e[1;30m" "[%s:%d]" "\e[0m ", __FILE__, __LINE__);\
+  fprintf(stderr, "\e[1;33m" "warning: " "\e[0m" "\e[1;37m" "[%s:%d]" "\e[0m ", __FILE__, __LINE__);\
   fprintf(stderr, __VA_ARGS__ );\
 }
 

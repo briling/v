@@ -46,32 +46,28 @@ vmol ../mol/MOL_3525.xyz cell:8.93,0.0,0.0,4.2,8.9,0.0,0.48,2.32,10
 python -m vmol../mol/periodic.in bonds:0
 ```
 
-Unsupported quantum-chemical outputs, e.g., ORCA:
+Unsupported quantum-chemical outputs, e.g., ORCA or Gaussian:
 ```bash
 vmol2 ../mol/CEHZOF_1_SPE.out
 python -m vmol.vmol2 ../mol/AJALIH_5_SPE.out
+vmol2 mol/Cat1_TSOA_CfA_Cf0.log
 ```
-ORCA logs use a dedicated plugin (resilient to ORCA 6 / PyPI cclib). When a
-file has several of frequencies, optimization, trailing single point, scan, or
-IRC, `vmol2` prompts on a TTY (each choice opens in its own `v` session), or
-accepts:
+ORCA and Gaussian logs use dedicated plugins. When a file has several of
+frequencies, optimization, trailing single point (ORCA), scan, or IRC,
+`vmol2` prompts on a TTY (each choice opens in its own `v` session), or accepts:
 ```bash
 vmol2 job.out view:freq   #  normal modes (on the opt minimum)
 vmol2 job.out view:opt    #  geometry optimization frames
-vmol2 job.out view:sp     #  final single-point geometry / energy
-vmol2 job.out view:irc    #  IRC (needs basename_IRC_Full_trj.xyz beside the .out)
+vmol2 job.out view:sp     #  final single-point geometry / energy (ORCA multi-job)
+vmol2 job.out view:irc    #  IRC trajectory
 vmol2 job.out view:scan   #  relaxed surface scan
 vmol2 job.out vib:0       #  geometry path (opt, else SP, else IRC, else scan)
 vmol2 job.out vib:1       #  frequencies
 ```
-IRC frames come from `basename_IRC_Full_trj.xyz` (or the path in the log's
-`Storing full IRC trajectory in ....` line), not from the `.out` itself.
-
-Gaussian and other packages use the generic cclib path:
-```bash
-vmol2 mol/Cat1_TSOA_CfA_Cf0.log vib:0  #  geometry optimization
-vmol2 mol/Cat1_TSOA_CfA_Cf0.log        #  normal modes (default for files containing both)
-```
+ORCA IRC frames come from `basename_IRC_Full_trj.xyz` (or the path in the log's
+`Storing full IRC trajectory in ....` line). Gaussian IRC frames are read from
+the `.log` itself when an IRC job is detected. Other packages still use the
+generic cclib path.
 
 ### Library
 
@@ -172,7 +168,8 @@ out = vmol.capture(mols=mols)
 File formats which are not supported natively can be read with `cclib` and passed
 (see [example](https://github.com/briling/v/tree/master/python/examples/ex_cclib.py),
 [vmol2](https://github.com/briling/v/tree/master/python/vmol/vmol2.py), and the
-ORCA [plugin](https://github.com/briling/v/tree/master/python/vmol/plugins/orca.py)).
+ORCA / Gaussian plugins under
+[python/vmol/plugins](https://github.com/briling/v/tree/master/python/vmol/plugins)).
 
 One can also pass normal modes data with
 ```python

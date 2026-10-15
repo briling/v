@@ -7,9 +7,10 @@ import warnings
 from types import SimpleNamespace
 
 import numpy as np
-from cclib.io import ccopen
 from cclib.parser import orcaparser, utils
 from cclib.parser.utils import PeriodicTable
+
+from vmol.plugins.common import has_coords, parse_cclib
 
 _PT = PeriodicTable()
 _PATCHED = False
@@ -61,7 +62,9 @@ def _patch_cclib_orca() -> None:
     _PATCHED = True
 
 
-def _read_cartesian_block(lines, start: int) -> tuple[list[int], list[list[float]], int]:
+def _read_cartesian_block(
+    lines, start: int,
+) -> tuple[list[int], list[list[float]], int]:
     i = start + 1
     if i < len(lines) and set(lines[i].strip()) <= {"-"}:
         i += 1
@@ -83,28 +86,22 @@ def _read_cartesian_block(lines, start: int) -> tuple[list[int], list[list[float
     return atomnos, coords, i
 
 
+def _new_job(index: int) -> dict:
+    return {"index": index, "kind": "unknown", "frames": [], "energy": None}
+
+
 def _scan_jobs(path: str) -> list[dict]:
     with open(path, encoding="utf-8", errors="replace") as handle:
         lines = handle.readlines()
 
     jobs: list[dict] = []
-    current = {
-        "index": 0,
-        "kind": "unknown",
-        "frames": [],
-        "energy": None,
-    }
+    current = _new_job(0)
 
     def flush():
         nonlocal current
         if current["frames"] or current["kind"] != "unknown":
             jobs.append(current)
-        current = {
-            "index": len(jobs),
-            "kind": "unknown",
-            "frames": [],
-            "energy": None,
-        }
+        current = _new_job(len(jobs))
 
     i = 0
     while i < len(lines):
@@ -159,7 +156,6 @@ def _as_namespace(data) -> SimpleNamespace:
 
 
 def _append_sp_from_jobs(ns: SimpleNamespace, jobs: list[dict]) -> None:
-    """Ensure the last single-point job geometry is available on *ns*."""
     sp_jobs = [j for j in jobs if j["kind"] == "sp" and j["frames"]]
     if not sp_jobs:
         return
@@ -197,38 +193,20 @@ def parse_orca(path: str):
     """Parse an ORCA logfile for visualization.
 
     Returns:
-        tuple: ``(parser, data)`` where *data* has at least atomcoords/atomnos
-        when the file contains geometries. Frequencies are included when present.
+        tuple: ``(parser, data)`` with atomcoords/atomnos when geometries exist.
         ``data.sp_frame_index`` is set when a trailing single-point job exists.
 
     Raises:
         RuntimeError: If the file cannot be opened or has no coordinates.
     """
     _patch_cclib_orca()
-
-    parser = ccopen(path)
-    if parser is None:
-        msg = f"Could not open {path} with cclib."
-        raise RuntimeError(msg)
-
-    try:
-        raw = parser.parse()
-    except Exception as exc:  # noqa: BLE001
-        warnings.warn(
-            f"Error parsing {path} with cclib ({type(exc).__name__}: {exc}). "
-            "Using partial data.",
-            RuntimeWarning,
-            stacklevel=2,
-        )
-        raw = parser
-
+    parser, raw = parse_cclib(path)
     data = _as_namespace(raw)
     jobs = _scan_jobs(path)
     data.orca_jobs = jobs
     _append_sp_from_jobs(data, jobs)
 
-    coords = getattr(data, "atomcoords", None)
-    if coords is not None and len(coords) > 0:
+    if has_coords(data):
         return parser, data
 
     frames = []

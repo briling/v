@@ -53,4 +53,4 @@ ignore = [
 [lint.per-file-ignores]
 "vmol/__main__.py" = ["D"]
 "examples/ex*.py"  = ["D"]
-"tests/*.py" = ["SLF", "PLC2701"]
+"tests/*.py" = ["SLF", "PLC2701", "D"]

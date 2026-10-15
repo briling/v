@@ -7,33 +7,20 @@ import tempfile
 import unittest
 import warnings
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 
+from _plugin_fixtures import base_data
 from vmol import vmol2
-from vmol.plugins.orca import Dataset, OrcaPlugin, load_irc_xyz, resolve_irc_path
-
-
-def _coords(*frames):
-    return np.asarray(frames, dtype=float)
-
-
-def _base_data(nframes=1):
-    frames = [[[0.0, 0.0, 0.0], [0.0, 0.0, 0.74 + 0.01 * i]] for i in range(nframes)]
-    return SimpleNamespace(
-        atomnos=np.array([1, 1]),
-        atomcoords=_coords(*frames),
-        scfenergies=np.array([-27.2 - 0.01 * i for i in range(nframes)]),
-    )
+from vmol.plugins.common import Dataset
+from vmol.plugins.orca import OrcaPlugin, load_irc_xyz, resolve_irc_path
 
 
 class TestOrcaInventory(unittest.TestCase):
     """Inventory detection for frequencies, optimization, scan, and IRC."""
 
     def setUp(self):
-        """Create a temporary directory and plugin instance."""
-        self.plugin = OrcaPlugin()
+        """Create a temporary directory for fake ORCA paths."""
         self.tmpdir = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmpdir.cleanup)
         self.out_path = os.path.join(self.tmpdir.name, "job.out")
@@ -44,7 +31,7 @@ class TestOrcaInventory(unittest.TestCase):
 
     def test_frequency_only(self):
         """A frequency job yields a single freq dataset."""
-        data = _base_data(1)
+        data = base_data(1)
         data.vibfreqs = np.array([4401.0])
         data.vibdisps = np.zeros((1, 2, 3))
         data.vibdisps[0, 0, 2] = 0.7
@@ -53,7 +40,7 @@ class TestOrcaInventory(unittest.TestCase):
         data.vibrmasses = np.array([1.0])
         self._write_out("* O   R   C   A *\n")
 
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["freq"])
         self.assertEqual(len(datasets[0].mols), 1)
         self.assertIsNotNone(datasets[0].vib)
@@ -61,7 +48,7 @@ class TestOrcaInventory(unittest.TestCase):
 
     def test_opt_plus_freq(self):
         """Opt+freq offers both datasets and truncates at optdone."""
-        data = _base_data(4)
+        data = base_data(4)
         data.geovalues = np.ones((3, 4))
         data.optdone = [3]
         data.vibfreqs = np.array([100.0, 200.0])
@@ -69,7 +56,7 @@ class TestOrcaInventory(unittest.TestCase):
         data.vibdisps[:, 0, 0] = 1.0
         self._write_out("* O   R   C   A *\n")
 
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["freq", "opt"])
         opt = datasets[1]
         self.assertEqual(len(opt.mols), 3)
@@ -78,18 +65,18 @@ class TestOrcaInventory(unittest.TestCase):
 
     def test_opt_truncates_when_optdone_bool(self):
         """Bool optdone uses geovalues (+ final eval), dropping a later job frame."""
-        data = _base_data(5)
+        data = base_data(5)
         data.geovalues = np.ones((3, 4))
         data.optdone = True
         self._write_out("* O   R   C   A *\n")
 
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["opt"])
         self.assertEqual(len(datasets[0].mols), 4)
 
     def test_opt_freq_and_sp(self):
         """Multi-job files expose frequencies, opt, and a selectable SP."""
-        data = _base_data(5)
+        data = base_data(5)
         data.geovalues = np.ones((3, 4))
         data.optdone = True
         data.vibfreqs = np.array([100.0])
@@ -99,7 +86,7 @@ class TestOrcaInventory(unittest.TestCase):
         data.sp_energy_eh = -100.5
         self._write_out("* O   R   C   A *\n")
 
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["freq", "opt", "sp"])
         self.assertEqual(len(datasets[1].mols), 4)
         self.assertIn("E=-100.50000000 Eh", datasets[2].label)
@@ -107,27 +94,27 @@ class TestOrcaInventory(unittest.TestCase):
 
     def test_scan_not_labeled_as_opt(self):
         """Relaxed scans are labeled scan, not opt."""
-        data = _base_data(3)
+        data = base_data(3)
         data.scannames = ["R"]
         data.scanparm = [(0.7,), (0.8,), (0.9,)]
         data.geovalues = np.ones((3, 4))
         self._write_out("* O   R   C   A *\n")
 
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["scan"])
         self.assertIn("R=0.7", datasets[0].mols[0]["name"])
 
     def test_single_point_geometry(self):
         """A single-point job yields one geom dataset."""
-        data = _base_data(1)
+        data = base_data(1)
         self._write_out("* O   R   C   A *\n")
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["geom"])
         self.assertEqual(len(datasets[0].mols), 1)
 
     def test_missing_irc_file_warns(self):
         """Mentioned but missing IRC xyz warns and is omitted."""
-        data = _base_data(1)
+        data = base_data(1)
         self._write_out(
             "* O   R   C   A *\n"
             "Intrinsic Reaction Coordinate Calculation\n"
@@ -135,13 +122,13 @@ class TestOrcaInventory(unittest.TestCase):
         )
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter("always")
-            datasets = self.plugin.inventory(self.out_path, data)
+            datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["geom"])
         self.assertTrue(any("IRC trajectory" in str(w.message) for w in caught))
 
     def test_irc_sidecar_loaded(self):
         """IRC xyz comments become frame names via cclib."""
-        data = _base_data(1)
+        data = base_data(1)
         xyz_path = os.path.join(self.tmpdir.name, "job_IRC_Full_trj.xyz")
         Path(xyz_path).write_text(
             "2\n"
@@ -158,7 +145,7 @@ class TestOrcaInventory(unittest.TestCase):
             "* O   R   C   A *\n"
             "Storing full IRC trajectory in      .... job_IRC_Full_trj.xyz\n",
         )
-        datasets = self.plugin.inventory(self.out_path, data)
+        datasets = OrcaPlugin.inventory(self.out_path, data)
         self.assertEqual([d.key for d in datasets], ["irc"])
         irc = datasets[0]
         self.assertEqual(len(irc.mols), 2)
@@ -196,16 +183,15 @@ class TestIrcHelpers(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             xyz_path = os.path.join(tmp, "trj.xyz")
             Path(xyz_path).write_text(
-                "2\n"
-                "Coordinates from ORCA-job trj E -99.5\n"
-                "H 0 0 0\n"
-                "H 0 0 1\n",
+                "2\nCoordinates from ORCA-job trj E -99.5\nH 0 0 0\nH 0 0 1\n",
                 encoding="utf-8",
             )
             ds = load_irc_xyz(xyz_path)
             self.assertEqual(ds.key, "irc")
             self.assertEqual(len(ds.mols), 1)
-            self.assertEqual(ds.mols[0]["name"], "Coordinates from ORCA-job trj E -99.5")
+            self.assertEqual(
+                ds.mols[0]["name"], "Coordinates from ORCA-job trj E -99.5",
+            )
 
 
 class TestViewSelection(unittest.TestCase):

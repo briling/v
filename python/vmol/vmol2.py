@@ -7,7 +7,7 @@ import warnings
 
 from vmol import vmol, _paths
 from vmol.plugins import plugin_for
-from vmol.plugins.orca import OrcaPlugin
+from vmol.plugins.common import has_coords, parse_cclib, vib_from_data
 
 try:
     import cclib
@@ -17,20 +17,6 @@ except ModuleNotFoundError:
 
 
 VIEW_KEYS = ("freq", "opt", "sp", "irc", "scan", "geom")
-
-_CCLIB2VMOL = {
-    "vibdisps": "disp",
-    "vibfreqs": "freq",
-    "vibrmasses": "mass",
-    "vibirs": "ints",
-}
-
-
-def _vib_from_data(data):
-    vib = {dst: getattr(data, src, None) for src, dst in _CCLIB2VMOL.items()}
-    if vib["disp"] is None or vib["freq"] is None:
-        return None
-    return vib
 
 
 def _mols_from_data(data, parser):
@@ -62,15 +48,14 @@ def _parse_file(path):
 
     Returns:
         tuple: ``(parser, data)``.
+
+    Raises:
+        FileNotFoundError: If *path* does not exist.
     """
-    parser = _peek_parser(path)
-    try:
-        data = parser.parse()
-    except Exception:  # noqa: BLE001
-        msg = f"Error parsing {path} with cclib. Using partial data."
-        warnings.warn(msg, RuntimeWarning, stacklevel=2)
-        data = parser
-    return parser, data
+    if not os.path.isfile(path):
+        msg = f"File {path} not found."
+        raise FileNotFoundError(msg)
+    return parse_cclib(path)
 
 
 def read_mols_from_cclib(path):
@@ -90,10 +75,10 @@ def read_mols_from_cclib(path):
             in the parsed data.
     """
     parser, data = _parse_file(path)
-    if not (hasattr(data, "atomcoords") and hasattr(data, "atomnos") and len(data.atomcoords)):
+    if not has_coords(data):
         msg = f"No coordinates found in {path}."
         raise RuntimeError(msg)
-    return _mols_from_data(data, parser), _vib_from_data(data)
+    return _mols_from_data(data, parser), vib_from_data(data)
 
 
 def _collect_view_selectors(argv):
@@ -112,9 +97,8 @@ def _collect_view_selectors(argv):
         if arg.startswith("view:"):
             key = arg.split(":", 1)[1].strip().lower()
             if key not in VIEW_KEYS:
-                msg = (
-                    f"Unknown view selector '{arg}'. Expected one of: "
-                    + ", ".join(f"view:{k}" for k in VIEW_KEYS)
+                msg = f"Unknown view selector '{arg}'. Expected one of: " + ", ".join(
+                    f"view:{k}" for k in VIEW_KEYS
                 )
                 raise ValueError(msg)
             view_keys.append(key)
@@ -158,10 +142,14 @@ def _prompt_datasets(datasets):
         try:
             idx = int(part)
         except ValueError:
-            warnings.warn(f"Ignoring invalid choice '{part}'.", RuntimeWarning, stacklevel=2)
+            warnings.warn(
+                f"Ignoring invalid choice '{part}'.", RuntimeWarning, stacklevel=2,
+            )
             continue
         if not 1 <= idx <= len(datasets):
-            warnings.warn(f"Ignoring out-of-range choice {idx}.", RuntimeWarning, stacklevel=2)
+            warnings.warn(
+                f"Ignoring out-of-range choice {idx}.", RuntimeWarning, stacklevel=2,
+            )
             continue
         selected.append(datasets[idx - 1])
     return selected or _default_datasets(datasets)
@@ -188,7 +176,9 @@ def _select_by_vib(datasets, vib_mode):
         for ds in datasets:
             if ds.key == "freq":
                 return [ds]
-        warnings.warn("vib:1 requested but no frequencies found.", RuntimeWarning, stacklevel=2)
+        warnings.warn(
+            "vib:1 requested but no frequencies found.", RuntimeWarning, stacklevel=2,
+        )
         return _default_datasets(datasets)
 
     for key in ("opt", "sp", "irc", "scan", "geom"):
@@ -217,9 +207,9 @@ def _run_datasets(datasets, args):
     return ret
 
 
-def _handle_orca(path, view_keys, vib_mode, args):
-    _parser, data = OrcaPlugin.parse(path)
-    datasets = OrcaPlugin.inventory(path, data)
+def _handle_plugin(plugin, path, view_keys, vib_mode, args):
+    _parser, data = plugin.parse(path)
+    datasets = plugin.inventory(path, data)
     chosen = _choose_datasets(datasets, view_keys, vib_mode)
     if not chosen:
         msg = f"No datasets selected for {path}."
@@ -231,13 +221,13 @@ def _load_cli_files(view_keys, vib_mode):
     """Parse CLI molecule arguments into a viewer payload.
 
     Returns:
-        tuple: ``(to_pop, mols, vib, last_ret, orca_handled)``.
+        tuple: ``(to_pop, mols, vib, last_ret, plugin_handled)``.
     """
     to_pop = []
     mols = []
     vib = None
     last_ret = 0
-    orca_handled = False
+    plugin_handled = False
 
     for i, arg in enumerate(sys.argv[1:], start=1):
         if ":" in arg:
@@ -251,14 +241,15 @@ def _load_cli_files(view_keys, vib_mode):
             warnings.warn(str(e), RuntimeWarning, stacklevel=2)
             continue
 
-        if plugin_for(peek) is not None:
+        plugin = plugin_for(peek)
+        if plugin is not None:
             remaining = [sys.argv[j] for j in range(len(sys.argv)) if j not in popped]
             try:
-                last_ret = _handle_orca(arg, view_keys, vib_mode, remaining)
+                last_ret = _handle_plugin(plugin, arg, view_keys, vib_mode, remaining)
             except RuntimeError as e:
                 warnings.warn(str(e), RuntimeWarning, stacklevel=2)
                 continue
-            orca_handled = True
+            plugin_handled = True
             continue
 
         try:
@@ -267,22 +258,20 @@ def _load_cli_files(view_keys, vib_mode):
             warnings.warn(str(e), RuntimeWarning, stacklevel=2)
             continue
 
-        if not (
-            hasattr(data, "atomcoords")
-            and hasattr(data, "atomnos")
-            and len(data.atomcoords)
-        ):
-            warnings.warn(f"No coordinates found in {arg}.", RuntimeWarning, stacklevel=2)
+        if not has_coords(data):
+            warnings.warn(
+                f"No coordinates found in {arg}.", RuntimeWarning, stacklevel=2,
+            )
             continue
 
         m = _mols_from_data(data, parser)
-        v = _vib_from_data(data)
+        v = vib_from_data(data)
         if not mols and v is not None and vib_mode is not False:
             mols, vib = m, v
             break
         mols.extend(m)
 
-    return to_pop, mols, vib, last_ret, orca_handled
+    return to_pop, mols, vib, last_ret, plugin_handled
 
 
 def main():
@@ -291,9 +280,9 @@ def main():
     Usage:
         vmol2.py file [options]
 
-    ORCA outputs may offer frequencies, optimization, single point, scan,
-    and/or IRC. With several datasets and a TTY, a menu is shown. Otherwise
-    use ``view:freq|opt|sp|irc|scan`` or ``vib:0`` / ``vib:1``.
+    ORCA and Gaussian outputs may offer frequencies, optimization, single
+    point, scan, and/or IRC. With several datasets and a TTY, a menu is shown.
+    Otherwise use ``view:freq|opt|sp|irc|scan`` or ``vib:0`` / ``vib:1``.
 
     Returns:
         int: Exit code (0 for success).
@@ -318,9 +307,9 @@ def main():
     for i in reversed([j + 1 for j in view_pops]):
         sys.argv.pop(i)
 
-    to_pop, mols, vib, last_ret, orca_handled = _load_cli_files(view_keys, vib_mode)
+    to_pop, mols, vib, last_ret, plugin_handled = _load_cli_files(view_keys, vib_mode)
 
-    if orca_handled and not mols:
+    if plugin_handled and not mols:
         return last_ret
 
     if not mols:

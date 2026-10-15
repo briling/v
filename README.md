@@ -10,14 +10,18 @@ A simple X11 molecular viewer.
 - [Priroda](http://rad.chem.msu.ru/~laikov) input and output files
 - [`.xyz`](https://en.wikipedia.org/wiki/XYZ_file_format) files
 - [extended `.xyz`](https://github.com/libAtoms/extxyz) files (currently the extra columns are ignored)
-- various quantum-chemical outputs with [cclib](https://github.com/cclib/cclib), see the Python wrapper [page](python/README.md).
+- various quantum-chemical outputs with [cclib](https://github.com/cclib/cclib), see the Python wrapper [page](python/README.md)
+  (`vmol2`; ORCA gets a plugin for frequencies, optimization, single point, scan, and IRC)
 
 ## Python package (wrapper / API) available
 
 See python package page [here](python/README.md).
 
 Provides wrapper scripts with a simple installation and
-allows to open unsupported file formats with `cclib`.
+allows to open unsupported file formats with `cclib` (`vmol2`).
+For ORCA multi-job logs, `vmol2` can prompt (or take `view:` / `vib:`) for
+frequencies, optimization, single point, IRC, or scan
+(see [python/README.md](python/README.md)).
 
 ## Download
 ```bash

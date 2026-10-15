@@ -15,6 +15,15 @@ from vmol.plugins.common import has_coords, parse_cclib
 _PT = PeriodicTable()
 _PATCHED = False
 _CART_MIN_TOKENS = 4
+# Expected on ORCA 6 / incomplete blocks with PyPI cclib; skip quietly.
+_BENIGN_PARSE_ERRORS = (
+    ValueError,
+    AssertionError,
+    StopIteration,
+    IndexError,
+    AttributeError,
+    KeyError,
+)
 
 
 def _patch_cclib_orca() -> None:
@@ -22,6 +31,7 @@ def _patch_cclib_orca() -> None:
 
     PyPI cclib 1.8.1 aborts on empty ``scfvalues`` and on some ORCA 6 sections.
     Skip those sections so geometries and frequencies still get collected.
+    Expected ORCA 6 parse gaps are silent; unexpected errors still warn once.
     """
     global _PATCHED
     if _PATCHED:
@@ -36,12 +46,17 @@ def _patch_cclib_orca() -> None:
             self.scfvalues.append([])
         try:
             return orig_append(self, inputfile, line)
+        except _BENIGN_PARSE_ERRORS:
+            return None
         except Exception as exc:  # ruff: ignore[blind-except]
-            warnings.warn(
-                f"ORCA SCF convergence summary skipped ({type(exc).__name__}: {exc})",
-                RuntimeWarning,
-                stacklevel=2,
-            )
+            if not getattr(self, "_vmol_warned_scf", False):
+                warnings.warn(
+                    f"ORCA SCF convergence summary skipped "
+                    f"({type(exc).__name__}: {exc})",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                self._vmol_warned_scf = True
             return None
 
     orig_extract = orcaparser.ORCA.extract
@@ -49,12 +64,16 @@ def _patch_cclib_orca() -> None:
     def safe_extract(self, inputfile, line):
         try:
             return orig_extract(self, inputfile, line)
+        except _BENIGN_PARSE_ERRORS:
+            return None
         except Exception as exc:  # ruff: ignore[blind-except]
-            warnings.warn(
-                f"ORCA section skipped ({type(exc).__name__}: {exc})",
-                RuntimeWarning,
-                stacklevel=2,
-            )
+            if not getattr(self, "_vmol_warned_extract", False):
+                warnings.warn(
+                    f"ORCA section skipped ({type(exc).__name__}: {exc})",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                self._vmol_warned_extract = True
             return None
 
     orcaparser.ORCA._append_scfvalues_scftargets = patched_append

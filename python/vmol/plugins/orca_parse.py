@@ -36,7 +36,7 @@ def _patch_cclib_orca() -> None:
             self.scfvalues.append([])
         try:
             return orig_append(self, inputfile, line)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:  # ruff: ignore[blind-except]
             warnings.warn(
                 f"ORCA SCF convergence summary skipped ({type(exc).__name__}: {exc})",
                 RuntimeWarning,
@@ -49,7 +49,7 @@ def _patch_cclib_orca() -> None:
     def safe_extract(self, inputfile, line):
         try:
             return orig_extract(self, inputfile, line)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:  # ruff: ignore[blind-except]
             warnings.warn(
                 f"ORCA section skipped ({type(exc).__name__}: {exc})",
                 RuntimeWarning,

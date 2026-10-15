@@ -71,7 +71,7 @@ def mode_trajectory(
         msg = f"displacement shape {u.shape} does not match coords {r0.shape}"
         raise ValueError(msg)
     norm = float(np.linalg.norm(u.reshape(-1)))
-    if norm == 0.0:
+    if not norm:
         msg = f"mode {mode_index + 1} has zero displacement"
         raise ValueError(msg)
     u /= norm

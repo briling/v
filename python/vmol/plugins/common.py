@@ -61,7 +61,7 @@ def parse_cclib(path: str):
         raise RuntimeError(msg)
     try:
         data = parser.parse()
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:  # ruff: ignore[blind-except]
         warnings.warn(
             f"Error parsing {path} with cclib ({type(exc).__name__}: {exc}). "
             "Using partial data.",

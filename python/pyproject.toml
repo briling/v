@@ -46,4 +46,4 @@ Repository = "https://github.com/briling/v.git"
 "Bug Tracker" = "https://github.com/briling/v/issues"
 
 [tool.setuptools]
-packages = ["vmol"]
+packages = ["vmol", "vmol.plugins"]

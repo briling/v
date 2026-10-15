@@ -37,6 +37,7 @@
 ### Coming in the next version:
 * high-symmetry determination bugs (#21)
 * headless fallback build by @JamesOBrien2 (#44)
+* ORCA / Gaussian plugins for `vmol2`: prompt / `view:` selectors for frequencies, optimization, single point, scan, and IRC trajectories; frequency view builds a selectable mode-displacement trajectory (`mode:` / `scale:` / `npoints:`)
 
 **Full Changelog**: https://github.com/briling/v/compare/v2.0...v3.0rc7
 

@@ -56,13 +56,18 @@ ORCA and Gaussian logs use dedicated plugins. When a file has several of
 frequencies, optimization, trailing single point (ORCA), scan, or IRC,
 `vmol2` prompts on a TTY (each choice opens in its own `v` session), or accepts:
 ```bash
-vmol2 job.out view:freq   #  normal modes (on the opt minimum)
+vmol2 job.out view:freq   #  pick a normal mode, then show a displacement path
 vmol2 job.out view:opt    #  geometry optimization frames
 vmol2 job.out view:sp     #  final single-point geometry / energy (ORCA multi-job)
 vmol2 job.out view:irc    #  IRC trajectory
 vmol2 job.out view:scan   #  relaxed surface scan
 vmol2 job.out vib:0       #  geometry path (opt, else SP, else IRC, else scan)
-vmol2 job.out vib:1       #  frequencies
+vmol2 job.out vib:1       #  frequencies (same as view:freq)
+```
+Choosing frequencies (TTY) lists modes with their cm⁻¹ values, then asks for a
+mode number, displacement magnitude (Å), and number of frames. Non-interactive:
+```bash
+vmol2 job.out view:freq mode:1 scale:0.5 npoints:21
 ```
 ORCA IRC frames come from `basename_IRC_Full_trj.xyz` (or the path in the log's
 `Storing full IRC trajectory in ....` line). Gaussian IRC frames are read from

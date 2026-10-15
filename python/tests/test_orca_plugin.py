@@ -231,12 +231,22 @@ class TestViewSelection(unittest.TestCase):
             ["opt"],
         )
 
-        keys, vib, pops = vmol2._collect_view_selectors(
+        keys, vib, mode, scale, npoints, pops = vmol2._collect_cli_selectors(
             ["file.out", "view:sp", "vib:0", "bonds:0"],
         )
         self.assertEqual(keys, ["sp"])
         self.assertIs(vib, False)
+        self.assertIsNone(mode)
         self.assertEqual(pops, [1])
+
+        keys, vib, mode, scale, npoints, pops = vmol2._collect_cli_selectors(
+            ["file.out", "view:freq", "mode:2", "scale:0.3", "npoints:9"],
+        )
+        self.assertEqual(keys, ["freq"])
+        self.assertEqual(mode, 2)
+        self.assertEqual(scale, 0.3)
+        self.assertEqual(npoints, 9)
+        self.assertEqual(pops, [1, 2, 3, 4])
 
 
 if __name__ == "__main__":
